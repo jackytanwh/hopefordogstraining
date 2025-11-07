@@ -537,16 +537,18 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                                 Contact us at <span className="font-semibold">+65 8222 8376</span> after booking.
                               </p>
                             </div>
-                            <div className="pt-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={handleSwitchToManual}
-                                className="w-full"
-                              >
-                                Schedule Each Session Manually Instead
-                              </Button>
-                            </div>
+                            {!isAutoRecurring && (
+                              <div className="pt-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={handleSwitchToManual}
+                                  className="w-full"
+                                >
+                                  Schedule Each Session Manually Instead
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         </AlertDescription>
                       </Alert>
