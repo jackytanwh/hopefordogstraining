@@ -1,0 +1,220 @@
+
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Clock, DollarSign, Users, MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import WhatsAppButton from "../components/booking/WhatsAppButton";
+
+const services = [
+  {
+    id: "kinder_puppy_in_home",
+    name: "Kinder Puppy Program (In-Home)",
+    price: 520,
+    duration: 1,
+    sessions: 4,
+    minParticipants: 1,
+    maxParticipants: 1,
+    description: "One-on-one puppy training at your home, 4 bi-weekly sessions"
+  },
+  {
+    id: "basic_manners_in_home",
+    name: "Basic Manners Program (In-Home)",
+    price: 720,
+    duration: 1,
+    sessions: 6,
+    minParticipants: 1,
+    maxParticipants: 1,
+    description: "Comprehensive in-home training, 6 weekly sessions"
+  },
+  {
+    id: "kinder_puppy_fyog",
+    name: "Kinder Puppy Program (FYOG)",
+    price: 298,
+    duration: 1,
+    sessions: 4,
+    minParticipants: 2,
+    maxParticipants: 2,
+    description: "Group training for puppies, 2 puppies per group, 4 bi-weekly sessions"
+  },
+  {
+    id: "basic_manners_fyog",
+    name: "Basic Manners Program (FYOG)",
+    price: 520,
+    duration: 1,
+    sessions: 7,
+    minParticipants: 2,
+    maxParticipants: 3,
+    description: "Group training for dogs, 2-3 dogs per group, 7 weekly sessions"
+  },
+  {
+    id: "basic_manners_group_class",
+    name: "Basic Manners Program (Group)",
+    price: 520,
+    duration: 1,
+    sessions: 7,
+    minParticipants: 1,
+    maxParticipants: 4,
+    description: "Group class training, 1-4 dogs, 7 weekly sessions with fixed schedule"
+  },
+  {
+    id: "canine_assessment",
+    name: "Canine Assessment",
+    price: 150,
+    duration: 1.5,
+    sessions: 1,
+    minParticipants: 1,
+    maxParticipants: 1,
+    description: "Comprehensive behavioral assessment, single 1.5-hour session"
+  },
+  {
+    id: "behavioural_modification",
+    name: "Behavioural Modification (In-Home)",
+    price: 358,
+    duration: 1.5,
+    sessions: 2,
+    minParticipants: 1,
+    maxParticipants: 1,
+    description: "Specialized behavior modification, 2 sessions 3 weeks apart"
+  },
+  {
+    id: "on_demand_training",
+    name: "On-Demand Training",
+    price: 120,
+    duration: 1,
+    sessions: "1-3",
+    minParticipants: 1,
+    maxParticipants: 1,
+    description: "Flexible training sessions tailored to your needs - choose 1, 2, or 3 sessions"
+  }
+];
+
+export default function BookingSystem() {
+  const getParticipantLabel = (service) => {
+    const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
+    const label = isKinderPuppy ? 'puppy' : 'dog';
+    const labelPlural = isKinderPuppy ? 'puppies' : 'dogs';
+    
+    if (service.minParticipants === service.maxParticipants) {
+      return service.maxParticipants > 1 
+        ? `${service.maxParticipants} ${labelPlural}`
+        : `${service.maxParticipants} ${label}`;
+    } else {
+      return `${service.minParticipants}-${service.maxParticipants} ${labelPlural}`;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-bold text-slate-900">Book Your Training Session</h1>
+          <p className="text-lg text-slate-600">Choose the perfect training program for your furry friend</p>
+          
+          <div className="flex justify-center">
+            <WhatsAppButton 
+              variant="outline" 
+              className="border-green-500 text-green-700 hover:bg-green-50"
+            />
+          </div>
+        </div>
+
+        <Card className="shadow-lg border-0 bg-blue-50/50 backdrop-blur-sm">
+          <CardContent className="p-6">
+            <h3 className="font-semibold text-slate-900 mb-3">Booking Information</h3>
+            <ul className="space-y-2 text-sm text-slate-700">
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 font-bold">•</span>
+                <span>Minimum 2 days advance booking required (7 days for Behavioural Modification)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 font-bold">•</span>
+                <span>10% discount for adopted puppies/dogs (proof required)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 font-bold">•</span>
+                <span>5% weekend surcharge applies to Saturday and Sunday bookings (except Group Class)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 font-bold">•</span>
+                <span>Available Monday-Saturday: 10am-7pm, Sunday: 10am-3:30pm</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services.map((service) => {
+            const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
+            const perLabel = isKinderPuppy ? 'puppy' : 'dog';
+            const isOnDemand = service.id === 'on_demand_training';
+            
+            return (
+              <Card key={service.id} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-200 flex flex-col">
+                <CardHeader className="border-b border-slate-100">
+                  <CardTitle className="text-xl text-slate-900">{service.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 space-y-4 flex-grow flex flex-col">
+                  <p className="text-slate-600 text-sm flex-grow">{service.description}</p>
+                  
+                  <div className="space-y-3">
+                    {!isOnDemand && (
+                      <div className="flex items-center gap-2 text-sm text-slate-700">
+                        <DollarSign className="w-4 h-4 text-green-600" />
+                        <span className="font-semibold">${service.price}</span>
+                        <span className="text-slate-500">per {perLabel}</span>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center gap-2 text-sm text-slate-700">
+                      <Calendar className="w-4 h-4 text-blue-600" />
+                      <span>{service.sessions} session{typeof service.sessions === 'string' || service.sessions > 1 ? 's' : ''}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-sm text-slate-700">
+                      <Clock className="w-4 h-4 text-purple-600" />
+                      <span>{service.duration} hour{service.duration > 1 ? 's' : ''} per session</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-sm text-slate-700">
+                      <Users className="w-4 h-4 text-orange-600" />
+                      <span>{getParticipantLabel(service)}</span>
+                    </div>
+                  </div>
+
+                  <Link to={createPageUrl(`BookService?service=${service.id}`)} className="mt-auto">
+                    <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                      Book Now
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        <Card className="shadow-lg border-0 bg-gradient-to-r from-green-50 to-emerald-50">
+          <CardContent className="p-6 text-center space-y-4">
+            <div className="flex justify-center">
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                <MessageCircle className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Questions? We're Here to Help!</h3>
+              <p className="text-slate-600 mb-4">
+                Chat with our friendly team on WhatsApp for instant answers about our training programs, 
+                scheduling, or any concerns about your furry friend.
+              </p>
+              <WhatsAppButton 
+                className="bg-green-600 hover:bg-green-700"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
