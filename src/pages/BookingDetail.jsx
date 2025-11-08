@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
@@ -362,6 +362,65 @@ export default function BookingDetail() {
     return 'N/A';
   };
 
+  // Add items given management functions
+  const handleKinderPuppyItemsUpdate = async (itemKey, checked) => {
+    if (!booking) return;
+    
+    const updatedItems = {
+      ...(booking.kinder_puppy_items_given || {}),
+      [itemKey]: checked
+    };
+    
+    await base44.entities.Booking.update(bookingId, {
+      kinder_puppy_items_given: updatedItems
+    });
+    
+    await loadBooking();
+  };
+
+  const handleBasicMannersItemsUpdate = async (itemKey, checked) => {
+    if (!booking) return;
+    
+    const updatedItems = {
+      ...(booking.basic_manners_items_given || {}),
+      [itemKey]: checked
+    };
+    
+    await base44.entities.Booking.update(bookingId, {
+      basic_manners_items_given: updatedItems
+    });
+    
+    await loadBooking();
+  };
+
+  // Add curriculum update function
+  const handleCurriculumUpdate = async (weekKey, itemKey, checked) => {
+    if (!booking) return;
+    
+    let progressField;
+    if (booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog') {
+      progressField = 'kinder_puppy_progress';
+    } else if (booking.service_type === 'basic_manners_in_home') {
+      progressField = 'basic_manners_progress';
+    } else {
+      return;
+    }
+    
+    const updatedProgress = {
+      ...(booking[progressField] || {}),
+      [weekKey]: {
+        ...(booking[progressField]?.[weekKey] || {}),
+        [itemKey]: checked
+      }
+    };
+    
+    await base44.entities.Booking.update(bookingId, {
+      [progressField]: updatedProgress
+    });
+    
+    await loadBooking();
+  };
+
   if (loading) {
     return (
       <div className="p-6 md:p-8">
@@ -389,6 +448,125 @@ export default function BookingDetail() {
   const isFYOG = booking.service_type === 'kinder_puppy_fyog' || 
                  booking.service_type === 'basic_manners_fyog' || 
                  booking.service_type === 'basic_manners_group_class';
+
+  // Check if this service has items to give
+  const hasKinderPuppyItems = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
+  const hasBasicMannersItems = booking.service_type === 'basic_manners_in_home';
+  
+  // Check if this service has curriculum
+  const hasKinderPuppyCurriculum = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
+  const hasBasicMannersCurriculum = booking.service_type === 'basic_manners_in_home';
+
+  // Kinder Puppy Curriculum Data
+  const kinderPuppyCurriculum = {
+    week1: {
+      title: 'Week 1',
+      items: [
+        { key: 'intro_theory', label: 'Introduction + Theory' },
+        { key: 'name_recognition', label: 'Name Recognition' },
+        { key: 'leash_collar', label: 'Leash & Collar Introduction' },
+        { key: 'intro_walks', label: 'Introduction to Walks' },
+        { key: 'sit_cue_part1', label: 'Sit Cue (Part 1)' }
+      ]
+    },
+    week2: {
+      title: 'Week 2',
+      items: [
+        { key: 'intro_walks_advanced', label: 'Introduction to Walks (Advanced)' },
+        { key: 'sit_cue_part2', label: 'Sit Cue (Part 2)' },
+        { key: 'recall_exercise', label: 'Recall Exercise' },
+        { key: 'down_cue_part1', label: 'Down Cue (Part 1)' },
+        { key: 'chin_rest_part1', label: 'Chin Rest (Part 1)' },
+        { key: 'handling_grooming', label: 'Handling & Grooming' }
+      ]
+    },
+    week3: {
+      title: 'Week 3',
+      items: [
+        { key: 'down_cue_part2', label: 'Down Cue (Part 2)' },
+        { key: 'chin_rest_part2', label: 'Chin Rest (Part 2)' },
+        { key: 'grooming_tools', label: 'Grooming Tools Introduction' },
+        { key: 'dental_cleaning_part1', label: 'Dental Cleaning (Part 1)' },
+        { key: 'cone_muzzle_part1', label: 'Cone & Muzzle Training (Part 1)' },
+        { key: 'showering', label: 'Showering' }
+      ]
+    },
+    week4: {
+      title: 'Week 4',
+      items: [
+        { key: 'dental_cleaning_part2', label: 'Dental Cleaning (Part 2)' },
+        { key: 'novelty_objects', label: 'Novelty Objects Exposure' },
+        { key: 'scary_sounds', label: 'Scary Sounds Desensitization' },
+        { key: 'cone_muzzle_part2', label: 'Cone & Muzzle Training (Part 2)' },
+        { key: 'household_appliances', label: 'Household Appliances' },
+        { key: 'vet_visit', label: 'Vet Visit Preparation' }
+      ]
+    }
+  };
+
+  // Basic Manners Curriculum Data
+  const basicMannersCurriculum = {
+    week1: {
+      title: 'Week 1',
+      items: [
+        { key: 'check_in_1', label: 'Check-in Part 1' },
+        { key: 'lets_go_1', label: "Let's Go Part 1" },
+        { key: 'sit_lure', label: 'Sit with Lure' },
+        { key: 'scatter_feeding', label: 'Scatter Feeding' },
+        { key: 'body_language_theory', label: 'Body Language Theory' }
+      ]
+    },
+    week2: {
+      title: 'Week 2',
+      items: [
+        { key: 'pattern_game_1', label: 'Pattern Game 1' },
+        { key: 'lets_go_2', label: "Let's Go Part 2" },
+        { key: 'sit_verbal', label: 'Sit with Verbal Cue' },
+        { key: 'check_in_2', label: 'Check-in Part 2' },
+        { key: 'down_lure', label: 'Down with Lure' }
+      ]
+    },
+    week3: {
+      title: 'Week 3',
+      items: [
+        { key: 'pattern_game_2', label: 'Pattern Game 2' },
+        { key: 'sit_stay_distraction', label: 'Sit-Stay with Distraction' },
+        { key: 'down_verbal', label: 'Down with Verbal Cue' },
+        { key: 'anchor_cue_1', label: 'Anchor Cue Part 1' },
+        { key: 'down_stay_duration', label: 'Down-Stay (Duration)' },
+        { key: 'leave_it_1', label: 'Leave It Part 1' }
+      ]
+    },
+    week4: {
+      title: 'Week 4',
+      items: [
+        { key: 'pattern_game_3', label: 'Pattern Game 3' },
+        { key: 'anchor_cue_2', label: 'Anchor Cue Part 2' },
+        { key: 'down_stay_distance', label: 'Down-Stay (Distance)' },
+        { key: 'leave_it_2', label: 'Leave It Part 2' }
+      ]
+    },
+    week5: {
+      title: 'Week 5',
+      items: [
+        { key: 'pattern_game_4', label: 'Pattern Game 4' },
+        { key: 'down_stay_distractions', label: 'Down-Stay with Distractions' },
+        { key: 'double_recall_1', label: 'Double Recall Part 1' },
+        { key: 'recall_sit', label: 'Recall to Sit' },
+        { key: 'leave_it_3', label: 'Leave It Part 3' }
+      ]
+    },
+    week6: {
+      title: 'Week 6',
+      items: [
+        { key: 'pattern_game_5', label: 'Pattern Game 5' },
+        { key: 'double_recall_2', label: 'Double Recall Part 2' },
+        { key: 'recall_sit_distance', label: 'Recall to Sit (Distance)' },
+        { key: 'down_stay_proof', label: 'Down-Stay Proofing' },
+        { key: 'leave_it_proof', label: 'Leave It Proofing' }
+      ]
+    }
+  };
 
   return (
     <>
@@ -655,6 +833,156 @@ export default function BookingDetail() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Items Given to Client */}
+            {(hasKinderPuppyItems || hasBasicMannersItems) && (
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader className="border-b border-slate-100">
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="w-5 h-5" />
+                    Items Given to Client
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {hasKinderPuppyItems && [
+                      { key: 'treat_pouch', label: 'Treat Pouch' },
+                      { key: 'mat', label: 'Mat' },
+                      { key: 'lick_mat', label: 'Lick Mat' },
+                      { key: 'cup', label: 'Cup' },
+                      { key: 'dropper', label: 'Dropper' }
+                    ].map((item) => (
+                      <div key={item.key} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`item-${item.key}`}
+                          checked={booking.kinder_puppy_items_given?.[item.key] || false}
+                          onChange={(e) => handleKinderPuppyItemsUpdate(item.key, e.target.checked)}
+                          className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        />
+                        <label 
+                          htmlFor={`item-${item.key}`}
+                          className="text-sm text-slate-700 cursor-pointer"
+                        >
+                          {item.label}
+                        </label>
+                      </div>
+                    ))}
+                    
+                    {hasBasicMannersItems && [
+                      { key: 'treat_pouch', label: 'Treat Pouch' },
+                      { key: 'clicker', label: 'Clicker' },
+                      { key: 'whistle', label: 'Whistle' },
+                      { key: 'mat', label: 'Mat' },
+                      { key: 'leash', label: 'Leash' }
+                    ].map((item) => (
+                      <div key={item.key} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`basic-item-${item.key}`}
+                          checked={booking.basic_manners_items_given?.[item.key] || false}
+                          onChange={(e) => handleBasicMannersItemsUpdate(item.key, e.target.checked)}
+                          className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        />
+                        <label 
+                          htmlFor={`basic-item-${item.key}`}
+                          className="text-sm text-slate-700 cursor-pointer"
+                        >
+                          {item.label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Curriculum Tracker */}
+            {(hasKinderPuppyCurriculum || hasBasicMannersCurriculum) && (
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader className="border-b border-slate-100">
+                  <CardTitle className="flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5" />
+                    Training Curriculum
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {hasKinderPuppyCurriculum && Object.entries(kinderPuppyCurriculum).map(([weekKey, week]) => {
+                      const weekProgress = booking.kinder_puppy_progress?.[weekKey] || {};
+                      const completedItems = week.items.filter(item => weekProgress[item.key]).length;
+                      const totalItems = week.items.length;
+                      
+                      return (
+                        <div key={weekKey} className="border border-slate-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-slate-900">{week.title}</h4>
+                            <Badge variant="outline" className="text-xs">
+                              {completedItems}/{totalItems} completed
+                            </Badge>
+                          </div>
+                          <div className="space-y-2">
+                            {week.items.map((item) => (
+                              <div key={item.key} className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  id={`${weekKey}-${item.key}`}
+                                  checked={weekProgress[item.key] || false}
+                                  onChange={(e) => handleCurriculumUpdate(weekKey, item.key, e.target.checked)}
+                                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                                />
+                                <label 
+                                  htmlFor={`${weekKey}-${item.key}`}
+                                  className="text-sm text-slate-700 cursor-pointer"
+                                >
+                                  {item.label}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    
+                    {hasBasicMannersCurriculum && Object.entries(basicMannersCurriculum).map(([weekKey, week]) => {
+                      const weekProgress = booking.basic_manners_progress?.[weekKey] || {};
+                      const completedItems = week.items.filter(item => weekProgress[item.key]).length;
+                      const totalItems = week.items.length;
+                      
+                      return (
+                        <div key={weekKey} className="border border-slate-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-slate-900">{week.title}</h4>
+                            <Badge variant="outline" className="text-xs">
+                              {completedItems}/{totalItems} completed
+                            </Badge>
+                          </div>
+                          <div className="space-y-2">
+                            {week.items.map((item) => (
+                              <div key={item.key} className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  id={`${weekKey}-${item.key}`}
+                                  checked={weekProgress[item.key] || false}
+                                  onChange={(e) => handleCurriculumUpdate(weekKey, item.key, e.target.checked)}
+                                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                                />
+                                <label 
+                                  htmlFor={`${weekKey}-${item.key}`}
+                                  className="text-sm text-slate-700 cursor-pointer"
+                                >
+                                  {item.label}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <div className="space-y-6">
