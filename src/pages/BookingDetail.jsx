@@ -19,8 +19,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Calendar as CalendarPicker } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
@@ -28,6 +31,17 @@ const statusColors = {
   completed: "bg-blue-100 text-blue-800 border-blue-200",
   cancelled: "bg-red-100 text-red-800 border-red-200"
 };
+
+const timeSlots = [
+  "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+  "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00"
+];
+
+const sundayTimeSlots = [
+  "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30"
+];
 
 export default function BookingDetail() {
   const navigate = useNavigate();
@@ -39,6 +53,10 @@ export default function BookingDetail() {
   const [adminNotes, setAdminNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showRescheduleDialog, setShowRescheduleDialog] = useState(false);
+  const [editingSessions, setEditingSessions] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [blockedSlots, setBlockedSlots] = useState([]);
 
   const loadBooking = useCallback(async () => {
     if (!bookingId) {
@@ -48,8 +66,12 @@ export default function BookingDetail() {
 
     setLoading(true);
     try {
-      const bookings = await base44.entities.Booking.list();
-      const foundBooking = bookings.find(b => b.id === bookingId);
+      const [bookingsData, blocksData] = await Promise.all([
+        base44.entities.Booking.list(),
+        base44.entities.BlockedSlot.list()
+      ]);
+      
+      const foundBooking = bookingsData.find(b => b.id === bookingId);
       
       // Debug: Log session dates to check for was_rescheduled property
       if (foundBooking?.session_dates) {
@@ -58,6 +80,8 @@ export default function BookingDetail() {
       
       setBooking(foundBooking);
       setAdminNotes(foundBooking?.admin_notes || '');
+      setBookings(bookingsData.filter(b => b.booking_status !== 'cancelled' && b.id !== bookingId));
+      setBlockedSlots(blocksData);
     } catch (error) {
       console.error("Error loading booking:", error);
     } finally {
@@ -151,6 +175,147 @@ export default function BookingDetail() {
       navigate(createPageUrl("AdminBookings"));
     } catch (error) {
       console.error("Error deleting booking:", error);
+    }
+  };
+
+  const handleOpenReschedule = () => {
+    setEditingSessions(booking.session_dates.map(session => ({ ...session })));
+    setShowRescheduleDialog(true);
+  };
+
+  const timeToMinutes = (timeStr) => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const minutesToTime = (totalMinutes) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  const isTimeSlotBooked = (date, startTime, sessionNumber) => {
+    const dateString = typeof date === 'string' ? date : format(date, 'yyyy-MM-dd');
+    const startMinutes = timeToMinutes(startTime);
+    
+    // Get session duration from booking
+    const sessionDurationMinutes = 60; // Default 1 hour, adjust based on service
+    const endMinutes = startMinutes + sessionDurationMinutes + 60; // Include buffer
+
+    for (const otherBooking of bookings) {
+      if (!otherBooking.session_dates) continue;
+
+      for (const session of otherBooking.session_dates) {
+        if (session.date === dateString && session.start_time && session.end_time) {
+          const bookedStartMinutes = timeToMinutes(session.start_time);
+          const bookedEndMinutes = timeToMinutes(session.end_time);
+          const bookedEndWithBuffer = bookedEndMinutes + 60;
+
+          if (
+            (startMinutes >= bookedStartMinutes && startMinutes < bookedEndWithBuffer) ||
+            (endMinutes > bookedStartMinutes && endMinutes <= bookedEndWithBuffer) ||
+            (startMinutes <= bookedStartMinutes && endMinutes >= bookedEndWithBuffer)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+
+    // Check blocked slots
+    const dateBlocks = blockedSlots.filter(block => block.date === dateString);
+    for (const block of dateBlocks) {
+      if (block.is_full_day) return true;
+      
+      if (block.start_time && block.end_time) {
+        const blockStart = timeToMinutes(block.start_time);
+        const blockEnd = timeToMinutes(block.end_time);
+        
+        if (
+          (startMinutes >= blockStart && startMinutes < blockEnd) ||
+          (endMinutes > blockStart && endMinutes <= blockEnd) ||
+          (startMinutes <= blockStart && endMinutes >= blockEnd)
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  const getAvailableTimeSlots = (date) => {
+    if (!date) return [];
+    const dateObj = typeof date === 'string' ? parseISO(date) : date;
+    const dayOfWeek = dateObj.getDay();
+    
+    const baseSlots = dayOfWeek === 0 ? sundayTimeSlots : timeSlots;
+    
+    return baseSlots;
+  };
+
+  const handleSessionDateChange = (sessionIndex, date) => {
+    const newSessions = [...editingSessions];
+    newSessions[sessionIndex] = {
+      ...newSessions[sessionIndex],
+      date: format(date, 'yyyy-MM-dd')
+    };
+    setEditingSessions(newSessions);
+  };
+
+  const handleSessionTimeChange = (sessionIndex, startTime) => {
+    const newSessions = [...editingSessions];
+    const startMinutes = timeToMinutes(startTime);
+    
+    // Calculate end time based on service duration (default 1 hour)
+    const durationMinutes = 60;
+    const endTime = minutesToTime(startMinutes + durationMinutes);
+    
+    newSessions[sessionIndex] = {
+      ...newSessions[sessionIndex],
+      start_time: startTime,
+      end_time: endTime
+    };
+    setEditingSessions(newSessions);
+  };
+
+  const handleSaveReschedule = async () => {
+    setSaving(true);
+    try {
+      // Mark original sessions as was_rescheduled if their date/time has changed
+      const updatedEditingSessions = editingSessions.map((editedSession, index) => {
+        const originalSession = booking.session_dates[index];
+        if (editedSession.date !== originalSession.date || editedSession.start_time !== originalSession.start_time) {
+          return { ...editedSession, was_rescheduled: true };
+        }
+        return editedSession;
+      });
+
+      await base44.entities.Booking.update(bookingId, {
+        session_dates: updatedEditingSessions
+      });
+      
+      await loadBooking();
+      setShowRescheduleDialog(false);
+      
+      // Send WhatsApp notification if consent was given
+      if (booking.whatsapp_consent) {
+        try {
+          const { sendBookingUpdate } = await import("@/functions/sendBookingUpdate");
+          const updatedBooking = { ...booking, session_dates: updatedEditingSessions };
+          await sendBookingUpdate({ 
+            booking: updatedBooking, 
+            oldBooking: booking 
+          });
+          console.log('WhatsApp reschedule notification sent');
+        } catch (error) {
+          console.error('Error sending WhatsApp notification:', error);
+        }
+      }
+    } catch (error) {
+      console.error("Error rescheduling sessions:", error);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -491,10 +656,21 @@ export default function BookingDetail() {
             {/* Schedule */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Session Schedule
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5" />
+                    Session Schedule
+                  </CardTitle>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleOpenReschedule}
+                    className="flex items-center gap-2"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Reschedule
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-6">
                 <div className="space-y-3">
@@ -639,6 +815,93 @@ export default function BookingDetail() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Reschedule Dialog */}
+      <Dialog open={showRescheduleDialog} onOpenChange={setShowRescheduleDialog}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Reschedule Sessions</DialogTitle>
+            <DialogDescription>
+              Update the date and time for each training session
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {editingSessions.map((session, idx) => (
+              <Card key={idx} className="p-4">
+                <h4 className="font-semibold text-sm mb-3">Session {session.session_number}</h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start text-left">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {session.date ? format(parseISO(session.date), 'PPP') : 'Pick a date'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarPicker
+                          mode="single"
+                          selected={session.date ? parseISO(session.date) : null}
+                          onSelect={(date) => date && handleSessionDateChange(idx, date)}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Start Time</Label>
+                    <Select
+                      value={session.start_time}
+                      onValueChange={(time) => handleSessionTimeChange(idx, time)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableTimeSlots(session.date).map(time => {
+                          const isBooked = isTimeSlotBooked(session.date, time, session.session_number);
+                          return (
+                            <SelectItem 
+                              key={time} 
+                              value={time}
+                              disabled={isBooked}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4" />
+                                {time}
+                                {isBooked && <span className="text-xs text-red-600">(Booked)</span>}
+                              </div>
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                    {session.start_time && (
+                      <p className="text-xs text-slate-600">
+                        End time: {session.end_time}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRescheduleDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveReschedule} disabled={saving}>
+              <Save className="w-4 h-4 mr-2" />
+              {saving ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <AlertDialogContent>
