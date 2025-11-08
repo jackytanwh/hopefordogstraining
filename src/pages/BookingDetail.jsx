@@ -66,10 +66,7 @@ export default function BookingDetail() {
 
     setLoading(true);
     try {
-      const [bookingsData, blocksData] = await Promise.all([
-        base44.entities.Booking.list(),
-        base44.entities.BlockedSlot.list()
-      ]);
+      const bookingsData = await base44.entities.Booking.list();
       
       const foundBooking = bookingsData.find(b => b.id === bookingId);
       
@@ -81,7 +78,15 @@ export default function BookingDetail() {
       setBooking(foundBooking);
       setAdminNotes(foundBooking?.admin_notes || '');
       setBookings(bookingsData.filter(b => b.booking_status !== 'cancelled' && b.id !== bookingId));
-      setBlockedSlots(blocksData);
+      
+      // Try to load blocked slots (may fail for non-admin users)
+      try {
+        const blocksData = await base44.entities.BlockedSlot.list();
+        setBlockedSlots(blocksData);
+      } catch (error) {
+        console.log('Unable to load blocked slots (may not have admin access):', error);
+        setBlockedSlots([]);
+      }
     } catch (error) {
       console.error("Error loading booking:", error);
     } finally {
