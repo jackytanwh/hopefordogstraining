@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Calendar, ChevronLeft, ChevronRight, Eye, Ban, Trash2, Clock } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Eye, Ban, Trash2, Clock, Edit } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, startOfWeek, endOfWeek, addMonths, subMonths, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -42,6 +43,7 @@ export default function BookingCalendar() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('view'); // 'view' or 'block'
   const [showBlockDialog, setShowBlockDialog] = useState(false);
+  const [editingBlock, setEditingBlock] = useState(null); // Track which block is being edited
   const [blockForm, setBlockForm] = useState({
     date: '',
     is_full_day: false,
@@ -100,6 +102,7 @@ export default function BookingCalendar() {
     setSelectedDateBlocks(getBlockedSlotsForDate(date));
 
     if (viewMode === 'block') {
+      setEditingBlock(null);
       setBlockForm({
         date: format(date, 'yyyy-MM-dd'),
         is_full_day: false,
@@ -114,9 +117,22 @@ export default function BookingCalendar() {
   const handleBlockTimeSlot = async () => {
     setSaving(true);
     try {
-      await base44.entities.BlockedSlot.create(blockForm);
+      if (editingBlock) {
+        // Update existing block
+        await base44.entities.BlockedSlot.update(editingBlock.id, blockForm);
+      } else {
+        // Create new block
+        await base44.entities.BlockedSlot.create(blockForm);
+      }
       await loadData();
+      
+      // Refresh selected date blocks if we're on the same date
+      if (selectedDate && format(selectedDate, 'yyyy-MM-dd') === blockForm.date) {
+        setSelectedDateBlocks(getBlockedSlotsForDate(selectedDate));
+      }
+      
       setShowBlockDialog(false);
+      setEditingBlock(null);
       setBlockForm({
         date: '',
         is_full_day: false,
@@ -125,13 +141,29 @@ export default function BookingCalendar() {
         reason: ''
       });
     } catch (error) {
-      console.error("Error blocking time slot:", error);
+      console.error("Error saving blocked slot:", error);
     } finally {
       setSaving(false);
     }
   };
 
+  const handleEditBlock = (block) => {
+    setEditingBlock(block);
+    setBlockForm({
+      date: block.date,
+      is_full_day: block.is_full_day || false,
+      start_time: block.start_time || '',
+      end_time: block.end_time || '',
+      reason: block.reason || ''
+    });
+    setShowBlockDialog(true);
+  };
+
   const handleDeleteBlock = async (blockId) => {
+    if (!confirm('Are you sure you want to delete this blocked time slot?')) {
+      return;
+    }
+    
     try {
       await base44.entities.BlockedSlot.delete(blockId);
       await loadData();
@@ -142,8 +174,10 @@ export default function BookingCalendar() {
   };
 
   const getAvailableTimeSlots = () => {
-    if (!selectedDate) return [];
-    const dayOfWeek = selectedDate.getDay();
+    if (!selectedDate && !blockForm.date) return [];
+    const dateToCheck = selectedDate || (blockForm.date ? parseISO(blockForm.date) : null);
+    if (!dateToCheck) return [];
+    const dayOfWeek = dateToCheck.getDay();
     return dayOfWeek === 0 ? sundayTimeSlots : timeSlots;
   };
 
@@ -334,8 +368,8 @@ export default function BookingCalendar() {
                       <div className="space-y-2">
                         {selectedDateBlocks.map((block) => (
                           <div key={block.id} className="border border-red-200 bg-red-50 rounded-lg p-3 space-y-2">
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
                                 {block.is_full_day ? (
                                   <p className="font-medium text-sm text-red-900">Full Day Blocked</p>
                                 ) : (
@@ -344,17 +378,27 @@ export default function BookingCalendar() {
                                   </p>
                                 )}
                                 {block.reason && (
-                                  <p className="text-xs text-red-700 mt-1">{block.reason}</p>
+                                  <p className="text-xs text-red-700 mt-1 break-words">{block.reason}</p>
                                 )}
                               </div>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleDeleteBlock(block.id)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-100"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                              <div className="flex gap-1 flex-shrink-0">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleEditBlock(block)}
+                                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-100 h-8 w-8 p-0"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleDeleteBlock(block.id)}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-100 h-8 w-8 p-0"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -407,6 +451,7 @@ export default function BookingCalendar() {
                           size="sm"
                           className="mt-4"
                           onClick={() => {
+                            setEditingBlock(null);
                             setBlockForm({
                               date: format(selectedDate, 'yyyy-MM-dd'),
                               is_full_day: false,
@@ -462,12 +507,24 @@ export default function BookingCalendar() {
       </div>
 
       {/* Block Time Dialog */}
-      <Dialog open={showBlockDialog} onOpenChange={setShowBlockDialog}>
+      <Dialog open={showBlockDialog} onOpenChange={(open) => {
+        if (!open) {
+          setEditingBlock(null); // Reset editing state when dialog closes
+          setBlockForm({
+            date: '',
+            is_full_day: false,
+            start_time: '',
+            end_time: '',
+            reason: ''
+          });
+        }
+        setShowBlockDialog(open);
+      }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Block Time Slot</DialogTitle>
+            <DialogTitle>{editingBlock ? 'Edit Blocked Time Slot' : 'Block Time Slot'}</DialogTitle>
             <DialogDescription>
-              Block time slots to prevent bookings on {blockForm.date && format(parseISO(blockForm.date), 'EEEE, MMMM d, yyyy')}
+              {editingBlock ? 'Update the blocked time slot settings' : `Block time slots to prevent bookings on ${blockForm.date && format(parseISO(blockForm.date), 'EEEE, MMMM d, yyyy')}`}
             </DialogDescription>
           </DialogHeader>
           
@@ -545,7 +602,10 @@ export default function BookingCalendar() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowBlockDialog(false)}>
+            <Button variant="outline" onClick={() => {
+              setShowBlockDialog(false);
+              setEditingBlock(null);
+            }}>
               Cancel
             </Button>
             <Button
@@ -554,7 +614,7 @@ export default function BookingCalendar() {
               className="bg-red-600 hover:bg-red-700"
             >
               <Ban className="w-4 h-4 mr-2" />
-              {saving ? 'Blocking...' : 'Block Time'}
+              {saving ? 'Saving...' : editingBlock ? 'Update Block' : 'Block Time'}
             </Button>
           </DialogFooter>
         </DialogContent>
