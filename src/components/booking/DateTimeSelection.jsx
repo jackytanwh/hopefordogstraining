@@ -26,6 +26,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
   const [errors, setErrors] = useState({});
   const [schedulingMode, setSchedulingMode] = useState('recurring');
   const [bookings, setBookings] = useState([]);
+  const [blockedSlots, setBlockedSlots] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [dailyBookingCounts, setDailyBookingCounts] = useState({});
   const [rescheduledSessions, setRescheduledSessions] = useState([]);
@@ -50,6 +51,15 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           }
         });
         setDailyBookingCounts(counts);
+        
+        // Try to load blocked slots (may fail for non-admin users)
+        try {
+          const blocksData = await base44.entities.BlockedSlot.list();
+          setBlockedSlots(blocksData);
+        } catch (error) {
+          console.log('Unable to load blocked slots (may not have admin access):', error);
+          setBlockedSlots([]);
+        }
       } catch (error) {
         console.error("Error loading bookings:", error);
       } finally {
@@ -118,6 +128,27 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
       }
     }
 
+    // Check blocked slots (only if available)
+    if (blockedSlots && blockedSlots.length > 0) {
+      const dateBlocks = blockedSlots.filter(block => block.date === dateString);
+      for (const block of dateBlocks) {
+        if (block.is_full_day) return true;
+        
+        if (block.start_time && block.end_time) {
+          const blockStart = timeToMinutes(block.start_time);
+          const blockEnd = timeToMinutes(block.end_time);
+          
+          if (
+            (startMinutes >= blockStart && startMinutes < blockEnd) ||
+            (endMinutes > blockStart && endMinutes <= blockEnd) ||
+            (startMinutes <= blockStart && endMinutes >= blockEnd)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+
     return false;
   };
 
@@ -133,6 +164,11 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
   const isDateDisabled = (date) => {
     if (date < minDate) return true;
     
+    // Check if the entire day is blocked
+    const dateString = format(date, 'yyyy-MM-dd');
+    const isDayBlocked = blockedSlots.some(block => block.date === dateString && block.is_full_day);
+    if (isDayBlocked) return true;
+
     if (isWeekdaysOnly) {
       const dayOfWeek = date.getDay();
       return dayOfWeek === 0 || dayOfWeek === 6;
@@ -140,7 +176,8 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     
     const dayOfWeek = date.getDay();
     if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-      const dateString = format(date, 'yyyy-MM-dd');
+      // Re-declare dateString here if it might be used inside this block and was declared previously for the global scope
+      // For this case, it's fine as `dateString` is already declared above and accessible.
       const bookingCount = dailyBookingCounts[dateString] || 0;
       if (bookingCount >= 3) {
         return true;

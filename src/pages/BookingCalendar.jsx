@@ -60,12 +60,17 @@ export default function BookingCalendar() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [bookingsData, blocksData] = await Promise.all([
-        base44.entities.Booking.list(),
-        base44.entities.BlockedSlot.list()
-      ]);
+      const bookingsData = await base44.entities.Booking.list();
       setBookings(bookingsData.filter(b => b.booking_status !== 'cancelled'));
-      setBlockedSlots(blocksData);
+      
+      // Try to load blocked slots (may fail for non-admin users)
+      try {
+        const blocksData = await base44.entities.BlockedSlot.list();
+        setBlockedSlots(blocksData);
+      } catch (error) {
+        console.log('Unable to load blocked slots (may not have admin access):', error);
+        setBlockedSlots([]);
+      }
     } catch (error) {
       console.error("Error loading data:", error);
     } finally {
