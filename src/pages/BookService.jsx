@@ -12,6 +12,7 @@ import ParticipantSelection from "../components/booking/ParticipantSelection";
 import ClientInformation from "../components/booking/ClientInformation";
 import FurkidInformation from "../components/booking/FurkidInformation";
 import BookingSummary from "../components/booking/BookingSummary";
+import BehaviouralModificationForm from "../components/booking/BehaviouralModificationForm";
 
 const services = {
   kinder_puppy_in_home: {
@@ -134,7 +135,19 @@ export default function BookService() {
     furkidPhotoUrl: '',
     furkidInstagram: '',
     enrolmentReason: '',
-    howDidYouKnow: ''
+    howDidYouKnow: '',
+    // Behavioral Modification specific fields
+    ownerInvolvedInBite: false,
+    biteHistory: false,
+    strangerDanger: false,
+    resourceGuarding: false,
+    fearful: false,
+    inappropriateReactivity: false,
+    excessiveVocalization: false,
+    destructiveBehavior: false,
+    separationAnxiety: false,
+    pottyTrainingIssues: false,
+    otherBehavioralIssues: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -158,8 +171,9 @@ export default function BookService() {
   const isKinderPuppy = serviceId === 'kinder_puppy_in_home' || serviceId === 'kinder_puppy_fyog';
   const isGroupClass = serviceId === 'basic_manners_group_class';
   const isBasicManners = serviceId === 'basic_manners_in_home' || serviceId === 'basic_manners_fyog' || serviceId === 'basic_manners_group_class';
+  const isBehaviouralModification = serviceId === 'behavioural_modification';
 
-  const totalSteps = isOnDemand ? 5 : (isGroupClass ? 4 : isFYOG ? 5 : 4);
+  const totalSteps = isOnDemand ? 5 : (isGroupClass ? 4 : isFYOG ? 5 : isBehaviouralModification ? 4 : 4);
 
   useEffect(() => {
     // Check for the base service existence, not the dynamic 'service' object
@@ -273,9 +287,20 @@ export default function BookService() {
         bookingData.agreement_dog_behavior = behaviorAgreement;
       }
 
-      if (serviceId === 'behavioural_modification') {
+      if (isBehaviouralModification) {
         const modAgreement = agreements.behavioralModificationUnderstanding || false;
         bookingData.agreement_behavioral_modification_understanding = modAgreement;
+        bookingData.owner_involved_in_bite = formData.ownerInvolvedInBite;
+        bookingData.bite_history = formData.biteHistory;
+        bookingData.stranger_danger = formData.strangerDanger;
+        bookingData.resource_guarding = formData.resourceGuarding;
+        bookingData.fearful = formData.fearful;
+        bookingData.inappropriate_reactivity = formData.inappropriateReactivity;
+        bookingData.excessive_vocalization = formData.excessiveVocalization;
+        bookingData.destructive_behavior = formData.destructiveBehavior;
+        bookingData.separation_anxiety = formData.separationAnxiety;
+        bookingData.potty_training_issues = formData.pottyTrainingIssues;
+        bookingData.other_behavioral_issues = formData.otherBehavioralIssues;
       }
 
       if (isKinderPuppy) {
@@ -539,6 +564,51 @@ export default function BookService() {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             isFYOG={isFYOG}
+          />
+        );
+      }
+    } else if (isBehaviouralModification) {
+      // Special flow for Behavioural Modification
+      if (step === 1) {
+        return (
+          <DateTimeSelection
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+          />
+        );
+      } else if (step === 2) {
+        return (
+          <ClientInformation
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+            isFYOG={false}
+          />
+        );
+      } else if (step === 3) {
+        return (
+          <BehaviouralModificationForm
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 4) {
+        return (
+          <BookingSummary
+            service={service}
+            formData={formData}
+            pricing={calculatePricing()}
+            onBack={handleBack}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            isFYOG={false}
           />
         );
       }
