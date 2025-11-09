@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ export default function GroupClassScheduleSettings() {
     start_date: '',
     start_time: '10:00',
     day_of_week: 'Saturday',
-    weeks: 7
+    weeks: 7 // This indicates 7 *sessions*, not necessarily 7 consecutive weeks
   });
   const { toast } = useToast();
 
@@ -103,13 +104,39 @@ export default function GroupClassScheduleSettings() {
     const sessions = [];
     const startDate = new Date(schedule.start_date);
     
+    // schedule.weeks is 7 for 7 sessions
     for (let i = 0; i < schedule.weeks; i++) {
       const sessionDate = new Date(startDate);
-      sessionDate.setDate(startDate.getDate() + (i * 7));
+      
+      // Add the 1-week break after session 4 (i.e., after the 4th iteration, when i=3)
+      if (i < 4) {
+        // Sessions 1-4: weekly (weeks 0, 1, 2, 3 from startDate)
+        sessionDate.setDate(startDate.getDate() + (i * 7));
+      } else {
+        // Sessions 5-7: add extra week for the break.
+        // i.e., session 5 (i=4) happens at startDate + (4+1)*7 = startDate + 5 weeks
+        // session 6 (i=5) happens at startDate + (5+1)*7 = startDate + 6 weeks
+        // session 7 (i=6) happens at startDate + (6+1)*7 = startDate + 7 weeks
+        sessionDate.setDate(startDate.getDate() + ((i + 1) * 7));
+      }
+      
       sessions.push({
         week: i + 1,
-        date: sessionDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+        date: sessionDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        isBreakWeek: false
       });
+      
+      // Insert the break week indicator after session 4 (which is when i is 3)
+      if (i === 3) {
+        const breakWeekDate = new Date(startDate);
+        // Break week occurs 4 weeks after the start date
+        breakWeekDate.setDate(startDate.getDate() + (4 * 7));
+        sessions.push({
+          week: 'Break', // Use a distinct identifier for the week number
+          date: breakWeekDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+          isBreakWeek: true
+        });
+      }
     }
     
     return sessions;
@@ -142,7 +169,7 @@ export default function GroupClassScheduleSettings() {
             <p className="font-semibold text-slate-900 mb-2">ℹ️ About this setting</p>
             <p className="text-slate-700">
               This schedule will be displayed to clients when they book the Basic Manners Group Class. 
-              The program runs for 7 consecutive weeks starting from the date you specify below.
+              The program runs for 7 sessions with a 1-week break after session 4, starting from the date you specify below.
             </p>
           </div>
 
@@ -188,17 +215,39 @@ export default function GroupClassScheduleSettings() {
 
           {schedule.start_date && (
             <div className="border-t border-slate-200 pt-6">
-              <h3 className="font-semibold text-slate-900 mb-4">Preview: 7-Week Schedule</h3>
+              <h3 className="font-semibold text-slate-900 mb-4">Preview: 7-Session Schedule (with 1-week break after Session 4)</h3>
               <div className="space-y-2">
-                {generateSessionDates().map((session) => (
-                  <div key={session.week} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                    <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                      {session.week}
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">Week {session.week}</p>
-                      <p className="text-xs text-slate-600">{session.date} at {schedule.start_time}</p>
-                    </div>
+                {generateSessionDates().map((session, index) => (
+                  <div 
+                    key={index} // Use index as key because session.week can be 'Break'
+                    className={`flex items-center gap-3 p-3 rounded-lg ${
+                      session.isBreakWeek 
+                        ? 'bg-amber-50 border border-amber-200' 
+                        : 'bg-slate-50'
+                    }`}
+                  >
+                    {session.isBreakWeek ? (
+                      <>
+                        <div className="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-semibold">
+                          ⏸
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm text-amber-800">Break Week</p>
+                          <p className="text-xs text-amber-700">{session.date}</p>
+                          <p className="text-xs text-amber-700">No session this week</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                          {session.week}
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">Session {session.week}</p>
+                          <p className="text-xs text-slate-600">{session.date} at {schedule.start_time}</p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>
