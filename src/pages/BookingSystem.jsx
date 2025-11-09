@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Calendar, Clock, DollarSign, Users, MessageCircle } from "lucide-react"
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import WhatsAppButton from "../components/booking/WhatsAppButton";
+import { format, addWeeks } from "date-fns";
 
 const services = [
   {
@@ -92,6 +92,29 @@ const services = [
 ];
 
 export default function BookingSystem() {
+  const [groupClassSchedule, setGroupClassSchedule] = useState(null);
+  const [loadingSchedule, setLoadingSchedule] = useState(true);
+
+  useEffect(() => {
+    const loadGroupClassSchedule = async () => {
+      try {
+        const settings = await base44.entities.Settings.filter({ 
+          setting_key: 'basic_manners_group_schedule' 
+        });
+        
+        if (settings && settings.length > 0) {
+          setGroupClassSchedule(settings[0].setting_value);
+        }
+      } catch (error) {
+        console.error('Error loading group class schedule:', error);
+      } finally {
+        setLoadingSchedule(false);
+      }
+    };
+
+    loadGroupClassSchedule();
+  }, []);
+
   const getParticipantLabel = (service) => {
     const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
     const label = isKinderPuppy ? 'puppy' : 'dog';
@@ -103,6 +126,28 @@ export default function BookingSystem() {
         : `${service.maxParticipants} ${label}`;
     } else {
       return `${service.minParticipants}-${service.maxParticipants} ${labelPlural}`;
+    }
+  };
+
+  const formatScheduleInfo = () => {
+    if (!groupClassSchedule || !groupClassSchedule.start_date) {
+      return null;
+    }
+
+    try {
+      const startDate = new Date(groupClassSchedule.start_date);
+      const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][
+        groupClassSchedule.day_of_week || startDate.getDay()
+      ];
+      
+      return {
+        date: format(startDate, 'MMM d, yyyy'),
+        dayOfWeek,
+        time: groupClassSchedule.session_time || 'TBD'
+      };
+    } catch (error) {
+      console.error('Error formatting schedule:', error);
+      return null;
     }
   };
 
@@ -150,6 +195,8 @@ export default function BookingSystem() {
             const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
             const perLabel = isKinderPuppy ? 'puppy' : 'dog';
             const isOnDemand = service.id === 'on_demand_training';
+            const isGroupClass = service.id === 'basic_manners_group_class';
+            const scheduleInfo = isGroupClass ? formatScheduleInfo() : null;
             
             return (
               <Card key={service.id} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-200 flex flex-col">
@@ -158,6 +205,16 @@ export default function BookingSystem() {
                 </CardHeader>
                 <CardContent className="p-6 space-y-4 flex-grow flex flex-col">
                   <p className="text-slate-600 text-sm flex-grow">{service.description}</p>
+                  
+                  {isGroupClass && scheduleInfo && (
+                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 space-y-1">
+                      <p className="text-xs font-semibold text-purple-900 uppercase">Next Program</p>
+                      <div className="text-sm text-purple-800">
+                        <p className="font-semibold">{scheduleInfo.dayOfWeek}s at {scheduleInfo.time}</p>
+                        <p className="text-xs">Starts: {scheduleInfo.date}</p>
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="space-y-3">
                     {!isOnDemand && (
