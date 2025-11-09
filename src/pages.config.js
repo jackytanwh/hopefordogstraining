@@ -10,6 +10,7 @@ import AdminBookings from './pages/AdminBookings';
 import BookingCalendar from './pages/BookingCalendar';
 import BookingDetail from './pages/BookingDetail';
 import GroupClassScheduleSettings from './pages/GroupClassScheduleSettings';
+import ThankYou from './pages/ThankYou';
 import Layout from './Layout.jsx';
 
 
@@ -26,6 +27,7 @@ export const PAGES = {
     "BookingCalendar": BookingCalendar,
     "BookingDetail": BookingDetail,
     "GroupClassScheduleSettings": GroupClassScheduleSettings,
+    "ThankYou": ThankYou,
 }
 
 export const pagesConfig = {

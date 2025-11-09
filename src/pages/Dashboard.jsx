@@ -12,7 +12,8 @@ import {
   PawPrint, 
   Plus,
   Phone,
-  Clock
+  Clock,
+  MessageSquare
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format, isToday, parseISO, addDays, subDays, startOfDay, isPast, isBefore, startOfToday } from "date-fns";
@@ -29,6 +30,7 @@ import BasicMannersGroupFYOGCurriculum from "../components/dashboard/BasicManner
 export default function Dashboard() {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [feedbackStats, setFeedbackStats] = useState(null);
   const { toast } = useToast();
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -96,9 +98,35 @@ export default function Dashboard() {
     }
   }, [programFilter]);
 
+  const loadFeedbackStats = useCallback(async () => {
+    try {
+      const feedbacks = await base44.entities.BookingFeedback.list();
+      
+      if (feedbacks.length > 0) {
+        const totalFeedbacks = feedbacks.length;
+        const avgOverallRating = feedbacks.reduce((sum, f) => sum + (f.overall_rating || 0), 0) / totalFeedbacks;
+        const avgEaseOfUse = feedbacks.reduce((sum, f) => sum + (f.ease_of_use || 0), 0) / totalFeedbacks;
+        const recommendCount = feedbacks.filter(f => f.would_recommend).length;
+        const recommendPercentage = (recommendCount / totalFeedbacks) * 100;
+        
+        setFeedbackStats({
+          total: totalFeedbacks,
+          avgOverallRating: avgOverallRating.toFixed(1),
+          avgEaseOfUse: avgEaseOfUse.toFixed(1),
+          recommendPercentage: recommendPercentage.toFixed(0)
+        });
+      }
+    } catch (error) {
+      console.error("Error loading feedback stats:", error);
+    }
+  }, []);
+
   useEffect(() => {
     loadClients();
-  }, [loadClients]);
+    if (!programFilter) {
+      loadFeedbackStats();
+    }
+  }, [loadClients, loadFeedbackStats, programFilter]);
 
   useEffect(() => {
     if (!loading && clients.length > 0) {
@@ -476,6 +504,44 @@ export default function Dashboard() {
             consultations={getUpcomingConsultations()} 
             loading={loading}
           />
+          
+          {/* Booking Feedback Stats - Only show on main dashboard */}
+          {!programFilter && feedbackStats && (
+            <Card className="shadow-lg border-0 bg-gradient-to-br from-purple-50 to-pink-50">
+              <CardHeader className="border-b border-purple-100">
+                <CardTitle className="flex items-center gap-2 text-slate-900">
+                  <MessageSquare className="w-5 h-5 text-purple-600" />
+                  Booking Experience Feedback
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-purple-600">{feedbackStats.total}</div>
+                    <div className="text-xs text-slate-600 mt-1">Total Responses</div>
+                  </div>
+                  <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-yellow-600 flex items-center justify-center gap-1">
+                      {feedbackStats.avgOverallRating}
+                      <span className="text-lg">⭐</span>
+                    </div>
+                    <div className="text-xs text-slate-600 mt-1">Avg. Rating</div>
+                  </div>
+                  <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-blue-600 flex items-center justify-center gap-1">
+                      {feedbackStats.avgEaseOfUse}
+                      <span className="text-lg">👍</span>
+                    </div>
+                    <div className="text-xs text-slate-600 mt-1">Ease of Use</div>
+                  </div>
+                  <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-green-600">{feedbackStats.recommendPercentage}%</div>
+                    <div className="text-xs text-slate-600 mt-1">Would Recommend</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
         <div>
           <RecentClients 

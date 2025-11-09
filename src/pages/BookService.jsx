@@ -404,10 +404,13 @@ export default function BookService() {
         }
       }
       
+      // Store booking info for thank you page and confirmation
       sessionStorage.setItem('latestBookingId', booking.id);
+      sessionStorage.setItem('serviceType', formData.serviceType); // Add serviceType to session storage
       sessionStorage.setItem('whatsappConsent', formData.whatsappConsent);
       
-      navigate(createPageUrl("BookingConfirmation"));
+      // Navigate to Thank You page instead of directly to confirmation
+      navigate(createPageUrl("ThankYou"));
     } catch (error) {
       console.error("Error creating booking:", error);
       alert("There was an error processing your booking. Please try again.");
