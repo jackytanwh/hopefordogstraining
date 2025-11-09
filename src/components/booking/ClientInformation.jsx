@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertCircle, MessageCircle } from "lucide-react";
 
@@ -13,6 +13,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
   const numberOfClients = isFYOG ? formData.numberOfClients : 1;
+  const isBehaviouralModification = service.id === 'behavioural_modification';
 
   const checkSentosaPostalCode = (postalCode) => {
     if (!postalCode) return false;
@@ -28,7 +29,6 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
       newClients[clientIndex][field] = value;
       
-      // Check if postal code changed and if any client is in Sentosa
       if (field === 'clientPostalCode') {
         const anySentosa = newClients.some(client => checkSentosaPostalCode(client.clientPostalCode));
         setFormData({ ...formData, clients: newClients, isSentosa: anySentosa });
@@ -38,7 +38,6 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     } else {
       const updatedFormData = { ...formData, [field]: value };
       
-      // Check Sentosa postal code for single client
       if (field === 'clientPostalCode') {
         updatedFormData.isSentosa = checkSentosaPostalCode(value);
       }
@@ -53,7 +52,6 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       setErrors(newErrors);
     }
     
-    // Hide validation message when user starts fixing errors
     if (showValidationMessage) {
       setShowValidationMessage(false);
     }
@@ -91,9 +89,14 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
     }
 
-    // Validate WhatsApp consent - now mandatory
+    // Validate WhatsApp consent
     if (!formData.whatsappConsent) {
       newErrors.whatsappConsent = 'Please provide consent to receive WhatsApp notifications';
+    }
+
+    // Validate "How did you know" for Behavioural Modification only
+    if (isBehaviouralModification && !formData.howDidYouKnow) {
+      newErrors.howDidYouKnow = 'Please let us know how you heard about us';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -212,7 +215,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
           );
         })}
 
-        {/* WhatsApp Consent - now mandatory */}
+        {/* WhatsApp Consent */}
         <div className="border-t border-slate-200 pt-6">
           <div className="bg-green-50 border border-green-200 p-4 rounded-lg mb-4">
             <div className="flex items-start gap-3">
@@ -255,6 +258,37 @@ export default function ClientInformation({ service, formData, setFormData, onNe
           </div>
         </div>
 
+        {/* How did you know - Only for Behavioural Modification */}
+        {isBehaviouralModification && (
+          <div className="border-t border-slate-200 pt-6 space-y-2">
+            <Label>How did you know about us? *</Label>
+            <RadioGroup
+              value={formData.howDidYouKnow}
+              onValueChange={(value) => {
+                setFormData({ ...formData, howDidYouKnow: value });
+                if (errors.howDidYouKnow) {
+                  const newErrors = { ...errors };
+                  delete newErrors.howDidYouKnow;
+                  setErrors(newErrors);
+                }
+                if (showValidationMessage) {
+                  setShowValidationMessage(false);
+                }
+              }}
+            >
+              {['Google', 'Facebook', 'Instagram', 'AVS website', 'Recommendation'].map(option => (
+                <div key={option} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option} id={`know-${option}`} />
+                  <Label htmlFor={`know-${option}`} className="font-normal cursor-pointer">{option}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+            {errors.howDidYouKnow && (
+              <p className="text-sm text-red-600">{errors.howDidYouKnow}</p>
+            )}
+          </div>
+        )}
+
         {showValidationMessage && Object.keys(errors).length > 0 && (
           <div className="bg-amber-50 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
             <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -267,7 +301,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
             Back
           </Button>
           <Button onClick={validateAndContinue} className="flex-1">
-            Continue to Furkid Info
+            {isBehaviouralModification ? 'Continue to Furkid Form' : 'Continue to Furkid Info'}
           </Button>
         </div>
       </CardContent>
