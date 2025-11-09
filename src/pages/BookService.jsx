@@ -166,14 +166,15 @@ export default function BookService() {
     return services[serviceId];
   };
 
-  const service = getService(); // `service` is now dynamically derived
+  const service = getService();
   const isFYOG = serviceId === 'kinder_puppy_fyog' || serviceId === 'basic_manners_fyog';
   const isKinderPuppy = serviceId === 'kinder_puppy_in_home' || serviceId === 'kinder_puppy_fyog';
   const isGroupClass = serviceId === 'basic_manners_group_class';
   const isBasicManners = serviceId === 'basic_manners_in_home' || serviceId === 'basic_manners_fyog' || serviceId === 'basic_manners_group_class';
   const isBehaviouralModification = serviceId === 'behavioural_modification';
+  const isCanineAssessment = serviceId === 'canine_assessment';
 
-  const totalSteps = isOnDemand ? 5 : (isGroupClass ? 4 : isFYOG ? 5 : isBehaviouralModification ? 4 : 4);
+  const totalSteps = isOnDemand ? 5 : (isGroupClass ? 4 : isFYOG ? 5 : (isBehaviouralModification || isCanineAssessment) ? 4 : 4);
 
   useEffect(() => {
     // Check for the base service existence, not the dynamic 'service' object
@@ -287,7 +288,7 @@ export default function BookService() {
         bookingData.agreement_dog_behavior = behaviorAgreement;
       }
 
-      if (isBehaviouralModification) {
+      if (isBehaviouralModification || isCanineAssessment) {
         const modAgreement = agreements.behavioralModificationUnderstanding || false;
         bookingData.agreement_behavioral_modification_understanding = modAgreement;
         bookingData.owner_involved_in_bite = formData.ownerInvolvedInBite;
@@ -423,11 +424,11 @@ export default function BookService() {
       } else if (step === 2) {
         return (
           <DateTimeSelection
-            service={service} // Use the dynamically updated service
+            service={service}
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
-            onBack={handleBack} // On-demand flow, first step is selection, then date time, so back goes to step 1
+            onBack={handleBack}
           />
         );
       } else if (step === 3) {
@@ -438,7 +439,7 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={false} // On-demand is not FYOG
+            isFYOG={false}
           />
         );
       } else if (step === 4) {
@@ -449,7 +450,7 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={false} // On-demand is not FYOG
+            isFYOG={false}
           />
         );
       } else if (step === 5) {
@@ -461,7 +462,7 @@ export default function BookService() {
             onBack={handleBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
-            isFYOG={false} // On-demand is not FYOG
+            isFYOG={false}
           />
         );
       }
@@ -567,8 +568,8 @@ export default function BookService() {
           />
         );
       }
-    } else if (isBehaviouralModification) {
-      // Special flow for Behavioural Modification
+    } else if (isBehaviouralModification || isCanineAssessment) {
+      // Special flow for Behavioural Modification and Canine Assessment
       if (step === 1) {
         return (
           <DateTimeSelection
