@@ -6,89 +6,34 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { base44 } from "@/api/base44Client";
-import { Upload, Loader2, CalendarIcon, AlertCircle } from "lucide-react";
-import { differenceInYears, differenceInMonths, parseISO, format } from "date-fns";
+import { Loader2, AlertCircle } from "lucide-react";
+import { differenceInYears, differenceInMonths } from "date-fns";
 
 const commonBreeds = [
-  "Affenpinscher",
-  "Akita Inu",
-  "Alaskan Malamute",
-  "American Bulldog",
-  "American Cocker Spaniel",
-  "American Eskimo Dog",
+  "Affenpinscher", "Akita Inu", "Alaskan Malamute", "American Bulldog",
+  "American Cocker Spaniel", "American Eskimo Dog",
   "American Pit Bull Terrier* (restricted breed in Singapore)",
   "American Staffordshire Terrier* (restricted breed)",
-  "Australian Cattle Dog",
-  "Australian Shepherd",
-  "Basset Hound",
-  "Beagle",
-  "Belgian Malinois",
-  "Bernese Mountain Dog",
-  "Bichon Frisé",
-  "Border Collie",
-  "Boston Terrier",
-  "Boxer",
-  "Bulldog (English Bulldog)",
-  "Bullmastiff",
-  "Cairn Terrier",
-  "Cavalier King Charles Spaniel",
-  "Cavapoo",
-  "Chihuahua",
-  "Chow Chow",
-  "Chowsky",
-  "Cocker Spaniel (English)",
-  "Collie (Rough / Smooth)",
-  "Coton de Tulear",
-  "Dachshund",
-  "Dalmatian",
-  "Doberman Pinscher* (restricted breed)",
-  "English Setter",
-  "English Springer Spaniel",
-  "French Bulldog",
-  "German Shepherd Dog* (restricted breed)",
-  "Golden Retriever",
-  "Great Dane",
-  "Greyhound",
-  "Havanese",
-  "Husky (Siberian Husky)",
-  "Irish Setter",
-  "Jack Russell Terrier",
-  "Japanese Spitz",
-  "Keeshond",
-  "Labrador Retriever",
-  "Lhasa Apso",
-  "Maltese",
-  "Maltipoo",
-  "Mame Shiba",
-  "Miniature Pinscher",
-  "Miniature Schnauzer",
-  "Papillon",
-  "Pekingese",
-  "Pembroke Welsh Corgi",
-  "Pointer (German Shorthaired Pointer, English Pointer)",
-  "Pomeranian",
-  "Pomsky",
-  "Poodle (Toy)",
-  "Poodle (Mini)",
-  "Poodle (Standard)",
-  "Pug",
-  "Rottweiler* (restricted breed)",
-  "Samoyed",
-  "Schnauzer (Standard, Giant)",
-  "Scottish Terrier",
-  "Shetland Sheepdog (Sheltie)",
-  "Shiba Inu",
-  "Shih Tzu",
-  "Siberian Husky",
-  "Silky Terrier",
-  "Singapore Special",
+  "Australian Cattle Dog", "Australian Shepherd", "Basset Hound", "Beagle",
+  "Belgian Malinois", "Bernese Mountain Dog", "Bichon Frisé", "Border Collie",
+  "Boston Terrier", "Boxer", "Bulldog (English Bulldog)", "Bullmastiff",
+  "Cairn Terrier", "Cavalier King Charles Spaniel", "Cavapoo", "Chihuahua",
+  "Chow Chow", "Chowsky", "Cocker Spaniel (English)", "Collie (Rough / Smooth)",
+  "Coton de Tulear", "Dachshund", "Dalmatian", "Doberman Pinscher* (restricted breed)",
+  "English Setter", "English Springer Spaniel", "French Bulldog",
+  "German Shepherd Dog* (restricted breed)", "Golden Retriever", "Great Dane",
+  "Greyhound", "Havanese", "Husky (Siberian Husky)", "Irish Setter",
+  "Jack Russell Terrier", "Japanese Spitz", "Keeshond", "Labrador Retriever",
+  "Lhasa Apso", "Maltese", "Maltipoo", "Mame Shiba", "Miniature Pinscher",
+  "Miniature Schnauzer", "Papillon", "Pekingese", "Pembroke Welsh Corgi",
+  "Pointer (German Shorthaired Pointer, English Pointer)", "Pomeranian", "Pomsky",
+  "Poodle (Toy)", "Poodle (Mini)", "Poodle (Standard)", "Pug",
+  "Rottweiler* (restricted breed)", "Samoyed", "Schnauzer (Standard, Giant)",
+  "Scottish Terrier", "Shetland Sheepdog (Sheltie)", "Shiba Inu", "Shih Tzu",
+  "Siberian Husky", "Silky Terrier", "Singapore Special",
   "Staffordshire Bull Terrier* (restricted breed)",
-  "West Highland White Terrier (Westie)",
-  "Whippet",
-  "Yorkshire Terrier",
+  "West Highland White Terrier (Westie)", "Whippet", "Yorkshire Terrier",
   "Others"
 ];
 
@@ -102,6 +47,18 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
   const numberOfFurkids = isFYOG ? formData.numberOfFurkids : 1;
 
   const showFoodAllergy = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
+  const months = [
+    { value: '1', label: 'January' }, { value: '2', label: 'February' },
+    { value: '3', label: 'March' }, { value: '4', label: 'April' },
+    { value: '5', label: 'May' }, { value: '6', label: 'June' },
+    { value: '7', label: 'July' }, { value: '8', label: 'August' },
+    { value: '9', label: 'September' }, { value: '10', label: 'October' },
+    { value: '11', label: 'November' }, { value: '12', label: 'December' }
+  ];
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   const handleInputChange = (furkidIndex, field, value) => {
     if (isFYOG) {
@@ -137,23 +94,16 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
     }
   };
 
-  const handleDateSelect = (furkidIndex, date) => {
-    if (date) {
-      handleInputChange(furkidIndex, 'furkidDob', format(date, 'yyyy-MM-dd'));
-    }
-  };
-
   useEffect(() => {
     for (let i = 0; i < numberOfFurkids; i++) {
       const furkid = isFYOG ? (formData.furkids && formData.furkids[i] ? formData.furkids[i] : {}) : formData;
-      const dobField = furkid?.furkidDob;
       
-      if (dobField) {
+      if (furkid?.dobMonth && furkid?.dobDay && furkid?.dobYear) {
         try {
-          const dob = parseISO(dobField);
           const now = new Date();
-          const years = differenceInYears(now, dob);
-          const months = differenceInMonths(now, dob) % 12;
+          const dobDate = new Date(parseInt(furkid.dobYear), parseInt(furkid.dobMonth) - 1, parseInt(furkid.dobDay));
+          const years = differenceInYears(now, dobDate);
+          const months = differenceInMonths(now, dobDate) % 12;
           
           let ageString = '';
           if (years > 0) {
@@ -163,11 +113,6 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
             }
           } else {
             ageString = `${months} month${months > 1 ? 's' : ''}`;
-            if (years === 0 && months === 0 && dob < now) {
-                ageString = 'Less than a month';
-            } else if (dob > now) {
-                ageString = '';
-            }
           }
           
           handleInputChange(i, 'furkidAge', ageString);
@@ -179,7 +124,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
         handleInputChange(i, 'furkidAge', '');
       }
     }
-  }, [numberOfFurkids, ...(isFYOG ? (formData.furkids || []).map(f => f?.furkidDob) : [formData.furkidDob])]);
+  }, [numberOfFurkids, ...(isFYOG ? (formData.furkids || []).map(f => `${f?.dobMonth}-${f?.dobDay}-${f?.dobYear}`) : [`${formData.dobMonth}-${formData.dobDay}-${formData.dobYear}`])]);
 
   const handleFileUpload = async (furkidIndex, field, file) => {
     if (!file) return;
@@ -221,7 +166,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
         newErrors[`${prefix}furkidName`] = 'Furkid name is required';
       }
 
-      if (!furkid.furkidDob) {
+      if (!furkid.dobMonth || !furkid.dobDay || !furkid.dobYear) {
         newErrors[`${prefix}furkidDob`] = 'Date of birth is required';
       }
 
@@ -363,32 +308,33 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={`${prefix}furkidDob`}>Date of Birth *</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={`w-full justify-start text-left font-normal ${
-                        !furkid.furkidDob && 'text-muted-foreground'
-                      } ${errors[`${prefix}furkidDob`] ? 'border-red-500' : ''}`}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {furkid.furkidDob ? format(parseISO(furkid.furkidDob), 'PPP') : 'Pick a date'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={furkid.furkidDob ? parseISO(furkid.furkidDob) : undefined}
-                      onSelect={(date) => handleDateSelect(index, date)}
-                      disabled={(date) => date > new Date()}
-                      captionLayout="dropdown-buttons"
-                      fromYear={2000}
-                      toYear={new Date().getFullYear()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Label>Date of Birth *</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  <Select value={furkid.dobDay} onValueChange={(v) => handleInputChange(index, 'dobDay', v)}>
+                    <SelectTrigger className={errors[`${prefix}furkidDob`] ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Day" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {days.map(d => <SelectItem key={d} value={d.toString()}>{d}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select value={furkid.dobMonth} onValueChange={(v) => handleInputChange(index, 'dobMonth', v)}>
+                    <SelectTrigger className={errors[`${prefix}furkidDob`] ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {months.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select value={furkid.dobYear} onValueChange={(v) => handleInputChange(index, 'dobYear', v)}>
+                    <SelectTrigger className={errors[`${prefix}furkidDob`] ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {years.map(y => <SelectItem key={y} value={y.toString()}>{y}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
                 {errors[`${prefix}furkidDob`] && (
                   <p className="text-sm text-red-600">{errors[`${prefix}furkidDob`]}</p>
                 )}
