@@ -457,9 +457,9 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
         )}
 
         {isWeekdaysOnly && (
-          <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm text-slate-700">
+          <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
             <p className="font-semibold">📅 Weekdays Only</p>
-            <p className="text-xs mt-1">
+            <p className="text-sm mt-1">
               This service is only available Monday to Friday.
               {isAutoRecurring && ' Minimum 7 days advance booking required.'}
             </p>
@@ -467,36 +467,36 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
         )}
 
         {isAutoRecurring && (
-          <div className="bg-purple-50 border border-purple-200 p-3 rounded-lg text-sm text-slate-700">
+          <div className="bg-purple-50 border border-purple-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
             <p className="font-semibold">🔄 Auto-Recurring Sessions</p>
-            <p className="text-xs mt-1">
+            <p className="text-sm mt-1">
               This program consists of 2 sessions scheduled 3 weeks apart. Select your first session date and time, and the second session will be automatically scheduled.
             </p>
           </div>
         )}
 
         {isThreeWeekly && schedulingMode === 'recurring' && (
-          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm text-slate-700">
+          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
             <p className="font-semibold">📆 Three-Weekly Sessions</p>
-            <p className="text-xs mt-1">
+            <p className="text-sm mt-1">
               Sessions are scheduled every 3 weeks. Select the date and time for your first session, and we'll automatically schedule the rest on the same day and time every 3 weeks.
             </p>
           </div>
         )}
 
         {isKinderPuppy && schedulingMode === 'recurring' && (
-          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm text-slate-700">
+          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
             <p className="font-semibold">📆 Weekly Sessions with Break</p>
-            <p className="text-xs mt-1">
+            <p className="text-sm mt-1">
               Sessions 1-2 are scheduled weekly. After session 2, there's a 1-week break, then sessions 3-4 continue weekly. Select the date and time for your first session, and we'll automatically schedule the rest.
             </p>
           </div>
         )}
 
         {isBasicMannersWithBreak && schedulingMode === 'recurring' && (
-          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm text-slate-700">
+          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
             <p className="font-semibold">📆 Weekly Sessions with Break</p>
-            <p className="text-xs mt-1">
+            <p className="text-sm mt-1">
               Sessions 1-4 are scheduled weekly. After session 4, there's a 1-week break, then sessions continue weekly. Select the date and time for your first session, and we'll automatically schedule the rest.
             </p>
           </div>
