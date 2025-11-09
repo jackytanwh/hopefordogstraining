@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -542,6 +541,26 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                 disabled={isDateDisabled}
                 weekStartsOn={1}
                 className="rounded-md border"
+                classNames={{
+                  months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                  month: "space-y-3",
+                  caption: "flex justify-center pt-1 relative items-center px-1",
+                  caption_label: "text-base font-medium",
+                  nav: "space-x-1 flex items-center",
+                  nav_button: "h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100",
+                  table: "w-full border-collapse space-y-1",
+                  head_row: "flex",
+                  head_cell: "text-slate-500 rounded-md w-10 font-normal text-[0.9rem]",
+                  row: "flex w-full mt-1",
+                  cell: "text-center text-base p-0 relative [&:has([aria-selected])]:bg-slate-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                  day: "h-10 w-10 p-0 font-normal text-base aria-selected:opacity-100 hover:bg-slate-100 hover:text-slate-900 rounded-md",
+                  day_selected: "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white",
+                  day_today: "bg-slate-100 text-slate-900 font-semibold",
+                  day_outside: "text-slate-400 opacity-50",
+                  day_disabled: "text-slate-400 opacity-50 line-through",
+                  day_range_middle: "aria-selected:bg-slate-100 aria-selected:text-slate-900",
+                  day_hidden: "invisible",
+                }}
               />
             </div>
 
@@ -700,6 +719,26 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                       disabled={isDateDisabled}
                       weekStartsOn={1}
                       className="rounded-md border"
+                      classNames={{
+                        months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                        month: "space-y-3",
+                        caption: "flex justify-center pt-1 relative items-center px-1",
+                        caption_label: "text-base font-medium",
+                        nav: "space-x-1 flex items-center",
+                        nav_button: "h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100",
+                        table: "w-full border-collapse space-y-1",
+                        head_row: "flex",
+                        head_cell: "text-slate-500 rounded-md w-10 font-normal text-[0.9rem]",
+                        row: "flex w-full mt-1",
+                        cell: "text-center text-base p-0 relative [&:has([aria-selected])]:bg-slate-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                        day: "h-10 w-10 p-0 font-normal text-base aria-selected:opacity-100 hover:bg-slate-100 hover:text-slate-900 rounded-md",
+                        day_selected: "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white",
+                        day_today: "bg-slate-100 text-slate-900 font-semibold",
+                        day_outside: "text-slate-400 opacity-50",
+                        day_disabled: "text-slate-400 opacity-50 line-through",
+                        day_range_middle: "aria-selected:bg-slate-100 aria-selected:text-slate-900",
+                        day_hidden: "invisible",
+                      }}
                     />
                   </div>
 
