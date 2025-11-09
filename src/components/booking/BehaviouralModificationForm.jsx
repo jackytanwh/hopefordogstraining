@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -70,11 +71,24 @@ export default function BehaviouralModificationForm({ service, formData, setForm
     handleInputChange(field, newValues);
   };
 
+  const handleEnrichmentToggle = (value) => {
+    const currentTools = formData.enrichment_tools || '';
+    const toolsArray = currentTools.split(',').map(t => t.trim()).filter(t => t);
+    
+    if (toolsArray.includes(value)) {
+      const newTools = toolsArray.filter(t => t !== value);
+      handleInputChange('enrichment_tools', newTools.join(', '));
+    } else {
+      const newTools = [...toolsArray, value];
+      handleInputChange('enrichment_tools', newTools.join(', '));
+    }
+  };
+
   useEffect(() => {
-    if (formData.dobMonth && formData.dobYear) {
+    if (formData.dobMonth && formData.dobDay && formData.dobYear) {
       try {
         const now = new Date();
-        const dobDate = new Date(parseInt(formData.dobYear), parseInt(formData.dobMonth) - 1, 1);
+        const dobDate = new Date(parseInt(formData.dobYear), parseInt(formData.dobMonth) - 1, parseInt(formData.dobDay));
         const years = differenceInYears(now, dobDate);
         const months = differenceInMonths(now, dobDate) % 12;
         
@@ -84,16 +98,20 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           if (months > 0) {
             ageString += ` ${months} month${months > 1 ? 's' : ''}`;
           }
-        } else {
+        } else if (months > 0) {
           ageString = `${months} month${months > 1 ? 's' : ''}`;
+        } else {
+          ageString = 'Less than a month'; // Or other suitable text for very young
         }
         
         handleInputChange('furkidAge', ageString);
       } catch (e) {
         console.error('Error calculating age:', e);
       }
+    } else {
+      handleInputChange('furkidAge', ''); // Clear age if dob is incomplete
     }
-  }, [formData.dobMonth, formData.dobYear]);
+  }, [formData.dobMonth, formData.dobDay, formData.dobYear]);
 
   const handleFileUpload = async (file) => {
     if (!file) return;
@@ -123,7 +141,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
     if (formData.isAdopted && !formData.adoptionProofUrl) newErrors.adoptionProofUrl = 'Required';
     if (!formData.furkidName?.trim()) newErrors.furkidName = 'Required';
     if (!formData.furkidBreed?.trim()) newErrors.furkidBreed = 'Required';
-    if (!formData.dobMonth || !formData.dobYear) newErrors.dobMonth = 'Required';
+    if (!formData.dobMonth || !formData.dobDay || !formData.dobYear) newErrors.dobMonth = 'Required'; // Keep dobMonth as key for date error
     if (!formData.furkidGender) newErrors.furkidGender = 'Required';
     if (formData.furkidSterilised === undefined) newErrors.furkidSterilised = 'Required';
     if (formData.furkidSterilised && !formData.furkid_sterilisation_age?.trim()) newErrors.furkid_sterilisation_age = 'Required';
@@ -213,6 +231,11 @@ export default function BehaviouralModificationForm({ service, formData, setForm
     { value: '9', label: 'September' }, { value: '10', label: 'October' },
     { value: '11', label: 'November' }, { value: '12', label: 'December' }
   ];
+  const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString()); // Ensure day values are strings
+
+  const enrichmentTools = formData.enrichment_tools || '';
+  const hasSnuffleMat = enrichmentTools.includes('Snuffle mat');
+  const hasLickMat = enrichmentTools.includes('Lick mat');
 
   return (
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -277,13 +300,21 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>Date of Birth *</Label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Select value={formData.dobMonth} onValueChange={(v) => handleInputChange('dobMonth', v)}>
                 <SelectTrigger className={errors.dobMonth ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Month" />
                 </SelectTrigger>
                 <SelectContent>
                   {months.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={formData.dobDay} onValueChange={(v) => handleInputChange('dobDay', v)}>
+                <SelectTrigger className={errors.dobMonth ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Day" />
+                </SelectTrigger>
+                <SelectContent>
+                  {days.map(d => <SelectItem key={d} value={d.toString()}>{d}</SelectItem>)}
                 </SelectContent>
               </Select>
               <Select value={formData.dobYear} onValueChange={(v) => handleInputChange('dobYear', v)}>
@@ -755,7 +786,30 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>Enrichment tools available? *</Label>
-            <Textarea value={formData.enrichment_tools || ''} onChange={(e) => handleInputChange('enrichment_tools', e.target.value)} rows={2} />
+            <div className="flex gap-4 mb-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-snuffle"
+                  checked={hasSnuffleMat}
+                  onCheckedChange={() => handleEnrichmentToggle('Snuffle mat')}
+                />
+                <Label htmlFor="enrich-snuffle" className="cursor-pointer text-sm">Snuffle mat</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-lick"
+                  checked={hasLickMat}
+                  onCheckedChange={() => handleEnrichmentToggle('Lick mat')}
+                />
+                <Label htmlFor="enrich-lick" className="cursor-pointer text-sm">Lick mat</Label>
+              </div>
+            </div>
+            <Textarea 
+              value={formData.enrichment_tools || ''} 
+              onChange={(e) => handleInputChange('enrichment_tools', e.target.value)} 
+              rows={2}
+              placeholder="e.g., Kong, puzzle toys, treat balls, snuffle mat, lick mat..."
+            />
             {errors.enrichment_tools && <p className="text-sm text-red-600">{errors.enrichment_tools}</p>}
           </div>
         </div>
@@ -1094,7 +1148,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             />
             <Label htmlFor="understanding" className="text-sm cursor-pointer leading-relaxed">
               By checking this box, I confirm that I have read the{' '}
-              <a href="https://www.hopefordogs.sg/behavioural-modification/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              <a href="https://www.hopefordogs.sg/behavioural-modification/#faq" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                 FAQs
               </a>
               {' '}and understand that behavior modification is influenced by various factors and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the recommended strategies by the canine behaviour consultant. *
