@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ const services = [
     sessions: 7,
     minParticipants: 2,
     maxParticipants: 3,
-    description: "Group training for dogs, 2-3 dogs per group. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly"
+    description: "Group training for dogs. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly"
   },
   {
     id: "basic_manners_group_class",
@@ -56,7 +57,7 @@ const services = [
     sessions: 7,
     minParticipants: 1,
     maxParticipants: 4,
-    description: "Group class training, 1-4 dogs. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly with fixed schedule"
+    description: "Group class training. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly with fixed schedule"
   },
   {
     id: "canine_assessment",
