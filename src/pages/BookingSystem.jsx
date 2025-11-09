@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,7 @@ const services = [
     sessions: 4,
     minParticipants: 1,
     maxParticipants: 1,
-    description: "One-on-one puppy training at your home, 4 bi-weekly sessions"
+    description: "One-on-one puppy training at your home. Sessions 1-2 weekly, 1-week break, then sessions 3-4 weekly"
   },
   {
     id: "basic_manners_in_home",
@@ -27,7 +26,7 @@ const services = [
     sessions: 6,
     minParticipants: 1,
     maxParticipants: 1,
-    description: "Comprehensive in-home training, 6 weekly sessions"
+    description: "Comprehensive in-home training. Sessions 1-4 weekly, 1-week break, then sessions 5-6 weekly"
   },
   {
     id: "kinder_puppy_fyog",
@@ -37,7 +36,7 @@ const services = [
     sessions: 4,
     minParticipants: 2,
     maxParticipants: 2,
-    description: "Group training for puppies, 2 puppies per group, 4 bi-weekly sessions"
+    description: "Group training for puppies, 2 puppies per group. Sessions 1-2 weekly, 1-week break, then sessions 3-4 weekly"
   },
   {
     id: "basic_manners_fyog",
@@ -47,7 +46,7 @@ const services = [
     sessions: 7,
     minParticipants: 2,
     maxParticipants: 3,
-    description: "Group training for dogs, 2-3 dogs per group, 7 weekly sessions"
+    description: "Group training for dogs, 2-3 dogs per group. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly"
   },
   {
     id: "basic_manners_group_class",
@@ -57,7 +56,7 @@ const services = [
     sessions: 7,
     minParticipants: 1,
     maxParticipants: 4,
-    description: "Group class training, 1-4 dogs, 7 weekly sessions with fixed schedule"
+    description: "Group class training, 1-4 dogs. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly with fixed schedule"
   },
   {
     id: "canine_assessment",
