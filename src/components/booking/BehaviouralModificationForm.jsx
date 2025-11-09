@@ -301,20 +301,20 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           <div className="space-y-2">
             <Label>Date of Birth *</Label>
             <div className="grid grid-cols-3 gap-2">
-              <Select value={formData.dobMonth} onValueChange={(v) => handleInputChange('dobMonth', v)}>
-                <SelectTrigger className={errors.dobMonth ? 'border-red-500' : ''}>
-                  <SelectValue placeholder="Month" />
-                </SelectTrigger>
-                <SelectContent>
-                  {months.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
               <Select value={formData.dobDay} onValueChange={(v) => handleInputChange('dobDay', v)}>
                 <SelectTrigger className={errors.dobMonth ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Day" />
                 </SelectTrigger>
                 <SelectContent>
                   {days.map(d => <SelectItem key={d} value={d.toString()}>{d}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={formData.dobMonth} onValueChange={(v) => handleInputChange('dobMonth', v)}>
+                <SelectTrigger className={errors.dobMonth ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
                 </SelectContent>
               </Select>
               <Select value={formData.dobYear} onValueChange={(v) => handleInputChange('dobYear', v)}>
@@ -606,11 +606,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">1 - Not serious</SelectItem>
-                <SelectItem value="2">2 - Slightly serious</SelectItem>
-                <SelectItem value="3">3 - Moderately serious</SelectItem>
-                <SelectItem value="4">4 - Very serious</SelectItem>
-                <SelectItem value="5">5 - Extremely serious</SelectItem>
+                {[1,2,3,4,5].map(n => <SelectItem key={n} value={n.toString()}>{n}</SelectItem>)}
               </SelectContent>
             </Select>
             {errors.behaviour_seriousness_scale && <p className="text-sm text-red-600">{errors.behaviour_seriousness_scale}</p>}
