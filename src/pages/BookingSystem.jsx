@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -136,14 +137,20 @@ export default function BookingSystem() {
 
     try {
       const startDate = new Date(groupClassSchedule.start_date);
-      const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][
-        groupClassSchedule.day_of_week || startDate.getDay()
-      ];
+      
+      // Use the day_of_week string directly if provided, otherwise calculate from date
+      let dayOfWeek;
+      if (groupClassSchedule.day_of_week && typeof groupClassSchedule.day_of_week === 'string') {
+        dayOfWeek = groupClassSchedule.day_of_week;
+      } else {
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        dayOfWeek = dayNames[startDate.getDay()];
+      }
       
       return {
         date: format(startDate, 'MMM d, yyyy'),
         dayOfWeek,
-        time: groupClassSchedule.session_time || 'TBD'
+        time: groupClassSchedule.start_time || 'TBD'
       };
     } catch (error) {
       console.error('Error formatting schedule:', error);
@@ -208,7 +215,7 @@ export default function BookingSystem() {
                   
                   {isGroupClass && scheduleInfo && (
                     <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 space-y-1">
-                      <p className="text-xs font-semibold text-purple-900 uppercase">Next Program</p>
+                      <p className="text-xs font-semibold text-purple-900 uppercase">Next Program Commence</p>
                       <div className="text-sm text-purple-800">
                         <p className="font-semibold">{scheduleInfo.dayOfWeek}s at {scheduleInfo.time}</p>
                         <p className="text-xs">Starts: {scheduleInfo.date}</p>
