@@ -83,6 +83,11 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
 
   const isBiweekly = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
 
+  // Check if this is Basic Manners program that requires a break after session 4
+  const isBasicMannersWithBreak = service.id === 'basic_manners_in_home' || 
+                                   service.id === 'basic_manners_fyog' || 
+                                   service.id === 'basic_manners_group_class';
+
   // Check if this is an on-demand training with multiple sessions
   const isOnDemandMultiSession = service.id === 'on_demand_training' && service.sessions > 1;
   
@@ -105,7 +110,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     const startMinutes = timeToMinutes(startTime);
     
     const sessionDurationMinutes = service.duration * 60;
-    const endMinutes = startMinutes + sessionDurationMinutes + 60;
+    const endMinutes = startMinutes + sessionDurationMinutes + 60; // 1-hour buffer
 
     for (const booking of bookings) {
       if (!booking.session_dates) continue;
@@ -115,7 +120,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           const bookedStartMinutes = timeToMinutes(session.start_time);
           const bookedEndMinutes = timeToMinutes(session.end_time);
           
-          const bookedEndWithBuffer = bookedEndMinutes + 60;
+          const bookedEndWithBuffer = bookedEndMinutes + 60; // 1-hour buffer
 
           if (
             (startMinutes >= bookedStartMinutes && startMinutes < bookedEndWithBuffer) ||
@@ -171,13 +176,11 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
 
     if (isWeekdaysOnly) {
       const dayOfWeek = date.getDay();
-      return dayOfWeek === 0 || dayOfWeek === 6;
+      return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
     }
     
     const dayOfWeek = date.getDay();
-    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-      // Re-declare dateString here if it might be used inside this block and was declared previously for the global scope
-      // For this case, it's fine as `dateString` is already declared above and accessible.
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday to Friday
       const bookingCount = dailyBookingCounts[dateString] || 0;
       if (bookingCount >= 3) {
         return true;
@@ -222,22 +225,39 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     const rescheduled = [];
     
     try {
-      let weeksApart = 1;
+      let weeksApart = 1; // Default to weekly
       
       if (isAutoRecurring) {
         weeksApart = 3;
       } else if (isBiweekly) {
         weeksApart = 2;
-      } else if (isThreeWeekly) { // Added for on_demand_training with multiple sessions
+      } else if (isThreeWeekly) {
         weeksApart = 3;
       }
       
       for (let i = 1; i < service.sessions; i++) {
         const baseDate = new Date(firstSession.date);
-        const originalDate = addWeeks(baseDate, i * weeksApart);
+        let weeksToAdd;
+        
+        // Special logic for Basic Manners programs with break after session 4
+        if (isBasicMannersWithBreak) {
+          if (i < 4) {
+            // Sessions 2-4: weekly (1, 2, 3 weeks from session 1)
+            weeksToAdd = i;
+          } else {
+            // Sessions 5+: add extra week for the break (i + 1 weeks from session 1)
+            weeksToAdd = i + 1;
+          }
+        } else {
+          // Original logic for other programs
+          weeksToAdd = i * weeksApart;
+        }
+        
+        const originalDate = addWeeks(baseDate, weeksToAdd);
         const startMinutes = timeToMinutes(firstSession.start_time);
         const durationMinutes = service.duration * 60;
-        const endTime = minutesToTime(startMinutes + durationMinutes);
+        // End time is calculated for display purposes, not for availability check here
+        const endTime = minutesToTime(startMinutes + durationMinutes); 
         
         let finalDate = originalDate;
         let finalTime = firstSession.start_time;
@@ -313,7 +333,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
 
-    if ((isAutoRecurring || isThreeWeekly || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
+    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
       if (updatedSession.start_time) {
         autoFillWithRescheduling(updatedSession);
       }
@@ -342,7 +362,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
 
-    if ((isAutoRecurring || isThreeWeekly || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
+    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
       const firstSession = newDates.find(s => s.session_number === 1);
       if (firstSession && firstSession.date) {
         autoFillWithRescheduling(firstSession);
@@ -368,7 +388,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
     
-    if (mode === 'recurring' && selectedDates[0]?.date && selectedDates[0]?.start_time && (isRecurringApplicable || isThreeWeekly)) {
+    if (mode === 'recurring' && selectedDates[0]?.date && selectedDates[0]?.start_time && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak)) {
       autoFillWithRescheduling(selectedDates[0]);
     }
     if (mode === 'manual') {
@@ -465,7 +485,16 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {(isRecurringApplicable || isThreeWeekly) && (
+        {isBasicMannersWithBreak && schedulingMode === 'recurring' && (
+          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm text-slate-700">
+            <p className="font-semibold">📆 Weekly Sessions with Break</p>
+            <p className="text-xs mt-1">
+              Sessions 1-4 are scheduled weekly. After session 4, there's a 1-week break, then sessions continue weekly. Select the date and time for your first session, and we'll automatically schedule the rest.
+            </p>
+          </div>
+        )}
+
+        {(isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak) && (
           <div className="space-y-2">
             <Label>Scheduling Preference</Label>
             <Select value={schedulingMode} onValueChange={handleSchedulingModeChange}>
@@ -474,7 +503,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="recurring">
-                  Recurring sessions (same day/time {isThreeWeekly ? 'every 3 weeks' : isBiweekly ? 'every 2 weeks' : 'each week'})
+                  Recurring sessions ({isThreeWeekly ? 'every 3 weeks' : isBiweekly ? 'every 2 weeks' : isBasicMannersWithBreak ? 'weekly with 1-week break after session 4' : 'each week'})
                 </SelectItem>
                 <SelectItem value="manual">Choose my own date and time for each session</SelectItem>
               </SelectContent>
@@ -482,7 +511,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {((schedulingMode === 'recurring' && (isRecurringApplicable || isThreeWeekly)) || isAutoRecurring) ? (
+        {((schedulingMode === 'recurring' && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak)) || isAutoRecurring) ? (
           <div className="border border-slate-200 rounded-lg p-4 space-y-4">
             <h3 className="font-semibold text-slate-900">
               {isAutoRecurring 
@@ -491,6 +520,8 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                 ? 'First Session (Others will auto-fill every 3 weeks)'
                 : isBiweekly
                 ? 'First Session (Others will auto-fill every 2 weeks)'
+                : isBasicMannersWithBreak
+                ? 'First Session (Others will auto-fill weekly with break after session 4)'
                 : 'First Session (Others will auto-fill weekly)'}
             </h3>
             
