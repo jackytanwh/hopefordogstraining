@@ -81,7 +81,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
 
   const isAutoRecurring = service.id === 'behavioural_modification';
 
-  const isBiweekly = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
+  const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
 
   // Check if this is Basic Manners program that requires a break after session 4
   const isBasicMannersWithBreak = service.id === 'basic_manners_in_home' || 
@@ -225,22 +225,22 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     const rescheduled = [];
     
     try {
-      let weeksApart = 1; // Default to weekly
-      
-      if (isAutoRecurring) {
-        weeksApart = 3;
-      } else if (isBiweekly) {
-        weeksApart = 2;
-      } else if (isThreeWeekly) {
-        weeksApart = 3;
-      }
-      
       for (let i = 1; i < service.sessions; i++) {
         const baseDate = new Date(firstSession.date);
         let weeksToAdd;
         
+        // Special logic for Kinder Puppy programs with break after session 2
+        if (isKinderPuppy) {
+          if (i < 2) {
+            // Session 2: 1 week from session 1
+            weeksToAdd = i;
+          } else {
+            // Sessions 3-4: add extra week for the break (i + 1 weeks from session 1)
+            weeksToAdd = i + 1;
+          }
+        }
         // Special logic for Basic Manners programs with break after session 4
-        if (isBasicMannersWithBreak) {
+        else if (isBasicMannersWithBreak) {
           if (i < 4) {
             // Sessions 2-4: weekly (1, 2, 3 weeks from session 1)
             weeksToAdd = i;
@@ -248,16 +248,24 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             // Sessions 5+: add extra week for the break (i + 1 weeks from session 1)
             weeksToAdd = i + 1;
           }
-        } else {
-          // Original logic for other programs
-          weeksToAdd = i * weeksApart;
+        }
+        // Auto-recurring (Behavioural Modification): 3 weeks apart
+        else if (isAutoRecurring) {
+          weeksToAdd = i * 3;
+        }
+        // On-demand multi-session: 3 weeks apart
+        else if (isThreeWeekly) {
+          weeksToAdd = i * 3;
+        }
+        // Default: weekly
+        else {
+          weeksToAdd = i;
         }
         
         const originalDate = addWeeks(baseDate, weeksToAdd);
         const startMinutes = timeToMinutes(firstSession.start_time);
         const durationMinutes = service.duration * 60;
-        // End time is calculated for display purposes, not for availability check here
-        const endTime = minutesToTime(startMinutes + durationMinutes); 
+        const endTime = minutesToTime(startMinutes + durationMinutes);
         
         let finalDate = originalDate;
         let finalTime = firstSession.start_time;
@@ -333,7 +341,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
 
-    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
+    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
       if (updatedSession.start_time) {
         autoFillWithRescheduling(updatedSession);
       }
@@ -362,7 +370,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
 
-    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
+    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
       const firstSession = newDates.find(s => s.session_number === 1);
       if (firstSession && firstSession.date) {
         autoFillWithRescheduling(firstSession);
@@ -388,7 +396,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
     
-    if (mode === 'recurring' && selectedDates[0]?.date && selectedDates[0]?.start_time && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak)) {
+    if (mode === 'recurring' && selectedDates[0]?.date && selectedDates[0]?.start_time && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy)) {
       autoFillWithRescheduling(selectedDates[0]);
     }
     if (mode === 'manual') {
@@ -476,11 +484,11 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {isBiweekly && schedulingMode === 'recurring' && (
+        {isKinderPuppy && schedulingMode === 'recurring' && (
           <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm text-slate-700">
-            <p className="font-semibold">📆 Biweekly Sessions</p>
+            <p className="font-semibold">📆 Weekly Sessions with Break</p>
             <p className="text-xs mt-1">
-              Sessions are scheduled every 2 weeks. Select the date and time for your first session, and we'll automatically schedule the rest on the same day and time every 2 weeks.
+              Sessions 1-2 are scheduled weekly. After session 2, there's a 1-week break, then sessions 3-4 continue weekly. Select the date and time for your first session, and we'll automatically schedule the rest.
             </p>
           </div>
         )}
@@ -494,7 +502,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {(isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak) && (
+        {(isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy) && (
           <div className="space-y-2">
             <Label>Scheduling Preference</Label>
             <Select value={schedulingMode} onValueChange={handleSchedulingModeChange}>
@@ -503,7 +511,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="recurring">
-                  Recurring sessions ({isThreeWeekly ? 'every 3 weeks' : isBiweekly ? 'every 2 weeks' : isBasicMannersWithBreak ? 'weekly with 1-week break after session 4' : 'each week'})
+                  Recurring sessions ({isThreeWeekly ? 'every 3 weeks' : isKinderPuppy ? 'weekly with 1-week break after session 2' : isBasicMannersWithBreak ? 'weekly with 1-week break after session 4' : 'weekly'})
                 </SelectItem>
                 <SelectItem value="manual">Choose my own date and time for each session</SelectItem>
               </SelectContent>
@@ -511,15 +519,15 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {((schedulingMode === 'recurring' && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak)) || isAutoRecurring) ? (
+        {((schedulingMode === 'recurring' && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy)) || isAutoRecurring) ? (
           <div className="border border-slate-200 rounded-lg p-4 space-y-4">
             <h3 className="font-semibold text-slate-900">
               {isAutoRecurring 
                 ? 'First Session (Second session will be auto-scheduled 3 weeks later)' 
                 : isThreeWeekly
                 ? 'First Session (Others will auto-fill every 3 weeks)'
-                : isBiweekly
-                ? 'First Session (Others will auto-fill every 2 weeks)'
+                : isKinderPuppy
+                ? 'First Session (Others will auto-fill weekly with break after session 2)'
                 : isBasicMannersWithBreak
                 ? 'First Session (Others will auto-fill weekly with break after session 4)'
                 : 'First Session (Others will auto-fill weekly)'}
