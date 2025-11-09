@@ -12,50 +12,59 @@ function Calendar({
   ...props
 }) {
   return (
-    <DayPicker
+    (<DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-6", className)}
+      className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-        month: "space-y-6",
-        caption: "flex justify-center pt-1 relative items-center mb-6",
-        caption_label: "text-2xl font-bold text-slate-900",
+        month: "space-y-4",
+        caption: "flex justify-center pt-1 relative items-center",
+        caption_label: "text-sm font-medium",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
-          buttonVariants({ variant: "ghost" }),
-          "h-10 w-10 bg-transparent p-0 opacity-80 hover:opacity-100 hover:bg-slate-100"
+          buttonVariants({ variant: "outline" }),
+          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-y-1",
-        head_row: "flex mb-4",
+        head_row: "flex",
         head_cell:
-          "text-slate-700 font-bold text-sm w-14 text-center uppercase tracking-wide [&:nth-child(6)]:text-red-500 [&:nth-child(7)]:text-red-500 pb-3 border-b-2 border-slate-200",
-        row: "flex w-full mt-3",
-        cell: "h-14 w-14 text-center text-base p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-slate-100/50 [&:has([aria-selected])]:bg-slate-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+          "text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]",
+        row: "flex w-full mt-2",
+        cell: cn(
+          "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
+          props.mode === "range"
+            ? "[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md"
+            : "[&:has([aria-selected])]:rounded-md"
+        ),
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-14 w-14 p-0 font-semibold text-lg aria-selected:opacity-100 hover:bg-slate-100 rounded-lg transition-all"
+          "h-8 w-8 p-0 font-normal aria-selected:opacity-100"
         ),
+        day_range_start: "day-range-start",
         day_range_end: "day-range-end",
         day_selected:
-          "bg-cyan-200 text-slate-900 hover:bg-cyan-300 hover:text-slate-900 focus:bg-cyan-300 focus:text-slate-900 rounded-lg",
-        day_today: "bg-slate-100 text-slate-900 font-bold",
+          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+        day_today: "bg-accent text-accent-foreground",
         day_outside:
-          "day-outside text-slate-300 opacity-50 aria-selected:bg-slate-100/50 aria-selected:text-slate-400 aria-selected:opacity-30",
-        day_disabled: "text-slate-300 opacity-50 cursor-not-allowed",
+          "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
+        day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
-          "aria-selected:bg-slate-100 aria-selected:text-slate-900",
+          "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-6 w-6 text-slate-700" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-6 w-6 text-slate-700" />,
+        IconLeft: ({ className, ...props }) => (
+          <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
+        ),
+        IconRight: ({ className, ...props }) => (
+          <ChevronRight className={cn("h-4 w-4", className)} {...props} />
+        ),
       }}
-      {...props}
-    />
-  )
+      {...props} />)
+  );
 }
 Calendar.displayName = "Calendar"
 
