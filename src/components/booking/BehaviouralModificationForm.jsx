@@ -44,6 +44,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
   const [uploading, setUploading] = useState(false);
   const [showCustomBreed, setShowCustomBreed] = useState(false);
 
+  const isCanineAssessment = service.id === 'canine_assessment';
+
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
     if (errors[field]) {
@@ -210,7 +212,13 @@ export default function BehaviouralModificationForm({ service, formData, setForm
     if (formData.discomfort_signs && !formData.discomfort_signs_details?.trim()) newErrors.discomfort_signs_details = 'Required';
     if (formData.on_medication === undefined) newErrors.on_medication = 'Required';
     if (formData.on_medication && !formData.medication_details?.trim()) newErrors.medication_details = 'Required';
-    if (!formData.understanding_confirmed) newErrors.understanding_confirmed = 'Required';
+    
+    // Different validation for Canine Assessment vs Behavioural Modification
+    if (isCanineAssessment) {
+      if (formData.requires_assessment_report === undefined) newErrors.requires_assessment_report = 'Required';
+    } else {
+      if (!formData.understanding_confirmed) newErrors.understanding_confirmed = 'Required';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -241,7 +249,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
         <div>
-          <CardTitle>Furkid's Behaviour Consultation History Form</CardTitle>
+          <CardTitle>{isCanineAssessment ? 'Canine Assessment History Form' : "Furkid's Behaviour Consultation History Form"}</CardTitle>
           <p className="text-sm text-slate-600 mt-2 flex items-center gap-2">
             <Clock className="w-4 h-4" />
             This form will take approximately 5-10 minutes to complete
@@ -1134,24 +1142,44 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           )}
         </div>
 
-        {/* Final Confirmation */}
-        <div className="space-y-3 p-4 bg-slate-100 rounded-lg border-2 border-slate-300">
-          <div className="flex items-start space-x-2">
-            <Checkbox 
-              id="understanding" 
-              checked={formData.understanding_confirmed || false}
-              onCheckedChange={(checked) => handleInputChange('understanding_confirmed', checked)}
-            />
-            <Label htmlFor="understanding" className="text-sm cursor-pointer leading-relaxed">
-              By checking this box, I confirm that I have read the{' '}
-              <a href="https://www.hopefordogs.sg/behavioural-modification/#faq" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                FAQs
-              </a>
-              {' '}and understand that behavior modification is influenced by various factors and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the recommended strategies by the canine behaviour consultant. *
-            </Label>
+        {/* Final Confirmation - Different for Canine Assessment vs Behavioural Modification */}
+        {isCanineAssessment ? (
+          <div className="space-y-3 p-4 bg-slate-100 rounded-lg border-2 border-slate-300">
+            <Label className="text-base font-semibold">Do you require an assessment report? *</Label>
+            <RadioGroup 
+              value={formData.requires_assessment_report?.toString()}
+              onValueChange={(value) => handleInputChange('requires_assessment_report', value === 'true')}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="true" id="report-yes" />
+                <Label htmlFor="report-yes" className="cursor-pointer font-normal">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="false" id="report-no" />
+                <Label htmlFor="report-no" className="cursor-pointer font-normal">No</Label>
+              </div>
+            </RadioGroup>
+            {errors.requires_assessment_report && <p className="text-sm text-red-600">{errors.requires_assessment_report}</p>}
           </div>
-          {errors.understanding_confirmed && <p className="text-sm text-red-600">{errors.understanding_confirmed}</p>}
-        </div>
+        ) : (
+          <div className="space-y-3 p-4 bg-slate-100 rounded-lg border-2 border-slate-300">
+            <div className="flex items-start space-x-2">
+              <Checkbox 
+                id="understanding" 
+                checked={formData.understanding_confirmed || false}
+                onCheckedChange={(checked) => handleInputChange('understanding_confirmed', checked)}
+              />
+              <Label htmlFor="understanding" className="text-sm cursor-pointer leading-relaxed">
+                By checking this box, I confirm that I have read the{' '}
+                <a href="https://www.hopefordogs.sg/behavioural-modification/#faq" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  FAQs
+                </a>
+                {' '}and understand that behavior modification is influenced by various factors and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the recommended strategies by the canine behaviour consultant. *
+              </Label>
+            </div>
+            {errors.understanding_confirmed && <p className="text-sm text-red-600">{errors.understanding_confirmed}</p>}
+          </div>
+        )}
 
         {Object.keys(errors).length > 0 && (
           <div className="bg-amber-50 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg flex items-start gap-2">

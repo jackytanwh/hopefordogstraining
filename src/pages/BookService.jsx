@@ -148,6 +148,8 @@ export default function BookService() {
     separationAnxiety: false,
     pottyTrainingIssues: false,
     otherBehavioralIssues: '',
+    // Canine Assessment specific fields
+    requires_assessment_report: false, // New field for Canine Assessment
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -289,8 +291,16 @@ export default function BookService() {
       }
 
       if (isBehaviouralModification || isCanineAssessment) {
-        const modAgreement = agreements.behavioralModificationUnderstanding || false;
-        bookingData.agreement_behavioral_modification_understanding = modAgreement;
+        if (isCanineAssessment) {
+          // For Canine Assessment, store the assessment report requirement
+          bookingData.requires_assessment_report = formData.requires_assessment_report;
+        } else {
+          // For Behavioural Modification, store the agreement
+          const modAgreement = agreements.behavioralModificationUnderstanding || false;
+          bookingData.agreement_behavioral_modification_understanding = modAgreement;
+        }
+        
+        // Store all the behavioural data for both programs
         bookingData.owner_involved_in_bite = formData.ownerInvolvedInBite;
         bookingData.bite_history = formData.biteHistory;
         bookingData.stranger_danger = formData.strangerDanger;
