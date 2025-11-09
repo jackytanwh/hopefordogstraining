@@ -159,11 +159,11 @@ export default function BookingSystem() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-slate-900">Book Your Training Session</h1>
-          <p className="text-lg text-slate-600">Choose the perfect training program for your furry friend</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
+        <div className="text-center space-y-3 md:space-y-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Book Your Training Session</h1>
+          <p className="text-base md:text-lg text-slate-600">Choose the perfect training program for your furry friend</p>
           
           <div className="flex justify-center">
             <WhatsAppButton 
@@ -174,9 +174,9 @@ export default function BookingSystem() {
         </div>
 
         <Card className="shadow-lg border-0 bg-blue-50/50 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <h3 className="font-semibold text-slate-900 mb-3">Booking Information</h3>
-            <ul className="space-y-2 text-sm text-slate-700">
+          <CardContent className="p-4 md:p-6">
+            <h3 className="font-semibold text-slate-900 mb-3 text-base md:text-lg">Booking Information</h3>
+            <ul className="space-y-2 text-sm md:text-base text-slate-700">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-bold">•</span>
                 <span>Minimum 2 days advance booking required (7 days for Behavioural Modification)</span>
@@ -197,7 +197,7 @@ export default function BookingSystem() {
           </CardContent>
         </Card>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {services.map((service) => {
             const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
             const perLabel = isKinderPuppy ? 'puppy' : 'dog';
@@ -207,49 +207,49 @@ export default function BookingSystem() {
             
             return (
               <Card key={service.id} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-200 flex flex-col">
-                <CardHeader className="border-b border-slate-100">
-                  <CardTitle className="text-xl text-slate-900">{service.name}</CardTitle>
+                <CardHeader className="border-b border-slate-100 p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl text-slate-900">{service.name}</CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 space-y-4 flex-grow flex flex-col">
-                  <p className="text-slate-600 text-sm flex-grow">{service.description}</p>
+                <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 flex-grow flex flex-col">
+                  <p className="text-slate-600 text-sm md:text-base flex-grow">{service.description}</p>
                   
                   {isGroupClass && scheduleInfo && (
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 space-y-1">
+                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-2.5 md:p-3 space-y-1">
                       <p className="text-xs font-semibold text-purple-900 uppercase">Next Program Commence</p>
-                      <div className="text-sm text-purple-800">
+                      <div className="text-sm md:text-base text-purple-800">
                         <p className="font-semibold">{scheduleInfo.dayOfWeek}s at {scheduleInfo.time}</p>
                         <p className="text-xs">Starts: {scheduleInfo.date}</p>
                       </div>
                     </div>
                   )}
                   
-                  <div className="space-y-3">
+                  <div className="space-y-2.5 md:space-y-3">
                     {!isOnDemand && (
-                      <div className="flex items-center gap-2 text-sm text-slate-700">
+                      <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
                         <DollarSign className="w-4 h-4 text-green-600" />
                         <span className="font-semibold">${service.price}</span>
                         <span className="text-slate-500">per {perLabel}</span>
                       </div>
                     )}
                     
-                    <div className="flex items-center gap-2 text-sm text-slate-700">
+                    <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
                       <Calendar className="w-4 h-4 text-blue-600" />
                       <span>{service.sessions} session{typeof service.sessions === 'string' || service.sessions > 1 ? 's' : ''}</span>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-sm text-slate-700">
+                    <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
                       <Clock className="w-4 h-4 text-purple-600" />
                       <span>{service.duration} hour{service.duration > 1 ? 's' : ''} per session</span>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-sm text-slate-700">
+                    <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
                       <Users className="w-4 h-4 text-orange-600" />
                       <span>{getParticipantLabel(service)}</span>
                     </div>
                   </div>
 
                   <Link to={createPageUrl(`BookService?service=${service.id}`)} className="mt-auto">
-                    <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                    <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-sm md:text-base">
                       Book Now
                     </Button>
                   </Link>
@@ -260,15 +260,15 @@ export default function BookingSystem() {
         </div>
 
         <Card className="shadow-lg border-0 bg-gradient-to-r from-green-50 to-emerald-50">
-          <CardContent className="p-6 text-center space-y-4">
+          <CardContent className="p-4 md:p-6 text-center space-y-3 md:space-y-4">
             <div className="flex justify-center">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                <MessageCircle className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-green-500 rounded-full flex items-center justify-center">
+                <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-white" />
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Questions? We're Here to Help!</h3>
-              <p className="text-slate-600 mb-4">
+              <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-2">Questions? We're Here to Help!</h3>
+              <p className="text-sm md:text-base text-slate-600 mb-3 md:mb-4">
                 Chat with our friendly team on WhatsApp for instant answers about our training programs, 
                 scheduling, or any concerns about your furry friend.
               </p>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -21,23 +22,23 @@ export default function BookingConfirmation() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4 md:p-6">
       <Card className="max-w-2xl w-full shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-        <CardContent className="p-12 text-center space-y-6">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+        <CardContent className="p-6 md:p-12 text-center space-y-4 md:space-y-6">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+            <CheckCircle className="w-10 h-10 md:w-12 md:h-12 text-green-600" />
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-slate-900">Booking Submitted!</h1>
-            <p className="text-lg text-slate-600">
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Booking Submitted!</h1>
+            <p className="text-base md:text-lg text-slate-600">
               Thank you for choosing Hopefordogs Training
             </p>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg text-left space-y-3">
-            <h3 className="font-semibold text-slate-900">What's Next?</h3>
-            <ul className="space-y-2 text-sm text-slate-700">
+          <div className="bg-blue-50 border border-blue-200 p-4 md:p-6 rounded-lg text-left space-y-3">
+            <h3 className="font-semibold text-slate-900 text-base md:text-lg">What's Next?</h3>
+            <ul className="space-y-2 text-sm md:text-base text-slate-700">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-bold mt-0.5">1.</span>
                 <span>We've received your booking and will review it shortly</span>
@@ -58,16 +59,16 @@ export default function BookingConfirmation() {
           </div>
 
           {whatsappConsent ? (
-            <div className="bg-green-50 border border-green-200 p-6 rounded-lg space-y-4">
+            <div className="bg-green-50 border border-green-200 p-4 md:p-6 rounded-lg space-y-3 md:space-y-4">
               <div className="flex items-center justify-center gap-2 text-green-800">
-                <MessageCircle className="w-6 h-6" />
-                <h3 className="font-semibold text-lg">Connect on WhatsApp</h3>
+                <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
+                <h3 className="font-semibold text-base md:text-lg">Connect on WhatsApp</h3>
               </div>
-              <p className="text-sm text-slate-700">
+              <p className="text-sm md:text-base text-slate-700">
                 Click the button below to connect with our WhatsApp assistant. You'll receive your booking confirmation and session reminders directly on WhatsApp!
               </p>
               <WhatsAppButton className="bg-green-600 hover:bg-green-700 w-full" />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs md:text-sm text-slate-500">
                 Need to reschedule? Contact our admin team at{' '}
                 <a 
                   href="https://wa.me/6582228376" 
@@ -80,12 +81,12 @@ export default function BookingConfirmation() {
               </p>
             </div>
           ) : (
-            <div className="bg-green-50 border border-green-200 p-6 rounded-lg space-y-4">
+            <div className="bg-green-50 border border-green-200 p-4 md:p-6 rounded-lg space-y-3 md:space-y-4">
               <div className="flex items-center justify-center gap-2 text-green-800">
-                <MessageCircle className="w-6 h-6" />
-                <h3 className="font-semibold text-lg">Stay Connected on WhatsApp</h3>
+                <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
+                <h3 className="font-semibold text-base md:text-lg">Stay Connected on WhatsApp</h3>
               </div>
-              <p className="text-sm text-slate-700">
+              <p className="text-sm md:text-base text-slate-700">
                 Get instant updates, session reminders, and chat with our team directly on WhatsApp!
               </p>
               <WhatsAppButton className="bg-green-600 hover:bg-green-700 w-full" />
@@ -94,7 +95,7 @@ export default function BookingConfirmation() {
 
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Link to={createPageUrl("BookingSystem")} className="flex-1">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full text-sm md:text-base">
                 <Home className="w-4 h-4 mr-2" />
                 Back to Booking System
               </Button>
