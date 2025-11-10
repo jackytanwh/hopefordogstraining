@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { format, parseISO, getDay } from "date-fns";
-import { Calendar, User, PawPrint, DollarSign, Loader2, Users, MapPin } from "lucide-react";
+import { Calendar, User, PawPrint, DollarSign, Loader2, Users, MapPin, ShoppingCart } from "lucide-react";
 
 export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false }) {
   const [leashAgreement, setLeashAgreement] = useState(false);
@@ -146,6 +146,34 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* Products Section - NEW */}
+        {formData.productSelections && formData.productSelections.length > 0 && (
+          <div className="border-t border-slate-200 pt-6 space-y-3">
+            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5 text-blue-600" />
+              Selected Products
+            </h3>
+            <div className="space-y-2">
+              {formData.productSelections.map((product, idx) => (
+                <div key={idx} className="bg-blue-50 p-3 rounded-lg flex justify-between items-center">
+                  <div>
+                    <p className="font-medium text-slate-900">{product.product_name}</p>
+                    <p className="text-sm text-slate-600">Quantity: {product.quantity}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-blue-600">
+                      ${(product.discounted_price * product.quantity).toFixed(2)}
+                    </p>
+                    <p className="text-xs text-slate-500 line-through">
+                      ${(product.original_price * product.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -333,10 +361,11 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           )}
         </div>
 
-        <div className="border-t border-slate-200 pt-4">
+        {/* Pricing Breakdown */}
+        <div className="border-t border-slate-200 pt-6 space-y-3">
           <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
             <DollarSign className="w-5 h-5" />
-            Pricing
+            Pricing Breakdown
           </h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -351,23 +380,30 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               </div>
             )}
             
-            {pricing.surcharge > 0 && !isGroupClass && (
+            {pricing.surcharge > 0 && (
               <div className="flex justify-between text-orange-600">
-                <span>Weekend Surcharge (5% x {pricing.weekendSessionCount} session{pricing.weekendSessionCount > 1 ? 's' : ''}):</span>
+                <span>Weekend Surcharge (5% for {pricing.weekendSessionCount} session{pricing.weekendSessionCount > 1 ? 's' : ''}):</span>
                 <span className="font-medium">+${pricing.surcharge.toFixed(2)}</span>
               </div>
             )}
             
             {pricing.sentosaSurcharge > 0 && (
               <div className="flex justify-between text-orange-600">
-                <span>Sentosa Island Surcharge ($10/session):</span>
+                <span>Sentosa Surcharge ($10 × {service.sessions} sessions):</span>
                 <span className="font-medium">+${pricing.sentosaSurcharge.toFixed(2)}</span>
               </div>
             )}
+
+            {pricing.productsTotal > 0 && (
+              <div className="flex justify-between text-blue-600">
+                <span>Products Subtotal:</span>
+                <span className="font-medium">${pricing.productsTotal.toFixed(2)}</span>
+              </div>
+            )}
             
-            <div className="flex justify-between pt-3 border-t border-slate-200">
-              <span className="font-bold text-lg">Total:</span>
-              <span className="font-bold text-2xl text-blue-600">${pricing.total.toFixed(2)}</span>
+            <div className="border-t border-slate-200 pt-2 flex justify-between text-lg font-bold">
+              <span>Total Amount:</span>
+              <span className="text-blue-600 text-2xl">${pricing.total.toFixed(2)}</span>
             </div>
           </div>
         </div>

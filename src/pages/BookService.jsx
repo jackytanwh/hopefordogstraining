@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +10,7 @@ import DateTimeSelection from "../components/booking/DateTimeSelection";
 import ParticipantSelection from "../components/booking/ParticipantSelection";
 import ClientInformation from "../components/booking/ClientInformation";
 import FurkidInformation from "../components/booking/FurkidInformation";
+import ProductSelection from "../components/booking/ProductSelection";
 import BookingSummary from "../components/booking/BookingSummary";
 import BehaviouralModificationForm from "../components/booking/BehaviouralModificationForm";
 
@@ -47,7 +47,7 @@ const services = {
   },
   basic_manners_fyog: {
     id: "basic_manners_fyog",
-    name: "Basic Manners FYOG", // Corrected name
+    name: "Basic Manners FYOG",
     price: 520,
     duration: 1,
     sessions: 7,
@@ -85,12 +85,12 @@ const services = {
     maxParticipants: 1,
     buffer: 1
   },
-  on_demand_training: { // Consolidated on-demand services
+  on_demand_training: {
     id: "on_demand_training",
     name: "On-Demand Training",
-    price: 120, // Base price, will be updated based on sessions selected
+    price: 120,
     duration: 1,
-    sessions: 1, // Base sessions, will be updated dynamically
+    sessions: 1,
     minParticipants: 1,
     maxParticipants: 1,
     buffer: 1
@@ -105,8 +105,8 @@ export default function BookService() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     serviceType: serviceId || '',
-    onDemandSessions: null, // New field for on-demand sessions
-    onDemandPrice: null,    // New field for on-demand price
+    onDemandSessions: null,
+    onDemandPrice: null,
     sessionDates: [],
     numberOfFurkids: null,
     numberOfClients: null,
@@ -136,6 +136,8 @@ export default function BookService() {
     furkidInstagram: '',
     enrolmentReason: '',
     howDidYouKnow: '',
+    productSelections: [],
+    productsTotal: 0,
     // Behavioral Modification specific fields
     ownerInvolvedInBite: false,
     biteHistory: false,
@@ -148,14 +150,12 @@ export default function BookService() {
     separationAnxiety: false,
     pottyTrainingIssues: false,
     otherBehavioralIssues: '',
-    // Canine Assessment specific fields
-    requires_assessment_report: false, // New field for Canine Assessment
+    requires_assessment_report: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isOnDemand = serviceId === 'on_demand_training';
   
-  // Get the actual service with updated sessions/price for on-demand
   const getService = () => {
     if (isOnDemand && formData.onDemandSessions) {
       return {
@@ -176,17 +176,17 @@ export default function BookService() {
   const isBehaviouralModification = serviceId === 'behavioural_modification';
   const isCanineAssessment = serviceId === 'canine_assessment';
 
-  const totalSteps = isOnDemand ? 5 : (isGroupClass ? 4 : isFYOG ? 5 : (isBehaviouralModification || isCanineAssessment) ? 4 : 4);
+  // Calculate total steps - add 1 for product selection after furkid info
+  const totalSteps = isOnDemand ? 6 : (isGroupClass ? 5 : isFYOG ? 6 : (isBehaviouralModification || isCanineAssessment) ? 5 : 5);
 
   useEffect(() => {
-    // Check for the base service existence, not the dynamic 'service' object
     if (!serviceId || !services[serviceId]) {
       navigate(createPageUrl("BookingSystem"));
     }
   }, [serviceId, navigate]);
 
   const calculatePricing = () => {
-    if (!service) return { basePrice: 0, discount: 0, surcharge: 0, sentosaSurcharge: 0, total: 0 };
+    if (!service) return { basePrice: 0, discount: 0, surcharge: 0, sentosaSurcharge: 0, productsTotal: 0, total: 0 };
     
     const basePrice = (isFYOG || isGroupClass) ? service.price * (formData.numberOfFurkids || 1) : service.price;
     
@@ -216,14 +216,16 @@ export default function BookService() {
     }
     
     const sentosaSurcharge = formData.isSentosa ? (10 * service.sessions) : 0;
+    const productsTotal = formData.productsTotal || 0;
     
-    const total = basePrice - adoptionDiscount + weekendSurcharge + sentosaSurcharge;
+    const total = basePrice - adoptionDiscount + weekendSurcharge + sentosaSurcharge + productsTotal;
     
     return {
       basePrice,
       discount: adoptionDiscount,
       surcharge: weekendSurcharge,
       sentosaSurcharge,
+      productsTotal,
       total,
       weekendSessionCount: weekendSessions
     };
@@ -266,9 +268,11 @@ export default function BookService() {
       
       const bookingData = {
         service_type: formData.serviceType,
-        service_name: service.name, // Will use dynamic name for on-demand
+        service_name: service.name,
         booking_status: 'pending',
         session_dates: formData.sessionDates,
+        product_selections: formData.productSelections || [],
+        products_total: pricing.productsTotal,
         base_price: pricing.basePrice,
         adoption_discount: pricing.discount,
         weekend_surcharge: pricing.surcharge,
@@ -292,15 +296,12 @@ export default function BookService() {
 
       if (isBehaviouralModification || isCanineAssessment) {
         if (isCanineAssessment) {
-          // For Canine Assessment, store the assessment report requirement
           bookingData.requires_assessment_report = formData.requires_assessment_report;
         } else {
-          // For Behavioural Modification, store the agreement
           const modAgreement = agreements.behavioralModificationUnderstanding || false;
           bookingData.agreement_behavioral_modification_understanding = modAgreement;
         }
         
-        // Store all the behavioural data for both programs
         bookingData.owner_involved_in_bite = formData.ownerInvolvedInBite;
         bookingData.bite_history = formData.biteHistory;
         bookingData.stranger_danger = formData.strangerDanger;
@@ -404,12 +405,10 @@ export default function BookService() {
         }
       }
       
-      // Store booking info for thank you page and confirmation
       sessionStorage.setItem('latestBookingId', booking.id);
-      sessionStorage.setItem('serviceType', formData.serviceType); // Add serviceType to session storage
+      sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', formData.whatsappConsent);
       
-      // Navigate to Thank You page instead of directly to confirmation
       navigate(createPageUrl("ThankYou"));
     } catch (error) {
       console.error("Error creating booking:", error);
@@ -419,7 +418,6 @@ export default function BookService() {
     }
   };
 
-  // Check for the base service existence initially
   if (!services[serviceId]) {
     return null;
   }
@@ -468,6 +466,15 @@ export default function BookService() {
         );
       } else if (step === 5) {
         return (
+          <ProductSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 6) {
+        return (
           <BookingSummary
             service={service}
             formData={formData}
@@ -513,6 +520,15 @@ export default function BookService() {
           />
         );
       } else if (step === 4) {
+        return (
+          <ProductSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 5) {
         return (
           <BookingSummary
             service={service}
@@ -570,6 +586,15 @@ export default function BookService() {
         );
       } else if (step === 5) {
         return (
+          <ProductSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 6) {
+        return (
           <BookingSummary
             service={service}
             formData={formData}
@@ -582,7 +607,6 @@ export default function BookService() {
         );
       }
     } else if (isBehaviouralModification || isCanineAssessment) {
-      // Special flow for Behavioural Modification and Canine Assessment
       if (step === 1) {
         return (
           <DateTimeSelection
@@ -614,6 +638,15 @@ export default function BookService() {
           />
         );
       } else if (step === 4) {
+        return (
+          <ProductSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 5) {
         return (
           <BookingSummary
             service={service}
@@ -659,6 +692,15 @@ export default function BookService() {
           />
         );
       } else if (step === 4) {
+        return (
+          <ProductSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 5) {
         return (
           <BookingSummary
             service={service}
