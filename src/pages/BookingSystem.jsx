@@ -63,11 +63,11 @@ const services = [
     id: "canine_assessment",
     name: "Canine Assessment",
     price: 158,
-    duration: 1.5,
+    duration: 0.75,
     sessions: 1,
     minParticipants: 1,
     maxParticipants: 1,
-    description: "Comprehensive behavioral assessment, single 1.5-hour session"
+    description: "Comprehensive behavioral assessment, single 45-minute session"
   },
   {
     id: "behavioural_modification",
@@ -157,6 +157,18 @@ export default function BookingSystem() {
     }
   };
 
+  const formatDuration = (duration) => {
+    if (duration === 0.75) {
+      return '45 mins';
+    } else if (duration === 1) {
+      return '1 hour';
+    } else if (duration === 1.5) {
+      return '1.5 hours';
+    } else {
+      return `${duration} hour${duration > 1 ? 's' : ''}`;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
@@ -238,7 +250,7 @@ export default function BookingSystem() {
                     
                     <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
                       <Clock className="w-4 h-4 text-purple-600" />
-                      <span>{service.duration} hour{service.duration > 1 ? 's' : ''} per session</span>
+                      <span>{formatDuration(service.duration)} per session</span>
                     </div>
                     
                     <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">

@@ -69,8 +69,8 @@ const services = {
   canine_assessment: {
     id: "canine_assessment",
     name: "Canine Assessment",
-    price: 158, // Changed from 150 to 158
-    duration: 1.5,
+    price: 158,
+    duration: 0.75, // Changed from 1.5 to 0.75
     sessions: 1,
     minParticipants: 1,
     maxParticipants: 1,
@@ -286,11 +286,11 @@ export default function BookService() {
       };
 
       if (isBasicManners) {
-        const leashAgreement = agreements.noRetractableLeash || false;
+        const leashAgreement = agreements.noRet retractableLeash || false;
         const refundsAgreement = agreements.noRefunds || false;
         const behaviorAgreement = agreements.dogBehavior || false;
         
-        bookingData.agreement_no_retractable_leash = leashAgreement;
+        bookingData.agreement_no_ret retractable_leash = leashAgreement;
         bookingData.agreement_no_refunds = refundsAgreement;
         bookingData.agreement_dog_behavior = behaviorAgreement;
       }
