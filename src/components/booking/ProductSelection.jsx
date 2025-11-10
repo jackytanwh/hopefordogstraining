@@ -237,16 +237,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
             </div>
           )}
 
-          {/* Info Note */}
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-600">
-            <p className="flex items-start gap-2">
-              <span className="text-slate-400">ℹ️</span>
-              <span>
-                These products are optional. You can skip this step if you prefer not to purchase any products at this time.
-              </span>
-            </p>
-          </div>
-
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
