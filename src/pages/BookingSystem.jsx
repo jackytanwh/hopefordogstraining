@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -63,7 +62,7 @@ const services = [
   {
     id: "canine_assessment",
     name: "Canine Assessment",
-    price: 150,
+    price: 158,
     duration: 1.5,
     sessions: 1,
     minParticipants: 1,

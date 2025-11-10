@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -68,7 +69,7 @@ const services = {
   canine_assessment: {
     id: "canine_assessment",
     name: "Canine Assessment",
-    price: 150,
+    price: 158, // Changed from 150 to 158
     duration: 1.5,
     sessions: 1,
     minParticipants: 1,
