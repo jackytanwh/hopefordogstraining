@@ -10,21 +10,24 @@ const PRODUCTS = [
     name: 'Rinse-Free Fur Fresh!',
     description: 'Designed to clean your pet\'s coat without the need for water. The foam cleanser works by lifting dirt and grime from your pet\'s fur, leaving it clean, soft, and smelling fresh. The no-rinse foam formula is ideal for pets who dislike water or those who require a quick clean-up between baths. Gentle on your pet\'s skin and coat.',
     originalPrice: 48,
-    discountedPrice: 40.80 // 15% off
+    discountedPrice: 40.80,
+    imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/9c6ac8266_Rinsefreefurfresh.png'
   },
   {
     id: 'paw_protect',
     name: 'Paw Protéct 3-in-1 Cleanser',
     description: 'The rinse-free Paw Protéct 3-in-1 Cleanser is formulated with gentle yet effective ingredients that help cleanse, protect, and moisturise your dog\'s paws. The non-irritating foaming formula is safe for all skin types. Say goodbye to dirty paws and hello to a more convenient and efficient way of keeping your dog\'s paws clean and fresh.',
     originalPrice: 48,
-    discountedPrice: 40.80 // 15% off
+    discountedPrice: 40.80,
+    imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/142401e31_PawProtect.png'
   },
   {
     id: 'flea_tick',
     name: 'Flea & Tick Defence Plus',
     description: 'Our innovative foam formula provides a powerful shield against fleas and ticks. It uses a natural blend of ingredients to create an environment that repels these pests, keeping your dog safe and comfortable. Free from harsh chemicals, pesticides, and artificial fragrances, it\'s gentle on your dog\'s skin and suitable for everyday use.',
     originalPrice: 42,
-    discountedPrice: 35.70 // 15% off
+    discountedPrice: 35.70,
+    imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/f06c467f8_flea.png'
   }
 ];
 
@@ -129,9 +132,19 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                 }`}
               >
                 <div className="space-y-3">
-                  {/* Product Header */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
+                  {/* Product Header with Image */}
+                  <div className="flex items-start gap-4">
+                    {/* Product Image */}
+                    <div className="flex-shrink-0">
+                      <img 
+                        src={product.imageUrl} 
+                        alt={product.name}
+                        className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-lg bg-white"
+                      />
+                    </div>
+                    
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-slate-900 text-base md:text-lg">
                         {product.name}
                       </h3>
@@ -145,10 +158,10 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                   <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
                     <div className="space-y-1">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-xl md:text-2xl font-bold text-blue-600">
+                        <span className="text-lg md:text-xl font-bold text-blue-600">
                           ${product.discountedPrice.toFixed(2)}
                         </span>
-                        <span className="text-sm text-slate-500 line-through">
+                        <span className="text-xs md:text-sm text-slate-500 line-through">
                           ${product.originalPrice.toFixed(2)}
                         </span>
                       </div>
