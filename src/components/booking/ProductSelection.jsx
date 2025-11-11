@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Sparkles, ShoppingCart, Leaf, Plus, Minus, Maximize2 } from "lucide-react";
+import { Sparkles, ShoppingCart, Leaf, Plus, Minus, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const PRODUCTS = [
   {
@@ -12,7 +12,10 @@ const PRODUCTS = [
     description: 'Designed to clean your pet\'s coat without the need for water. The foam cleanser works by lifting dirt and grime from your pet\'s fur, leaving it clean, soft, and smelling fresh. The no-rinse foam formula is ideal for pets who dislike water or those who require a quick clean-up between baths. Gentle on your pet\'s skin and coat.',
     originalPrice: 48,
     discountedPrice: 40.80,
-    imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/9c6ac8266_Rinsefreefurfresh.png'
+    imageUrls: [
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/9c6ac8266_Rinsefreefurfresh.png',
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/0effce2ad_RinseFreeFurFresh1.jpg'
+    ]
   },
   {
     id: 'paw_protect',
@@ -20,7 +23,10 @@ const PRODUCTS = [
     description: 'The rinse-free Paw Protéct 3-in-1 Cleanser is formulated with gentle yet effective ingredients that help cleanse, protect, and moisturise your dog\'s paws. The non-irritating foaming formula is safe for all skin types. Say goodbye to dirty paws and hello to a more convenient and efficient way of keeping your dog\'s paws clean and fresh.',
     originalPrice: 48,
     discountedPrice: 40.80,
-    imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/142401e31_PawProtect.png'
+    imageUrls: [
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/142401e31_PawProtect.png',
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/69e87cf70_PawCleanser1.jpg'
+    ]
   },
   {
     id: 'flea_tick',
@@ -28,7 +34,10 @@ const PRODUCTS = [
     description: 'Our innovative foam formula provides a powerful shield against fleas and ticks. It uses a natural blend of ingredients to create an environment that repels these pests, keeping your dog safe and comfortable. Free from harsh chemicals, pesticides, and artificial fragrances, it\'s gentle on your dog\'s skin and suitable for everyday use.',
     originalPrice: 42,
     discountedPrice: 35.70,
-    imageUrl: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/f06c467f8_flea.png'
+    imageUrls: [
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/f06c467f8_flea.png',
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/08857c17b_RinseFreeFurFresh.jpg'
+    ]
   }
 ];
 
@@ -40,6 +49,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
     }, {}) || {}
   );
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const handleQuantityChange = (productId, change) => {
     setQuantities(prev => {
@@ -85,6 +95,23 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
       productsTotal: 0
     });
     onNext();
+  };
+
+  const handleImageClick = (product, index = 0) => {
+    setSelectedImage(product);
+    setSelectedImageIndex(index);
+  };
+
+  const handleNextImage = () => {
+    if (selectedImage && selectedImageIndex < selectedImage.imageUrls.length - 1) {
+      setSelectedImageIndex(selectedImageIndex + 1);
+    }
+  };
+
+  const handlePreviousImage = () => {
+    if (selectedImageIndex > 0) {
+      setSelectedImageIndex(selectedImageIndex - 1);
+    }
   };
 
   return (
@@ -135,17 +162,17 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                   }`}
                 >
                   <div className="space-y-3">
-                    {/* Product Header with Image */}
+                    {/* Product Header with Images */}
                     <div className="flex items-start gap-4">
-                      {/* Product Image - Clickable */}
-                      <div className="flex-shrink-0 relative group">
+                      {/* Product Images - Clickable */}
+                      <div className="flex-shrink-0 space-y-2">
                         <button
                           type="button"
-                          onClick={() => setSelectedImage(product)}
-                          className="relative rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
+                          onClick={() => handleImageClick(product, 0)}
+                          className="relative rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all group"
                         >
                           <img 
-                            src={product.imageUrl} 
+                            src={product.imageUrls[0]} 
                             alt={product.name}
                             className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-lg bg-white transition-transform group-hover:scale-105"
                           />
@@ -153,7 +180,28 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                             <Maximize2 className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </button>
-                        <p className="text-xs text-slate-500 text-center mt-1">Click to zoom</p>
+                        
+                        {/* Additional image thumbnails */}
+                        {product.imageUrls.length > 1 && (
+                          <div className="flex gap-1">
+                            {product.imageUrls.slice(1).map((imageUrl, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                onClick={() => handleImageClick(product, index + 1)}
+                                className="relative rounded overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all group w-10 h-10"
+                              >
+                                <img 
+                                  src={imageUrl} 
+                                  alt={`${product.name} ${index + 2}`}
+                                  className="w-full h-full object-cover bg-white transition-transform group-hover:scale-110"
+                                />
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        
+                        <p className="text-xs text-slate-500 text-center">Click to zoom</p>
                       </div>
                       
                       {/* Product Info */}
@@ -263,20 +311,74 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
         </CardContent>
       </Card>
 
-      {/* Image Zoom Dialog */}
+      {/* Image Zoom Dialog with Gallery */}
       <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">{selectedImage?.name}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="flex justify-center bg-slate-50 rounded-lg p-6">
+            {/* Main Image with Navigation */}
+            <div className="relative flex justify-center bg-slate-50 rounded-lg p-6">
+              {selectedImage && selectedImageIndex > 0 && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-10"
+                  onClick={handlePreviousImage}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+              )}
+              
               <img 
-                src={selectedImage?.imageUrl} 
+                src={selectedImage?.imageUrls[selectedImageIndex]} 
                 alt={selectedImage?.name}
                 className="max-h-[60vh] w-auto object-contain"
               />
+              
+              {selectedImage && selectedImageIndex < selectedImage.imageUrls.length - 1 && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-10"
+                  onClick={handleNextImage}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </Button>
+              )}
             </div>
+            
+            {/* Image Counter */}
+            {selectedImage && selectedImage.imageUrls.length > 1 && (
+              <div className="text-center text-sm text-slate-600">
+                Image {selectedImageIndex + 1} of {selectedImage.imageUrls.length}
+              </div>
+            )}
+            
+            {/* Thumbnail Navigation */}
+            {selectedImage && selectedImage.imageUrls.length > 1 && (
+              <div className="flex justify-center gap-2">
+                {selectedImage.imageUrls.map((url, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                      index === selectedImageIndex 
+                        ? 'border-blue-600 ring-2 ring-blue-200' 
+                        : 'border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <img 
+                      src={url} 
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+            
             <div className="space-y-2">
               <p className="text-sm text-slate-600 leading-relaxed">
                 {selectedImage?.description}
