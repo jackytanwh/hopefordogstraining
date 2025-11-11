@@ -14,7 +14,7 @@ const PRODUCTS = [
     discountedPrice: 40.80,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/9c6ac8266_Rinsefreefurfresh.png',
-      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/0effce2ad_RinseFreeFurFresh1.jpg'
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/08857c17b_RinseFreeFurFresh.jpg'
     ]
   },
   {
@@ -36,7 +36,7 @@ const PRODUCTS = [
     discountedPrice: 35.70,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/f06c467f8_flea.png',
-      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/08857c17b_RinseFreeFurFresh.jpg'
+      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/0effce2ad_RinseFreeFurFresh1.jpg'
     ]
   }
 ];
