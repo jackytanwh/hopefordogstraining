@@ -1,49 +1,52 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Check } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Check, Calendar, DollarSign } from "lucide-react";
 
-export default function OnDemandSessionSelection({ formData, setFormData, onNext }) {
-  const [selectedSessions, setSelectedSessions] = useState(formData.onDemandSessions || null);
+const SESSION_PACKAGES = [
+  {
+    sessions: 1,
+    price: 120,
+    description: "Perfect for a quick tune-up or addressing a specific behavior"
+  },
+  {
+    sessions: 2,
+    price: 230,
+    savings: 10,
+    description: "Great for building on basic skills or tackling multiple issues"
+  },
+  {
+    sessions: 3,
+    price: 330,
+    savings: 30,
+    description: "Best value! Comprehensive training with consistent follow-up"
+  }
+];
+
+export default function OnDemandSessionSelection({ formData, setFormData, onNext, onBack }) {
+  const [selectedPackage, setSelectedPackage] = useState(
+    formData.onDemandSessions || null
+  );
   const [error, setError] = useState('');
 
-  const sessionOptions = [
-    {
-      sessions: 1,
-      price: 120,
-      pricePerSession: 120,
-      description: "Single session - perfect for quick training needs"
-    },
-    {
-      sessions: 2,
-      price: 220,
-      pricePerSession: 110,
-      description: "Two sessions - better value at $110 per session",
-      popular: true
-    },
-    {
-      sessions: 3,
-      price: 315,
-      pricePerSession: 105,
-      description: "Three sessions - best value at $105 per session"
-    }
-  ];
+  const handlePackageSelect = (sessions) => {
+    setSelectedPackage(sessions);
+    setError('');
+  };
 
   const handleContinue = () => {
-    if (!selectedSessions) {
-      setError('Please select the number of sessions');
+    if (!selectedPackage) {
+      setError('Please select a session package to continue');
       return;
     }
 
-    const selectedOption = sessionOptions.find(opt => opt.sessions === selectedSessions);
-    
+    const packageData = SESSION_PACKAGES.find(p => p.sessions === selectedPackage);
     setFormData({
       ...formData,
-      onDemandSessions: selectedSessions,
-      onDemandPrice: selectedOption.price,
-      serviceType: `on_demand_${selectedSessions}_session${selectedSessions > 1 ? 's' : ''}`
+      onDemandSessions: selectedPackage,
+      onDemandPrice: packageData.price
     });
     
     onNext();
@@ -52,116 +55,100 @@ export default function OnDemandSessionSelection({ formData, setFormData, onNext
   return (
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
-        <CardTitle>Select Number of Sessions</CardTitle>
+        <CardTitle>Choose Your Training Package</CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-slate-700">
-          <p className="font-semibold mb-2">On-Demand Training</p>
-          <p>Flexible training sessions tailored to your specific needs. Choose the number of sessions that works best for you.</p>
-          {selectedSessions > 1 && (
-            <p className="mt-2 text-blue-700">
-              💡 Sessions will be scheduled 3 weeks apart by default, or you can choose your own dates.
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-3">
-          <Label>Choose your package *</Label>
-          <RadioGroup
-            value={selectedSessions?.toString()}
-            onValueChange={(value) => {
-              setSelectedSessions(parseInt(value));
-              if (error) setError('');
-            }}
-          >
-            {sessionOptions.map((option) => (
-              <div
-                key={option.sessions}
-                className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
-                  selectedSessions === option.sessions
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
-                }`}
-              >
-                {option.popular && (
-                  <div className="absolute -top-2 right-4">
-                    <span className="bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                
-                <div className="flex items-start gap-3">
-                  <RadioGroupItem 
-                    value={option.sessions.toString()} 
-                    id={`session-${option.sessions}`}
-                    className="mt-1"
-                  />
-                  <Label 
-                    htmlFor={`session-${option.sessions}`} 
-                    className="flex-1 cursor-pointer"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-lg text-slate-900">
-                          {option.sessions} Session{option.sessions > 1 ? 's' : ''}
-                        </span>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-blue-600">
-                            ${option.price}
-                          </div>
-                          {option.sessions > 1 && (
-                            <div className="text-xs text-slate-500">
-                              ${option.pricePerSession} per session
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-sm text-slate-600">{option.description}</p>
-                      
-                      {selectedSessions === option.sessions && (
-                        <div className="flex items-center gap-2 text-sm text-green-600 font-medium pt-2">
-                          <Check className="w-4 h-4" />
-                          Selected
-                        </div>
-                      )}
-                    </div>
-                  </Label>
-                </div>
-              </div>
-            ))}
-          </RadioGroup>
-          
-          {error && (
-            <p className="text-sm text-red-600">{error}</p>
-          )}
-        </div>
-
-        {selectedSessions && (
-          <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
-            <p className="text-sm font-semibold text-green-900 mb-2">Package Summary:</p>
-            <ul className="text-sm text-green-800 space-y-1">
-              <li>• {selectedSessions} training session{selectedSessions > 1 ? 's' : ''}</li>
-              <li>• ${sessionOptions.find(opt => opt.sessions === selectedSessions)?.pricePerSession} per session</li>
-              <li>• Total: ${sessionOptions.find(opt => opt.sessions === selectedSessions)?.price}</li>
-              {selectedSessions > 1 && (
-                <li>• Sessions scheduled 3 weeks apart (customizable)</li>
-              )}
-            </ul>
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg text-sm">
+            {error}
           </div>
         )}
 
-        <div className="flex gap-3 pt-4">
-          <Button 
-            variant="outline" 
-            onClick={() => window.history.back()}
+        <RadioGroup value={selectedPackage?.toString()} onValueChange={(value) => handlePackageSelect(parseInt(value))}>
+          <div className="space-y-4">
+            {SESSION_PACKAGES.map((pkg) => {
+              const isSelected = selectedPackage === pkg.sessions;
+              
+              return (
+                <div
+                  key={pkg.sessions}
+                  className={`border rounded-lg p-4 transition-all cursor-pointer ${
+                    isSelected 
+                      ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' 
+                      : 'border-slate-200 hover:border-blue-300'
+                  }`}
+                  onClick={() => handlePackageSelect(pkg.sessions)}
+                >
+                  <div className="flex items-start gap-4">
+                    <RadioGroupItem 
+                      value={pkg.sessions.toString()} 
+                      id={`package-${pkg.sessions}`}
+                      className="mt-1"
+                    />
+                    <div className="flex-1">
+                      <Label 
+                        htmlFor={`package-${pkg.sessions}`}
+                        className="cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-5 h-5 text-blue-600" />
+                            <span className="text-lg font-semibold text-slate-900">
+                              {pkg.sessions} Session{pkg.sessions > 1 ? 's' : ''}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <DollarSign className="w-5 h-5 text-green-600" />
+                            <span className="text-xl font-bold text-blue-600">
+                              ${pkg.price}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <p className="text-sm text-slate-600 mb-2">
+                          {pkg.description}
+                        </p>
+
+                        {pkg.savings && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Check className="w-4 h-4 text-green-600" />
+                            <span className="text-green-700 font-medium">
+                              Save ${pkg.savings}! (${(pkg.price / pkg.sessions).toFixed(2)} per session)
+                            </span>
+                          </div>
+                        )}
+
+                        {!pkg.savings && (
+                          <p className="text-sm text-slate-500">
+                            ${pkg.price} per session
+                          </p>
+                        )}
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </RadioGroup>
+
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-slate-700">
+          <p className="font-semibold mb-2">📅 Flexible Scheduling</p>
+          <p>Sessions can be scheduled every 3 weeks to give you time to practice between sessions.</p>
+        </div>
+
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            onClick={onBack}
             className="flex-1"
           >
-            Back
+            Back to Services
           </Button>
-          <Button 
-            onClick={handleContinue} 
+          <Button
+            onClick={handleContinue}
             className="flex-1"
+            disabled={!selectedPackage}
           >
             Continue to Schedule
           </Button>
