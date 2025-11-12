@@ -311,7 +311,7 @@ export default function BookService() {
       };
 
       if (isBasicManners) {
-        bookingData.agreement_no_retractable_leash = Boolean(agreements?.noRet retractableLeash);
+        bookingData.agreement_no_retractable_leash = Boolean(agreements?.noRetractableLeash);
         bookingData.agreement_no_refunds = Boolean(agreements?.noRefunds);
         bookingData.agreement_dog_behavior = Boolean(agreements?.dogBehavior);
       }
@@ -357,7 +357,6 @@ export default function BookService() {
         bookingData.adoption_proof_url = formData.adoptionProofUrl || '';
         bookingData.furkid_name = formData.furkidName || '';
         
-        // Construct proper date from dobDay, dobMonth, dobYear
         if (formData.dobDay && formData.dobMonth && formData.dobYear) {
           const month = formData.dobMonth.toString().padStart(2, '0');
           const day = formData.dobDay.toString().padStart(2, '0');
