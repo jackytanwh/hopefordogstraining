@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -286,6 +287,10 @@ export default function BookService() {
 
   const handleSubmit = async (agreements) => {
     setIsSubmitting(true);
+    
+    console.log('=== BOOKING SUBMISSION STARTED ===');
+    console.log('Raw formData:', JSON.stringify(formData, null, 2));
+    
     try {
       const pricing = calculatePricing();
       
@@ -350,10 +355,19 @@ export default function BookService() {
         bookingData.adoption_proof_url = formData.adoptionProofUrl || '';
         bookingData.furkid_name = formData.furkidName || '';
         
+        console.log('Checking DOB values:', {
+          dobDay: formData.dobDay,
+          dobMonth: formData.dobMonth,
+          dobYear: formData.dobYear
+        });
+        
         if (formData.dobDay && formData.dobMonth && formData.dobYear) {
           const month = formData.dobMonth.toString().padStart(2, '0');
           const day = formData.dobDay.toString().padStart(2, '0');
           bookingData.furkid_dob = `${formData.dobYear}-${month}-${day}`;
+          console.log('Constructed furkid_dob:', bookingData.furkid_dob);
+        } else {
+          console.warn('Missing DOB components - skipping furkid_dob');
         }
         
         bookingData.furkid_age = formData.furkidAge || '';
@@ -376,11 +390,13 @@ export default function BookService() {
         }
       }
 
-      console.log('About to submit booking with data:', JSON.stringify(bookingData, null, 2));
+      console.log('=== FINAL BOOKING DATA TO SUBMIT ===');
+      console.log(JSON.stringify(bookingData, null, 2));
       
+      console.log('Calling base44.entities.Booking.create...');
       const booking = await base44.entities.Booking.create(bookingData);
       
-      console.log('Booking created successfully:', booking.id);
+      console.log('✅ Booking created successfully! ID:', booking.id);
       
       if (isFYOG || isGroupClass) {
         try {
@@ -421,9 +437,9 @@ export default function BookService() {
             await base44.entities.Client.create(clientData);
           }
           
-          console.log('Client records created successfully for FYOG/Group Class booking');
+          console.log('✅ Client records created successfully');
         } catch (error) {
-          console.error('Error creating Client records:', error);
+          console.error('❌ Error creating Client records:', error);
           console.error('Client creation error details:', error.response?.data);
         }
       }
@@ -432,9 +448,9 @@ export default function BookService() {
         try {
           const sendConfirmationModule = await import("@/functions/sendBookingConfirmation");
           await sendConfirmationModule.sendBookingConfirmation({ booking });
-          console.log('WhatsApp booking confirmation sent successfully');
+          console.log('✅ WhatsApp confirmation sent');
         } catch (error) {
-          console.error('Error sending WhatsApp confirmation:', error);
+          console.error('⚠️ Error sending WhatsApp confirmation:', error);
         }
       }
       
@@ -442,24 +458,32 @@ export default function BookService() {
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
+      console.log('=== BOOKING SUBMISSION COMPLETE ===');
       navigate(createPageUrl("ThankYou"));
     } catch (error) {
-      console.error("Error creating booking:", error);
-      console.error("Full error object:", JSON.stringify(error, null, 2));
+      console.error('❌❌❌ ERROR CREATING BOOKING ❌❌❌');
+      console.error('Error object:', error);
+      console.error('Error message:', error.message);
+      console.error('Error response:', error.response);
+      
       if (error.response) {
-        console.error("Error response:", JSON.stringify(error.response.data, null, 2));
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', JSON.stringify(error.response.data, null, 2));
+        console.error('Response headers:', error.response.headers);
       }
       
-      let errorMessage = 'There was an error processing your booking.\n\n';
+      let errorMessage = '❌ Booking submission failed!\n\n';
       if (error.response?.data?.message) {
-        errorMessage += error.response.data.message;
+        errorMessage += '📋 Error: ' + error.response.data.message;
       } else if (error.response?.data?.detail) {
-        errorMessage += error.response.data.detail;
+        errorMessage += '📋 Error: ' + error.response.data.detail;
       } else if (error.message) {
-        errorMessage += error.message;
+        errorMessage += '📋 Error: ' + error.message;
       } else {
         errorMessage += 'Please check all fields and try again.';
       }
+      
+      errorMessage += '\n\n💡 Check the browser console (F12) for detailed error information.';
       
       alert(errorMessage);
     } finally {
