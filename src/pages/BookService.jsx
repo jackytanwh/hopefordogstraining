@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -236,7 +237,12 @@ export default function BookService() {
   };
 
   const handleBack = () => {
-    setStep(step - 1);
+    if (step === 1) {
+      // If on first step, go back to booking system
+      navigate(createPageUrl("BookingSystem"));
+    } else {
+      setStep(step - 1);
+    }
   };
 
   const camelToSnake = (str) => {
@@ -430,6 +436,7 @@ export default function BookService() {
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
+            onBack={handleBack}
           />
         );
       } else if (step === 2) {
@@ -494,7 +501,7 @@ export default function BookService() {
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
-            onBack={() => navigate(createPageUrl("BookingSystem"))}
+            onBack={handleBack}
           />
         );
       } else if (step === 2) {
@@ -550,6 +557,7 @@ export default function BookService() {
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
+            onBack={handleBack}
           />
         );
       } else if (step === 2) {
@@ -614,6 +622,7 @@ export default function BookService() {
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
+            onBack={handleBack}
           />
         );
       } else if (step === 2) {
@@ -667,6 +676,7 @@ export default function BookService() {
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
+            onBack={handleBack}
           />
         );
       } else if (step === 2) {
