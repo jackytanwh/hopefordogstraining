@@ -264,9 +264,21 @@ export default function BookService() {
   const transformFurkidFields = (furkid) => {
     const transformed = {};
     Object.keys(furkid).forEach(key => {
+      // Skip the DOB component fields as we'll construct the date separately
+      if (key === 'dobDay' || key === 'dobMonth' || key === 'dobYear') {
+        return;
+      }
       const snakeKey = camelToSnake(key);
       transformed[snakeKey] = furkid[key];
     });
+    
+    // Construct proper date from dobDay, dobMonth, dobYear if available
+    if (furkid.dobDay && furkid.dobMonth && furkid.dobYear) {
+      const month = furkid.dobMonth.toString().padStart(2, '0');
+      const day = furkid.dobDay.toString().padStart(2, '0');
+      transformed.furkid_dob = `${furkid.dobYear}-${month}-${day}`;
+    }
+    
     return transformed;
   };
 
@@ -294,49 +306,40 @@ export default function BookService() {
         sentosa_surcharge_per_session: formData.isSentosa ? 10 : 0,
         total_sentosa_surcharge: pricing.sentosaSurcharge,
         total_price: pricing.total,
-        whatsapp_consent: formData.whatsappConsent,
-        how_did_you_know: formData.howDidYouKnow
+        whatsapp_consent: formData.whatsappConsent || false,
+        how_did_you_know: formData.howDidYouKnow || null
       };
 
       if (isBasicManners) {
-        const leashAgreement = agreements.noRetractableLeash || false;
-        const refundsAgreement = agreements.noRefunds || false;
-        const behaviorAgreement = agreements.dogBehavior || false;
-        
-        bookingData.agreement_no_retractable_leash = leashAgreement;
-        bookingData.agreement_no_refunds = refundsAgreement;
-        bookingData.agreement_dog_behavior = behaviorAgreement;
+        bookingData.agreement_no_retractable_leash = agreements.noRetractableLeash || false;
+        bookingData.agreement_no_refunds = agreements.noRefunds || false;
+        bookingData.agreement_dog_behavior = agreements.dogBehavior || false;
       }
 
       if (isBehaviouralModification || isCanineAssessment) {
         if (isCanineAssessment) {
-          bookingData.requires_assessment_report = formData.requires_assessment_report;
+          bookingData.requires_assessment_report = formData.requires_assessment_report || false;
         } else {
-          const modAgreement = agreements.behavioralModificationUnderstanding || false;
-          bookingData.agreement_behavioral_modification_understanding = modAgreement;
+          bookingData.agreement_behavioral_modification_understanding = agreements.behavioralModificationUnderstanding || false;
         }
         
-        bookingData.owner_involved_in_bite = formData.ownerInvolvedInBite;
-        bookingData.bite_history = formData.biteHistory;
-        bookingData.stranger_danger = formData.strangerDanger;
-        bookingData.resource_guarding = formData.resourceGuarding;
-        bookingData.fearful = formData.fearful;
-        bookingData.inappropriate_reactivity = formData.inappropriateReactivity;
-        bookingData.excessive_vocalization = formData.excessiveVocalization;
-        bookingData.destructive_behavior = formData.destructiveBehavior;
-        bookingData.separation_anxiety = formData.separationAnxiety;
-        bookingData.potty_training_issues = formData.pottyTrainingIssues;
-        bookingData.other_behavioral_issues = formData.otherBehavioralIssues;
+        bookingData.owner_involved_in_bite = formData.ownerInvolvedInBite || false;
+        bookingData.bite_history = formData.biteHistory || false;
+        bookingData.stranger_danger = formData.strangerDanger || false;
+        bookingData.resource_guarding = formData.resourceGuarding || false;
+        bookingData.fearful = formData.fearful || false;
+        bookingData.inappropriate_reactivity = formData.inappropriateReactivity || false;
+        bookingData.excessive_vocalization = formData.excessiveVocalization || false;
+        bookingData.destructive_behavior = formData.destructiveBehavior || false;
+        bookingData.separation_anxiety = formData.separationAnxiety || false;
+        bookingData.potty_training_issues = formData.pottyTrainingIssues || false;
+        bookingData.other_behavioral_issues = formData.otherBehavioralIssues || '';
       }
 
       if (isKinderPuppy) {
-        const curriculumAgreement = agreements.kinderPuppyCurriculum || false;
-        const pottyAgreement = agreements.kinderPuppyPottyTraining || false;
-        const refundAgreement = agreements.kinderPuppyRefundPolicy || false;
-        
-        bookingData.agreement_kinder_puppy_curriculum = curriculumAgreement;
-        bookingData.agreement_kinder_puppy_potty_training = pottyAgreement;
-        bookingData.agreement_kinder_puppy_refund_policy = refundAgreement;
+        bookingData.agreement_kinder_puppy_curriculum = agreements.kinderPuppyCurriculum || false;
+        bookingData.agreement_kinder_puppy_potty_training = agreements.kinderPuppyPottyTraining || false;
+        bookingData.agreement_kinder_puppy_refund_policy = agreements.kinderPuppyRefundPolicy || false;
       }
 
       if (isFYOG || isGroupClass) {
@@ -350,22 +353,24 @@ export default function BookService() {
         bookingData.client_mobile = formData.clientMobile;
         bookingData.client_address = formData.clientAddress;
         bookingData.client_postal_code = formData.clientPostalCode;
-        bookingData.is_adopted = formData.isAdopted;
+        bookingData.is_adopted = formData.isAdopted || false;
         bookingData.adoption_proof_url = formData.adoptionProofUrl || '';
         bookingData.furkid_name = formData.furkidName;
         
         // Construct proper date from dobDay, dobMonth, dobYear
         if (formData.dobDay && formData.dobMonth && formData.dobYear) {
-          bookingData.furkid_dob = `${formData.dobYear}-${formData.dobMonth.padStart(2, '0')}-${formData.dobDay.padStart(2, '0')}`;
+          const month = formData.dobMonth.toString().padStart(2, '0');
+          const day = formData.dobDay.toString().padStart(2, '0');
+          bookingData.furkid_dob = `${formData.dobYear}-${month}-${day}`;
         }
         
         bookingData.furkid_age = formData.furkidAge;
         bookingData.furkid_breed = formData.furkidBreed;
         bookingData.furkid_gender = formData.furkidGender;
-        bookingData.furkid_sterilised = formData.furkidSterilised;
+        bookingData.furkid_sterilised = formData.furkidSterilised || false;
         bookingData.furkid_acquired_from = formData.furkidAcquiredFrom;
         bookingData.furkid_joined_family = formData.furkidJoinedFamily;
-        bookingData.first_time_owner = formData.firstTimeOwner;
+        bookingData.first_time_owner = formData.firstTimeOwner || false;
         bookingData.furkid_diet = formData.furkidDiet;
         bookingData.furkid_sleep_area = formData.furkidSleepArea;
         bookingData.walking_frequency = formData.walkingFrequency;
@@ -393,23 +398,23 @@ export default function BookService() {
             const client = formData.clients[i] || formData.clients[0];
             
             const clientData = {
-              client_name: client.clientName,
-              mobile_number: client.clientMobile,
-              dog_name: furkid.furkidName,
-              dog_age: furkid.furkidAge,
-              breed: furkid.furkidBreed,
-              gender: furkid.furkidGender,
+              client_name: client.clientName || client.client_name,
+              mobile_number: client.clientMobile || client.client_mobile,
+              dog_name: furkid.furkidName || furkid.furkid_name,
+              dog_age: furkid.furkidAge || furkid.furkid_age,
+              breed: furkid.furkidBreed || furkid.furkid_breed,
+              gender: furkid.furkidGender || furkid.furkid_gender,
               program: serviceId === 'kinder_puppy_fyog' ? 'kinder_puppy' : 
                        serviceId === 'basic_manners_fyog' ? 'basic_manners_fyog' :
                        serviceId === 'basic_manners_group_class' ? 'basic_manners_group' : 'basic_manners',
               training_status: 'in_progress',
-              diet: furkid.furkidDiet,
-              sleep_area: furkid.furkidSleepArea,
-              primary_concerns: furkid.enrolmentReason
+              diet: furkid.furkidDiet || furkid.furkid_diet,
+              sleep_area: furkid.furkidSleepArea || furkid.furkid_sleep_area,
+              primary_concerns: furkid.enrolmentReason || furkid.enrolment_reason || ''
             };
             
             if (isBasicManners) {
-              clientData.food_allergy = furkid.hasFoodAllergy || false;
+              clientData.food_allergy = furkid.hasFoodAllergy || furkid.has_food_allergy || false;
             }
             
             if (formData.sessionDates && formData.sessionDates.length > 0) {
