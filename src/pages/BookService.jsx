@@ -272,8 +272,14 @@ export default function BookService() {
     try {
       const pricing = calculatePricing();
       
+      // Map on-demand service to correct enum value based on number of sessions
+      let actualServiceType = formData.serviceType;
+      if (formData.serviceType === 'on_demand_training' && formData.onDemandSessions) {
+        actualServiceType = `on_demand_${formData.onDemandSessions}_session${formData.onDemandSessions > 1 ? 's' : ''}`;
+      }
+      
       const bookingData = {
-        service_type: formData.serviceType,
+        service_type: actualServiceType,
         service_name: service.name,
         booking_status: 'pending',
         session_dates: formData.sessionDates,
@@ -291,7 +297,7 @@ export default function BookService() {
       };
 
       if (isBasicManners) {
-        const leashAgreement = agreements.noRetractableLeash || false;
+        const leashAgreement = agreements.noRet retractableLeash || false;
         const refundsAgreement = agreements.noRefunds || false;
         const behaviorAgreement = agreements.dogBehavior || false;
         
