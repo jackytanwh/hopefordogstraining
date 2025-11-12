@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +21,7 @@ const sundayTimeSlots = [
   "13:00", "13:30", "14:00", "14:30", "15:00", "15:30"
 ];
 
-export default function DateTimeSelection({ service, formData, setFormData, onNext }) {
+export default function DateTimeSelection({ service, formData, setFormData, onNext, onBack }) {
   const [selectedDates, setSelectedDates] = useState(formData.sessionDates || []);
   const [errors, setErrors] = useState({});
   const [schedulingMode, setSchedulingMode] = useState('recurring');
@@ -807,12 +808,21 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        <Button 
-          onClick={validateAndContinue} 
-          className="w-full" 
-        >
-          Continue to Your Information
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            onClick={onBack}
+            className="flex-1"
+          >
+            Back to Services
+          </Button>
+          <Button 
+            onClick={validateAndContinue} 
+            className="flex-1" 
+          >
+            Continue to Your Information
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
