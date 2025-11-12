@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -139,7 +138,6 @@ export default function BookService() {
     howDidYouKnow: '',
     productSelections: [],
     productsTotal: 0,
-    // Behavioral Modification specific fields
     ownerInvolvedInBite: false,
     biteHistory: false,
     strangerDanger: false,
@@ -177,7 +175,6 @@ export default function BookService() {
   const isBehaviouralModification = serviceId === 'behavioural_modification';
   const isCanineAssessment = serviceId === 'canine_assessment';
 
-  // Calculate total steps - add 1 for product selection after furkid info
   const totalSteps = isOnDemand ? 6 : (isGroupClass ? 5 : isFYOG ? 6 : (isBehaviouralModification || isCanineAssessment) ? 5 : 5);
 
   useEffect(() => {
@@ -238,7 +235,6 @@ export default function BookService() {
 
   const handleBack = () => {
     if (step === 1) {
-      // If on first step, go back to booking system
       navigate(createPageUrl("BookingSystem"));
     } else {
       setStep(step - 1);
@@ -272,7 +268,6 @@ export default function BookService() {
     try {
       const pricing = calculatePricing();
       
-      // Map on-demand service to correct enum value based on number of sessions
       let actualServiceType = formData.serviceType;
       if (formData.serviceType === 'on_demand_training' && formData.onDemandSessions) {
         actualServiceType = `on_demand_${formData.onDemandSessions}_session${formData.onDemandSessions > 1 ? 's' : ''}`;
@@ -297,7 +292,7 @@ export default function BookService() {
       };
 
       if (isBasicManners) {
-        const leashAgreement = agreements.noRet retractableLeash || false;
+        const leashAgreement = agreements.noRetractableLeash || false;
         const refundsAgreement = agreements.noRefunds || false;
         const behaviorAgreement = agreements.dogBehavior || false;
         
