@@ -58,7 +58,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
     }
     
     const agreements = {
-      noRetractableLeash: leashAgreement,
+      noRet retractableLeash: leashAgreement,
       noRefunds: refundAgreement,
       dogBehavior: behaviorAgreement,
       behavioralModificationUnderstanding: modificationAgreement,
@@ -394,10 +394,25 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               </div>
             )}
 
-            {pricing.productsTotal > 0 && (
-              <div className="flex justify-between text-blue-600">
-                <span>Products Subtotal:</span>
-                <span className="font-medium">${pricing.productsTotal.toFixed(2)}</span>
+            {formData.productSelections && formData.productSelections.length > 0 && (
+              <div className="pt-2 border-t border-slate-200">
+                <p className="font-medium text-slate-700 mb-2">Products:</p>
+                <div className="space-y-1.5 pl-4">
+                  {formData.productSelections.map((product, idx) => (
+                    <div key={idx} className="flex justify-between text-blue-600">
+                      <span className="text-sm">
+                        {product.product_name} × {product.quantity}
+                      </span>
+                      <span className="font-medium">
+                        ${(product.discounted_price * product.quantity).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between text-blue-700 font-semibold mt-2 pt-2 border-t border-blue-200">
+                  <span>Products Subtotal:</span>
+                  <span>${pricing.productsTotal.toFixed(2)}</span>
+                </div>
               </div>
             )}
             
