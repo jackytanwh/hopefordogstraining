@@ -398,6 +398,7 @@ export default function BookService() {
       
       console.log('✅ Booking created successfully! ID:', booking.id);
       
+      // Handle FYOG/Group Class client creation
       if (isFYOG || isGroupClass) {
         try {
           for (let i = 0; i < (formData.furkids || []).length; i++) {
@@ -444,22 +445,30 @@ export default function BookService() {
         }
       }
       
-      if (formData.whatsappConsent) {
-        try {
-          const sendConfirmationModule = await import("@/functions/sendBookingConfirmation");
-          await sendConfirmationModule.sendBookingConfirmation({ booking });
-          console.log('✅ WhatsApp confirmation sent');
-        } catch (error) {
-          console.error('⚠️ Error sending WhatsApp confirmation:', error);
-        }
-      }
-      
+      // Save booking info to session storage BEFORE attempting WhatsApp
       sessionStorage.setItem('latestBookingId', booking.id);
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
+      // Try to send WhatsApp confirmation, but don't block navigation if it fails
+      if (formData.whatsappConsent) {
+        console.log('Attempting to send WhatsApp confirmation...');
+        try {
+          const sendConfirmationModule = await import("@/functions/sendBookingConfirmation");
+          await sendConfirmationModule.sendBookingConfirmation({ booking });
+          console.log('✅ WhatsApp confirmation sent successfully');
+        } catch (error) {
+          console.error('⚠️ WhatsApp confirmation failed (non-critical):', error);
+          console.error('Booking was created successfully, proceeding anyway...');
+        }
+      }
+      
       console.log('=== BOOKING SUBMISSION COMPLETE ===');
+      console.log('Navigating to Thank You page...');
+      
+      // Navigate to thank you page
       navigate(createPageUrl("ThankYou"));
+      
     } catch (error) {
       console.error('❌❌❌ ERROR CREATING BOOKING ❌❌❌');
       console.error('Error object:', error);
