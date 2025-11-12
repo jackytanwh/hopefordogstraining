@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, ShoppingCart } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
@@ -453,6 +453,8 @@ export default function BookingDetail() {
   const hasKinderPuppyItems = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
   const hasBasicMannersItems = booking.service_type === 'basic_manners_in_home';
   
+  const hasProducts = booking.product_selections && booking.product_selections.length > 0;
+  
   // Check if this service has curriculum
   const hasKinderPuppyCurriculum = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
   const hasBasicMannersCurriculum = booking.service_type === 'basic_manners_in_home';
@@ -834,6 +836,54 @@ export default function BookingDetail() {
               </CardContent>
             </Card>
 
+            {/* Products Purchased */}
+            {hasProducts && (
+              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader className="border-b border-slate-100">
+                  <CardTitle className="flex items-center gap-2">
+                    <ShoppingCart className="w-5 h-5 text-blue-600" />
+                    Products Purchased
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-3">
+                    {booking.product_selections.map((product, idx) => (
+                      <div key={idx} className="flex justify-between items-start p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex-1">
+                          <p className="font-medium text-slate-900">{product.product_name}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <p className="text-sm text-slate-600">Quantity: {product.quantity}</p>
+                            {product.original_price !== product.discounted_price && (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300 text-xs">
+                                Discounted
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-blue-600">
+                            ${(product.discounted_price * product.quantity).toFixed(2)}
+                          </p>
+                          {product.original_price !== product.discounted_price && (
+                            <p className="text-xs text-slate-500 line-through">
+                              ${(product.original_price * product.quantity).toFixed(2)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    
+                    <div className="pt-3 border-t border-blue-200">
+                      <div className="flex justify-between text-sm font-semibold">
+                        <span className="text-slate-700">Products Subtotal:</span>
+                        <span className="text-blue-600">${booking.products_total?.toFixed(2) || '0.00'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Items Given to Client */}
             {(hasKinderPuppyItems || hasBasicMannersItems) && (
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -1084,6 +1134,12 @@ export default function BookingDetail() {
                     <div className="flex justify-between text-orange-600">
                       <span>Sentosa Surcharge:</span>
                       <span className="font-medium">+${booking.total_sentosa_surcharge?.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {booking.products_total > 0 && (
+                    <div className="flex justify-between text-blue-600">
+                      <span>Products:</span>
+                      <span className="font-medium">+${booking.products_total?.toFixed(2)}</span>
                     </div>
                   )}
                   <div className="pt-2 border-t border-slate-200 flex justify-between">
