@@ -296,66 +296,66 @@ export default function BookService() {
         service_type: actualServiceType,
         service_name: service.name,
         booking_status: 'pending',
-        session_dates: formData.sessionDates,
+        session_dates: formData.sessionDates || [],
         product_selections: formData.productSelections || [],
-        products_total: pricing.productsTotal,
-        base_price: pricing.basePrice,
-        adoption_discount: pricing.discount,
-        weekend_surcharge: pricing.surcharge,
-        is_sentosa_booking: formData.isSentosa,
+        products_total: pricing.productsTotal || 0,
+        base_price: pricing.basePrice || 0,
+        adoption_discount: pricing.discount || 0,
+        weekend_surcharge: pricing.surcharge || 0,
+        is_sentosa_booking: Boolean(formData.isSentosa),
         sentosa_surcharge_per_session: formData.isSentosa ? 10 : 0,
-        total_sentosa_surcharge: pricing.sentosaSurcharge,
-        total_price: pricing.total,
-        whatsapp_consent: formData.whatsappConsent || false,
+        total_sentosa_surcharge: pricing.sentosaSurcharge || 0,
+        total_price: pricing.total || 0,
+        whatsapp_consent: Boolean(formData.whatsappConsent),
         how_did_you_know: formData.howDidYouKnow || null
       };
 
       if (isBasicManners) {
-        bookingData.agreement_no_retractable_leash = agreements.noRetractableLeash || false;
-        bookingData.agreement_no_refunds = agreements.noRefunds || false;
-        bookingData.agreement_dog_behavior = agreements.dogBehavior || false;
+        bookingData.agreement_no_retractable_leash = Boolean(agreements?.noRet retractableLeash);
+        bookingData.agreement_no_refunds = Boolean(agreements?.noRefunds);
+        bookingData.agreement_dog_behavior = Boolean(agreements?.dogBehavior);
       }
 
       if (isBehaviouralModification || isCanineAssessment) {
         if (isCanineAssessment) {
-          bookingData.requires_assessment_report = formData.requires_assessment_report || false;
+          bookingData.requires_assessment_report = Boolean(formData.requires_assessment_report);
         } else {
-          bookingData.agreement_behavioral_modification_understanding = agreements.behavioralModificationUnderstanding || false;
+          bookingData.agreement_behavioral_modification_understanding = Boolean(agreements?.behavioralModificationUnderstanding);
         }
         
-        bookingData.owner_involved_in_bite = formData.ownerInvolvedInBite || false;
-        bookingData.bite_history = formData.biteHistory || false;
-        bookingData.stranger_danger = formData.strangerDanger || false;
-        bookingData.resource_guarding = formData.resourceGuarding || false;
-        bookingData.fearful = formData.fearful || false;
-        bookingData.inappropriate_reactivity = formData.inappropriateReactivity || false;
-        bookingData.excessive_vocalization = formData.excessiveVocalization || false;
-        bookingData.destructive_behavior = formData.destructiveBehavior || false;
-        bookingData.separation_anxiety = formData.separationAnxiety || false;
-        bookingData.potty_training_issues = formData.pottyTrainingIssues || false;
+        bookingData.owner_involved_in_bite = Boolean(formData.ownerInvolvedInBite);
+        bookingData.bite_history = Boolean(formData.biteHistory);
+        bookingData.stranger_danger = Boolean(formData.strangerDanger);
+        bookingData.resource_guarding = Boolean(formData.resourceGuarding);
+        bookingData.fearful = Boolean(formData.fearful);
+        bookingData.inappropriate_reactivity = Boolean(formData.inappropriateReactivity);
+        bookingData.excessive_vocalization = Boolean(formData.excessiveVocalization);
+        bookingData.destructive_behavior = Boolean(formData.destructiveBehavior);
+        bookingData.separation_anxiety = Boolean(formData.separationAnxiety);
+        bookingData.potty_training_issues = Boolean(formData.pottyTrainingIssues);
         bookingData.other_behavioral_issues = formData.otherBehavioralIssues || '';
       }
 
       if (isKinderPuppy) {
-        bookingData.agreement_kinder_puppy_curriculum = agreements.kinderPuppyCurriculum || false;
-        bookingData.agreement_kinder_puppy_potty_training = agreements.kinderPuppyPottyTraining || false;
-        bookingData.agreement_kinder_puppy_refund_policy = agreements.kinderPuppyRefundPolicy || false;
+        bookingData.agreement_kinder_puppy_curriculum = Boolean(agreements?.kinderPuppyCurriculum);
+        bookingData.agreement_kinder_puppy_potty_training = Boolean(agreements?.kinderPuppyPottyTraining);
+        bookingData.agreement_kinder_puppy_refund_policy = Boolean(agreements?.kinderPuppyRefundPolicy);
       }
 
       if (isFYOG || isGroupClass) {
-        bookingData.number_of_furkids = formData.numberOfFurkids;
-        bookingData.number_of_clients = formData.numberOfClients;
-        bookingData.clients = formData.clients.map(client => transformClientFields(client));
-        bookingData.furkids = formData.furkids.map(furkid => transformFurkidFields(furkid));
+        bookingData.number_of_furkids = formData.numberOfFurkids || 0;
+        bookingData.number_of_clients = formData.numberOfClients || 0;
+        bookingData.clients = (formData.clients || []).map(client => transformClientFields(client));
+        bookingData.furkids = (formData.furkids || []).map(furkid => transformFurkidFields(furkid));
       } else {
-        bookingData.client_name = formData.clientName;
-        bookingData.client_email = formData.clientEmail;
-        bookingData.client_mobile = formData.clientMobile;
-        bookingData.client_address = formData.clientAddress;
-        bookingData.client_postal_code = formData.clientPostalCode;
-        bookingData.is_adopted = formData.isAdopted || false;
+        bookingData.client_name = formData.clientName || '';
+        bookingData.client_email = formData.clientEmail || '';
+        bookingData.client_mobile = formData.clientMobile || '';
+        bookingData.client_address = formData.clientAddress || '';
+        bookingData.client_postal_code = formData.clientPostalCode || '';
+        bookingData.is_adopted = Boolean(formData.isAdopted);
         bookingData.adoption_proof_url = formData.adoptionProofUrl || '';
-        bookingData.furkid_name = formData.furkidName;
+        bookingData.furkid_name = formData.furkidName || '';
         
         // Construct proper date from dobDay, dobMonth, dobYear
         if (formData.dobDay && formData.dobMonth && formData.dobYear) {
@@ -364,26 +364,24 @@ export default function BookService() {
           bookingData.furkid_dob = `${formData.dobYear}-${month}-${day}`;
         }
         
-        bookingData.furkid_age = formData.furkidAge;
-        bookingData.furkid_breed = formData.furkidBreed;
-        bookingData.furkid_gender = formData.furkidGender;
-        bookingData.furkid_sterilised = formData.furkidSterilised || false;
-        bookingData.furkid_acquired_from = formData.furkidAcquiredFrom;
-        bookingData.furkid_joined_family = formData.furkidJoinedFamily;
-        bookingData.first_time_owner = formData.firstTimeOwner || false;
-        bookingData.furkid_diet = formData.furkidDiet;
-        bookingData.furkid_sleep_area = formData.furkidSleepArea;
-        bookingData.walking_frequency = formData.walkingFrequency;
+        bookingData.furkid_age = formData.furkidAge || '';
+        bookingData.furkid_breed = formData.furkidBreed || '';
+        bookingData.furkid_gender = formData.furkidGender || '';
+        bookingData.furkid_sterilised = Boolean(formData.furkidSterilised);
+        bookingData.furkid_acquired_from = formData.furkidAcquiredFrom || '';
+        bookingData.furkid_joined_family = formData.furkidJoinedFamily || '';
+        bookingData.first_time_owner = Boolean(formData.firstTimeOwner);
+        bookingData.furkid_diet = formData.furkidDiet || '';
+        bookingData.furkid_sleep_area = formData.furkidSleepArea || '';
+        bookingData.walking_frequency = formData.walkingFrequency || '';
         bookingData.furkid_photo_url = formData.furkidPhotoUrl || '';
         bookingData.furkid_instagram = formData.furkidInstagram || '';
         bookingData.enrolment_reason = formData.enrolmentReason || '';
         
         // Add food allergy fields for Basic Manners
         if (isBasicManners) {
-          bookingData.has_food_allergy = formData.hasFoodAllergy || false;
-          if (formData.hasFoodAllergy) {
-            bookingData.food_allergy_details = formData.foodAllergyDetails || '';
-          }
+          bookingData.has_food_allergy = Boolean(formData.hasFoodAllergy);
+          bookingData.food_allergy_details = formData.hasFoodAllergy ? (formData.foodAllergyDetails || '') : '';
         }
       }
 
@@ -393,28 +391,33 @@ export default function BookService() {
       
       if (isFYOG || isGroupClass) {
         try {
-          for (let i = 0; i < formData.furkids.length; i++) {
+          for (let i = 0; i < (formData.furkids || []).length; i++) {
             const furkid = formData.furkids[i];
             const client = formData.clients[i] || formData.clients[0];
             
+            if (!furkid || !client) {
+              console.warn(`Skipping client creation for index ${i} - missing data`);
+              continue;
+            }
+            
             const clientData = {
-              client_name: client.clientName || client.client_name,
-              mobile_number: client.clientMobile || client.client_mobile,
-              dog_name: furkid.furkidName || furkid.furkid_name,
-              dog_age: furkid.furkidAge || furkid.furkid_age,
-              breed: furkid.furkidBreed || furkid.furkid_breed,
-              gender: furkid.furkidGender || furkid.furkid_gender,
+              client_name: client.clientName || client.client_name || '',
+              mobile_number: client.clientMobile || client.client_mobile || '',
+              dog_name: furkid.furkidName || furkid.furkid_name || '',
+              dog_age: furkid.furkidAge || furkid.furkid_age || '',
+              breed: furkid.furkidBreed || furkid.furkid_breed || '',
+              gender: furkid.furkidGender || furkid.furkid_gender || '',
               program: serviceId === 'kinder_puppy_fyog' ? 'kinder_puppy' : 
                        serviceId === 'basic_manners_fyog' ? 'basic_manners_fyog' :
                        serviceId === 'basic_manners_group_class' ? 'basic_manners_group' : 'basic_manners',
               training_status: 'in_progress',
-              diet: furkid.furkidDiet || furkid.furkid_diet,
-              sleep_area: furkid.furkidSleepArea || furkid.furkid_sleep_area,
+              diet: furkid.furkidDiet || furkid.furkid_diet || '',
+              sleep_area: furkid.furkidSleepArea || furkid.furkid_sleep_area || '',
               primary_concerns: furkid.enrolmentReason || furkid.enrolment_reason || ''
             };
             
             if (isBasicManners) {
-              clientData.food_allergy = furkid.hasFoodAllergy || furkid.has_food_allergy || false;
+              clientData.food_allergy = Boolean(furkid.hasFoodAllergy || furkid.has_food_allergy);
             }
             
             if (formData.sessionDates && formData.sessionDates.length > 0) {
@@ -427,6 +430,7 @@ export default function BookService() {
           console.log('Client records created successfully for FYOG/Group Class booking');
         } catch (error) {
           console.error('Error creating Client records:', error);
+          console.error('Client creation error details:', error.response?.data);
         }
       }
       
@@ -442,13 +446,26 @@ export default function BookService() {
       
       sessionStorage.setItem('latestBookingId', booking.id);
       sessionStorage.setItem('serviceType', formData.serviceType);
-      sessionStorage.setItem('whatsappConsent', formData.whatsappConsent);
+      sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
       navigate(createPageUrl("ThankYou"));
     } catch (error) {
       console.error("Error creating booking:", error);
       console.error("Error details:", error.response?.data);
-      alert(`There was an error processing your booking: ${error.response?.data?.message || error.message}. Please try again.`);
+      
+      // More detailed error message
+      let errorMessage = 'There was an error processing your booking. ';
+      if (error.response?.data?.message) {
+        errorMessage += error.response.data.message;
+      } else if (error.response?.data?.detail) {
+        errorMessage += error.response.data.detail;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please check all fields and try again.';
+      }
+      
+      alert(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
