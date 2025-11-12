@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,7 +57,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
     }
     
     const agreements = {
-      noRet retractableLeash: leashAgreement,
+      noRetractableLeash: leashAgreement,
       noRefunds: refundAgreement,
       dogBehavior: behaviorAgreement,
       behavioralModificationUnderstanding: modificationAgreement,
@@ -72,23 +71,23 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
 
   // Helper function to safely get client field value, checking common variations
   const getClientField = (client, field) => {
-    const fieldWithoutPrefix = field.startsWith('client') ? field.substring(6) : field; // e.g., 'Name' from 'clientName'
-    const lowerCaseFieldWithoutPrefix = fieldWithoutPrefix.charAt(0).toLowerCase() + fieldWithoutPrefix.slice(1); // e.g., 'name'
+    const fieldWithoutPrefix = field.startsWith('client') ? field.substring(6) : field;
+    const lowerCaseFieldWithoutPrefix = fieldWithoutPrefix.charAt(0).toLowerCase() + fieldWithoutPrefix.slice(1);
 
-    return client?.[field] || // original field name (e.g., clientName)
-           client?.[field.toLowerCase()] || // all lowercase (e.g., clientname)
-           client?.[lowerCaseFieldWithoutPrefix] || // without prefix, camelCase (e.g., name)
+    return client?.[field] || 
+           client?.[field.toLowerCase()] || 
+           client?.[lowerCaseFieldWithoutPrefix] || 
            'N/A';
   };
 
   // Helper function to safely get furkid field value, checking common variations
   const getFurkidField = (furkid, field) => {
-    const fieldWithoutPrefix = field.startsWith('furkid') ? field.substring(6) : field; // e.g., 'Name' from 'furkidName'
-    const lowerCaseFieldWithoutPrefix = fieldWithoutPrefix.charAt(0).toLowerCase() + fieldWithoutPrefix.slice(1); // e.g., 'name'
+    const fieldWithoutPrefix = field.startsWith('furkid') ? field.substring(6) : field;
+    const lowerCaseFieldWithoutPrefix = fieldWithoutPrefix.charAt(0).toLowerCase() + fieldWithoutPrefix.slice(1);
 
-    return furkid?.[field] || // original field name (e.g., furkidName)
-           furkid?.[field.toLowerCase()] || // all lowercase (e.g., furkidname)
-           furkid?.[lowerCaseFieldWithoutPrefix] || // without prefix, camelCase (e.g., name)
+    return furkid?.[field] || 
+           furkid?.[field.toLowerCase()] || 
+           furkid?.[lowerCaseFieldWithoutPrefix] || 
            'N/A';
   };
 
@@ -150,7 +149,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {/* Products Section - NEW */}
         {formData.productSelections && formData.productSelections.length > 0 && (
           <div className="border-t border-slate-200 pt-6 space-y-3">
             <h3 className="font-semibold text-slate-900 flex items-center gap-2">
@@ -178,7 +176,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {/* Clients Information Section */}
         {(isFYOG || isGroupClass) ? (
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -189,7 +186,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             <div className="space-y-3">
               {formData.clients && formData.clients.length > 0 ? (
                 formData.clients.map((client, idx) => {
-                  // Show raw data for debugging
                   console.log(`Rendering client ${idx}:`, client);
                   
                   return (
@@ -218,7 +214,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                         </div>
                       </div>
                       
-                      {/* Debug section - show all fields */}
                       <details className="mt-3">
                         <summary className="text-xs text-slate-500 cursor-pointer">Debug: Show raw data</summary>
                         <pre className="text-xs bg-slate-100 p-2 rounded mt-2 overflow-auto">
@@ -269,7 +264,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {/* Furkids Information Section */}
         <div>
           <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
             <PawPrint className="w-5 h-5" />
@@ -283,7 +277,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             <div className="space-y-3">
               {formData.furkids && formData.furkids.length > 0 ? (
                 formData.furkids.map((furkid, idx) => {
-                  // Show raw data for debugging
                   console.log(`Rendering furkid ${idx}:`, furkid);
                   
                   return (
@@ -313,7 +306,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                         )}
                       </div>
                       
-                      {/* Debug section - show all fields */}
                       <details className="mt-3">
                         <summary className="text-xs text-slate-500 cursor-pointer">Debug: Show raw data</summary>
                         <pre className="text-xs bg-slate-100 p-2 rounded mt-2 overflow-auto">
@@ -361,7 +353,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           )}
         </div>
 
-        {/* Pricing Breakdown */}
         <div className="border-t border-slate-200 pt-6 space-y-3">
           <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
             <DollarSign className="w-5 h-5" />
