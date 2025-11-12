@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -122,7 +123,10 @@ export default function BookService() {
     isAdopted: false,
     adoptionProofUrl: '',
     furkidName: '',
-    furkidDob: '',
+    dobDay: '', // Added for furkid DOB
+    dobMonth: '', // Added for furkid DOB
+    dobYear: '', // Added for furkid DOB
+    furkidDob: '', // This will eventually be constructed from dobDay/Month/Year
     furkidAge: '',
     furkidBreed: '',
     furkidGender: '',
@@ -132,6 +136,9 @@ export default function BookService() {
     firstTimeOwner: false,
     furkidDiet: '',
     furkidSleepArea: '',
+    walkingFrequency: '', // Added
+    hasFoodAllergy: false, // Added for Basic Manners
+    foodAllergyDetails: '', // Added for Basic Manners
     furkidPhotoUrl: '',
     furkidInstagram: '',
     enrolmentReason: '',
@@ -344,9 +351,14 @@ export default function BookService() {
         bookingData.client_address = formData.clientAddress;
         bookingData.client_postal_code = formData.clientPostalCode;
         bookingData.is_adopted = formData.isAdopted;
-        bookingData.adoption_proof_url = formData.adoptionProofUrl;
+        bookingData.adoption_proof_url = formData.adoptionProofUrl || '';
         bookingData.furkid_name = formData.furkidName;
-        bookingData.furkid_dob = formData.furkidDob;
+        
+        // Construct proper date from dobDay, dobMonth, dobYear
+        if (formData.dobDay && formData.dobMonth && formData.dobYear) {
+          bookingData.furkid_dob = `${formData.dobYear}-${formData.dobMonth.padStart(2, '0')}-${formData.dobDay.padStart(2, '0')}`;
+        }
+        
         bookingData.furkid_age = formData.furkidAge;
         bookingData.furkid_breed = formData.furkidBreed;
         bookingData.furkid_gender = formData.furkidGender;
@@ -356,11 +368,22 @@ export default function BookService() {
         bookingData.first_time_owner = formData.firstTimeOwner;
         bookingData.furkid_diet = formData.furkidDiet;
         bookingData.furkid_sleep_area = formData.furkidSleepArea;
-        bookingData.furkid_photo_url = formData.furkidPhotoUrl;
-        bookingData.furkid_instagram = formData.furkidInstagram;
-        bookingData.enrolment_reason = formData.enrolmentReason;
+        bookingData.walking_frequency = formData.walkingFrequency;
+        bookingData.furkid_photo_url = formData.furkidPhotoUrl || '';
+        bookingData.furkid_instagram = formData.furkidInstagram || '';
+        bookingData.enrolment_reason = formData.enrolmentReason || '';
+        
+        // Add food allergy fields for Basic Manners
+        if (isBasicManners) {
+          bookingData.has_food_allergy = formData.hasFoodAllergy || false;
+          if (formData.hasFoodAllergy) {
+            bookingData.food_allergy_details = formData.foodAllergyDetails || '';
+          }
+        }
       }
 
+      console.log('Submitting booking data:', JSON.stringify(bookingData, null, 2));
+      
       const booking = await base44.entities.Booking.create(bookingData);
       
       if (isFYOG || isGroupClass) {
@@ -419,7 +442,8 @@ export default function BookService() {
       navigate(createPageUrl("ThankYou"));
     } catch (error) {
       console.error("Error creating booking:", error);
-      alert("There was an error processing your booking. Please try again.");
+      console.error("Error details:", error.response?.data);
+      alert(`There was an error processing your booking: ${error.response?.data?.message || error.message}. Please try again.`);
     } finally {
       setIsSubmitting(false);
     }
