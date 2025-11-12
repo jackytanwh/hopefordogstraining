@@ -256,7 +256,7 @@ export default function BookService() {
     const transformed = {};
     Object.keys(client).forEach(key => {
       const snakeKey = camelToSnake(key);
-      transformed[snakeKey] = client[key];
+      transformed[snakeKey] = client[key] || '';
     });
     return transformed;
   };
@@ -264,15 +264,19 @@ export default function BookService() {
   const transformFurkidFields = (furkid) => {
     const transformed = {};
     Object.keys(furkid).forEach(key => {
-      // Skip the DOB component fields as we'll construct the date separately
       if (key === 'dobDay' || key === 'dobMonth' || key === 'dobYear') {
         return;
       }
       const snakeKey = camelToSnake(key);
-      transformed[snakeKey] = furkid[key];
+      
+      // Handle boolean fields explicitly
+      if (key === 'isAdopted' || key === 'furkidSterilised' || key === 'firstTimeOwner' || key === 'hasFoodAllergy') {
+        transformed[snakeKey] = Boolean(furkid[key]);
+      } else {
+        transformed[snakeKey] = furkid[key] || '';
+      }
     });
     
-    // Construct proper date from dobDay, dobMonth, dobYear if available
     if (furkid.dobDay && furkid.dobMonth && furkid.dobYear) {
       const month = furkid.dobMonth.toString().padStart(2, '0');
       const day = furkid.dobDay.toString().padStart(2, '0');
@@ -307,11 +311,15 @@ export default function BookService() {
         total_sentosa_surcharge: pricing.sentosaSurcharge || 0,
         total_price: pricing.total || 0,
         whatsapp_consent: Boolean(formData.whatsappConsent),
-        how_did_you_know: formData.howDidYouKnow || null
       };
 
+      // Only add how_did_you_know if it has a value
+      if (formData.howDidYouKnow) {
+        bookingData.how_did_you_know = formData.howDidYouKnow;
+      }
+
       if (isBasicManners) {
-        bookingData.agreement_no_retractable_leash = Boolean(agreements?.noRetractableLeash);
+        bookingData.agreement_no_ret retractable_leash = Boolean(agreements?.noRetractableLeash);
         bookingData.agreement_no_refunds = Boolean(agreements?.noRefunds);
         bookingData.agreement_dog_behavior = Boolean(agreements?.dogBehavior);
       }
@@ -384,9 +392,13 @@ export default function BookService() {
         }
       }
 
-      console.log('Submitting booking data:', JSON.stringify(bookingData, null, 2));
+      console.log('About to submit booking with data:', JSON.stringify(bookingData, null, 2));
+      console.log('Session dates:', JSON.stringify(formData.sessionDates, null, 2));
+      console.log('Product selections:', JSON.stringify(formData.productSelections, null, 2));
       
       const booking = await base44.entities.Booking.create(bookingData);
+      
+      console.log('Booking created successfully:', booking.id);
       
       if (isFYOG || isGroupClass) {
         try {
@@ -423,6 +435,7 @@ export default function BookService() {
               clientData.start_date = formData.sessionDates[0].date;
             }
             
+            console.log(`Creating client record ${i + 1}:`, JSON.stringify(clientData, null, 2));
             await base44.entities.Client.create(clientData);
           }
           
@@ -450,10 +463,12 @@ export default function BookService() {
       navigate(createPageUrl("ThankYou"));
     } catch (error) {
       console.error("Error creating booking:", error);
-      console.error("Error details:", error.response?.data);
+      console.error("Full error object:", JSON.stringify(error, null, 2));
+      if (error.response) {
+        console.error("Error response:", JSON.stringify(error.response.data, null, 2));
+      }
       
-      // More detailed error message
-      let errorMessage = 'There was an error processing your booking. ';
+      let errorMessage = 'There was an error processing your booking.\n\n';
       if (error.response?.data?.message) {
         errorMessage += error.response.data.message;
       } else if (error.response?.data?.detail) {
