@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -123,10 +122,10 @@ export default function BookService() {
     isAdopted: false,
     adoptionProofUrl: '',
     furkidName: '',
-    dobDay: '', // Added for furkid DOB
-    dobMonth: '', // Added for furkid DOB
-    dobYear: '', // Added for furkid DOB
-    furkidDob: '', // This will eventually be constructed from dobDay/Month/Year
+    dobDay: '',
+    dobMonth: '',
+    dobYear: '',
+    furkidDob: '',
     furkidAge: '',
     furkidBreed: '',
     furkidGender: '',
@@ -136,9 +135,9 @@ export default function BookService() {
     firstTimeOwner: false,
     furkidDiet: '',
     furkidSleepArea: '',
-    walkingFrequency: '', // Added
-    hasFoodAllergy: false, // Added for Basic Manners
-    foodAllergyDetails: '', // Added for Basic Manners
+    walkingFrequency: '',
+    hasFoodAllergy: false,
+    foodAllergyDetails: '',
     furkidPhotoUrl: '',
     furkidInstagram: '',
     enrolmentReason: '',
@@ -269,7 +268,6 @@ export default function BookService() {
       }
       const snakeKey = camelToSnake(key);
       
-      // Handle boolean fields explicitly
       if (key === 'isAdopted' || key === 'furkidSterilised' || key === 'firstTimeOwner' || key === 'hasFoodAllergy') {
         transformed[snakeKey] = Boolean(furkid[key]);
       } else {
@@ -313,13 +311,12 @@ export default function BookService() {
         whatsapp_consent: Boolean(formData.whatsappConsent),
       };
 
-      // Only add how_did_you_know if it has a value
       if (formData.howDidYouKnow) {
         bookingData.how_did_you_know = formData.howDidYouKnow;
       }
 
       if (isBasicManners) {
-        bookingData.agreement_no_ret retractable_leash = Boolean(agreements?.noRetractableLeash);
+        bookingData.agreement_no_retractable_leash = Boolean(agreements?.noRetractableLeash);
         bookingData.agreement_no_refunds = Boolean(agreements?.noRefunds);
         bookingData.agreement_dog_behavior = Boolean(agreements?.dogBehavior);
       }
@@ -330,18 +327,6 @@ export default function BookService() {
         } else {
           bookingData.agreement_behavioral_modification_understanding = Boolean(agreements?.behavioralModificationUnderstanding);
         }
-        
-        bookingData.owner_involved_in_bite = Boolean(formData.ownerInvolvedInBite);
-        bookingData.bite_history = Boolean(formData.biteHistory);
-        bookingData.stranger_danger = Boolean(formData.strangerDanger);
-        bookingData.resource_guarding = Boolean(formData.resourceGuarding);
-        bookingData.fearful = Boolean(formData.fearful);
-        bookingData.inappropriate_reactivity = Boolean(formData.inappropriateReactivity);
-        bookingData.excessive_vocalization = Boolean(formData.excessiveVocalization);
-        bookingData.destructive_behavior = Boolean(formData.destructiveBehavior);
-        bookingData.separation_anxiety = Boolean(formData.separationAnxiety);
-        bookingData.potty_training_issues = Boolean(formData.pottyTrainingIssues);
-        bookingData.other_behavioral_issues = formData.otherBehavioralIssues || '';
       }
 
       if (isKinderPuppy) {
@@ -385,7 +370,6 @@ export default function BookService() {
         bookingData.furkid_instagram = formData.furkidInstagram || '';
         bookingData.enrolment_reason = formData.enrolmentReason || '';
         
-        // Add food allergy fields for Basic Manners
         if (isBasicManners) {
           bookingData.has_food_allergy = Boolean(formData.hasFoodAllergy);
           bookingData.food_allergy_details = formData.hasFoodAllergy ? (formData.foodAllergyDetails || '') : '';
@@ -393,8 +377,6 @@ export default function BookService() {
       }
 
       console.log('About to submit booking with data:', JSON.stringify(bookingData, null, 2));
-      console.log('Session dates:', JSON.stringify(formData.sessionDates, null, 2));
-      console.log('Product selections:', JSON.stringify(formData.productSelections, null, 2));
       
       const booking = await base44.entities.Booking.create(bookingData);
       
