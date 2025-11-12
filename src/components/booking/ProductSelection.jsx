@@ -38,6 +38,30 @@ const PRODUCTS = [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/f06c467f8_flea.png',
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/0effce2ad_RinseFreeFurFresh1.jpg'
     ]
+  },
+  {
+    id: 'puppy_kit_small',
+    name: 'Puppy Playtime Starter Kit – S',
+    description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (XS), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S). Suitable for small breeds like Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.',
+    originalPrice: 50.35,
+    discountedPrice: 42.80,
+    imageUrls: []
+  },
+  {
+    id: 'puppy_kit_medium',
+    name: 'Puppy Playtime Starter Kit – M',
+    description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (M), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M). Suitable for medium breeds like Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.',
+    originalPrice: 64.35,
+    discountedPrice: 54.70,
+    imageUrls: []
+  },
+  {
+    id: 'puppy_kit_large',
+    name: 'Puppy Playtime Starter Kit – L',
+    description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound. Suitable for large breeds like Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.',
+    originalPrice: 76.25,
+    discountedPrice: 64.81,
+    imageUrls: []
   }
 ];
 
@@ -153,6 +177,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
             {PRODUCTS.map((product) => {
               const qty = quantities[product.id] || 0;
               const savings = product.originalPrice - product.discountedPrice;
+              const hasImages = product.imageUrls && product.imageUrls.length > 0;
 
               return (
                 <div
@@ -164,45 +189,47 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                   <div className="space-y-3">
                     {/* Product Header with Images */}
                     <div className="flex items-start gap-4">
-                      {/* Product Images - Clickable */}
-                      <div className="flex-shrink-0 space-y-2">
-                        <button
-                          type="button"
-                          onClick={() => handleImageClick(product, 0)}
-                          className="relative rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all group"
-                        >
-                          <img 
-                            src={product.imageUrls[0]} 
-                            alt={product.name}
-                            className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-lg bg-white transition-transform group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
-                            <Maximize2 className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                        </button>
-                        
-                        {/* Additional image thumbnails */}
-                        {product.imageUrls.length > 1 && (
-                          <div className="flex gap-1">
-                            {product.imageUrls.slice(1).map((imageUrl, index) => (
-                              <button
-                                key={index}
-                                type="button"
-                                onClick={() => handleImageClick(product, index + 1)}
-                                className="relative rounded overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all group w-10 h-10"
-                              >
-                                <img 
-                                  src={imageUrl} 
-                                  alt={`${product.name} ${index + 2}`}
-                                  className="w-full h-full object-cover bg-white transition-transform group-hover:scale-110"
-                                />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        
-                        <p className="text-xs text-slate-500 text-center">Click to zoom</p>
-                      </div>
+                      {/* Product Images - Clickable (only if images exist) */}
+                      {hasImages && (
+                        <div className="flex-shrink-0 space-y-2">
+                          <button
+                            type="button"
+                            onClick={() => handleImageClick(product, 0)}
+                            className="relative rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all group"
+                          >
+                            <img 
+                              src={product.imageUrls[0]} 
+                              alt={product.name}
+                              className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-lg bg-white transition-transform group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
+                              <Maximize2 className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                          </button>
+                          
+                          {/* Additional image thumbnails */}
+                          {product.imageUrls.length > 1 && (
+                            <div className="flex gap-1">
+                              {product.imageUrls.slice(1).map((imageUrl, index) => (
+                                <button
+                                  key={index}
+                                  type="button"
+                                  onClick={() => handleImageClick(product, index + 1)}
+                                  className="relative rounded overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all group w-10 h-10"
+                                >
+                                  <img 
+                                    src={imageUrl} 
+                                    alt={`${product.name} ${index + 2}`}
+                                    className="w-full h-full object-cover bg-white transition-transform group-hover:scale-110"
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          
+                          <p className="text-xs text-slate-500 text-center">Click to zoom</p>
+                        </div>
+                      )}
                       
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
@@ -319,64 +346,68 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
           </DialogHeader>
           <div className="space-y-4">
             {/* Main Image with Navigation */}
-            <div className="relative flex justify-center bg-slate-50 rounded-lg p-6">
-              {selectedImage && selectedImageIndex > 0 && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-10"
-                  onClick={handlePreviousImage}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
-              )}
-              
-              <img 
-                src={selectedImage?.imageUrls[selectedImageIndex]} 
-                alt={selectedImage?.name}
-                className="max-h-[60vh] w-auto object-contain"
-              />
-              
-              {selectedImage && selectedImageIndex < selectedImage.imageUrls.length - 1 && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-10"
-                  onClick={handleNextImage}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </Button>
-              )}
-            </div>
-            
-            {/* Image Counter */}
-            {selectedImage && selectedImage.imageUrls.length > 1 && (
-              <div className="text-center text-sm text-slate-600">
-                Image {selectedImageIndex + 1} of {selectedImage.imageUrls.length}
-              </div>
-            )}
-            
-            {/* Thumbnail Navigation */}
-            {selectedImage && selectedImage.imageUrls.length > 1 && (
-              <div className="flex justify-center gap-2">
-                {selectedImage.imageUrls.map((url, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      index === selectedImageIndex 
-                        ? 'border-blue-600 ring-2 ring-blue-200' 
-                        : 'border-slate-200 hover:border-slate-300'
-                    }`}
-                  >
-                    <img 
-                      src={url} 
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+            {selectedImage && selectedImage.imageUrls && selectedImage.imageUrls.length > 0 && (
+              <>
+                <div className="relative flex justify-center bg-slate-50 rounded-lg p-6">
+                  {selectedImageIndex > 0 && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 z-10"
+                      onClick={handlePreviousImage}
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </Button>
+                  )}
+                  
+                  <img 
+                    src={selectedImage.imageUrls[selectedImageIndex]} 
+                    alt={selectedImage.name}
+                    className="max-h-[60vh] w-auto object-contain"
+                  />
+                  
+                  {selectedImageIndex < selectedImage.imageUrls.length - 1 && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 z-10"
+                      onClick={handleNextImage}
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </Button>
+                  )}
+                </div>
+                
+                {/* Image Counter */}
+                {selectedImage.imageUrls.length > 1 && (
+                  <div className="text-center text-sm text-slate-600">
+                    Image {selectedImageIndex + 1} of {selectedImage.imageUrls.length}
+                  </div>
+                )}
+                
+                {/* Thumbnail Navigation */}
+                {selectedImage.imageUrls.length > 1 && (
+                  <div className="flex justify-center gap-2">
+                    {selectedImage.imageUrls.map((url, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedImageIndex(index)}
+                        className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                          index === selectedImageIndex 
+                            ? 'border-blue-600 ring-2 ring-blue-200' 
+                            : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <img 
+                          src={url} 
+                          alt={`Thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
             
             <div className="space-y-2">
