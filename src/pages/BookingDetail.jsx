@@ -1086,6 +1086,34 @@ export default function BookingDetail() {
                       <span className="font-medium">+${booking.total_sentosa_surcharge?.toFixed(2)}</span>
                     </div>
                   )}
+                  
+                  {booking.product_selections && booking.product_selections.length > 0 && (
+                    <>
+                      <div className="pt-2 mt-2 border-t border-slate-200">
+                        <p className="font-medium text-slate-900 mb-2 flex items-center gap-2">
+                          <Package className="w-4 h-4" />
+                          Products:
+                        </p>
+                        <div className="space-y-1.5 pl-6">
+                          {booking.product_selections.map((product, idx) => (
+                            <div key={idx} className="flex justify-between text-xs">
+                              <span className="text-slate-600">
+                                {product.product_name} × {product.quantity}
+                              </span>
+                              <span className="font-medium text-blue-600">
+                                ${(product.discounted_price * product.quantity).toFixed(2)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-blue-700 font-semibold pt-1">
+                        <span>Products Subtotal:</span>
+                        <span>${booking.products_total?.toFixed(2)}</span>
+                      </div>
+                    </>
+                  )}
+                  
                   <div className="pt-2 border-t border-slate-200 flex justify-between">
                     <span className="font-semibold">Total:</span>
                     <span className="font-bold text-xl text-blue-600">${booking.total_price?.toFixed(2)}</span>
