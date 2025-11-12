@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,7 +81,11 @@ const PRODUCTS = [
 export default function ProductSelection({ formData, setFormData, onNext, onBack }) {
   const [quantities, setQuantities] = useState(
     formData.productSelections?.reduce((acc, item) => {
-      acc[item.product_id] = item.quantity;
+      // Find product by name to get the id
+      const product = PRODUCTS.find(p => p.name === item.product_name);
+      if (product) {
+        acc[product.id] = item.quantity;
+      }
       return acc;
     }, {}) || {}
   );
@@ -108,7 +113,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
 
   const handleContinue = () => {
     const selectedProducts = PRODUCTS.map(product => ({
-      product_id: product.id,
       product_name: product.name,
       quantity: quantities[product.id] || 0,
       original_price: product.originalPrice,
@@ -139,7 +143,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
   };
 
   const handleNextImage = () => {
-    if (selectedImage && selectedImageIndex < selectedImage.imageUrls.length - 1) {
+    if (selectedImage && selectedImage.imageUrls && selectedImageIndex < selectedImage.imageUrls.length - 1) {
       setSelectedImageIndex(selectedImageIndex + 1);
     }
   };
