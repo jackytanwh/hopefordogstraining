@@ -12,6 +12,7 @@ const PRODUCTS = [
     description: 'Designed to clean your pet\'s coat without the need for water. The foam cleanser works by lifting dirt and grime from your pet\'s fur, leaving it clean, soft, and smelling fresh. The no-rinse foam formula is ideal for pets who dislike water or those who require a quick clean-up between baths. Gentle on your pet\'s skin and coat.',
     originalPrice: 48,
     discountedPrice: 40.80,
+    discountPercent: 15,
     showEcoLabel: true,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/9c6ac8266_Rinsefreefurfresh.png',
@@ -24,6 +25,7 @@ const PRODUCTS = [
     description: 'The rinse-free Paw Protéct 3-in-1 Cleanser is formulated with gentle yet effective ingredients that help cleanse, protect, and moisturise your dog\'s paws. The non-irritating foaming formula is safe for all skin types. Say goodbye to dirty paws and hello to a more convenient and efficient way of keeping your dog\'s paws clean and fresh.',
     originalPrice: 48,
     discountedPrice: 40.80,
+    discountPercent: 15,
     showEcoLabel: true,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/142401e31_PawProtect.png',
@@ -36,6 +38,7 @@ const PRODUCTS = [
     description: 'Our innovative foam formula provides a powerful shield against fleas and ticks. It uses a natural blend of ingredients to create an environment that repels these pests, keeping your dog safe and comfortable. Free from harsh chemicals, pesticides, and artificial fragrances, it\'s gentle on your dog\'s skin and suitable for everyday use.',
     originalPrice: 42,
     discountedPrice: 35.70,
+    discountPercent: 15,
     showEcoLabel: true,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/f06c467f8_flea.png',
@@ -47,7 +50,8 @@ const PRODUCTS = [
     name: 'Puppy Playtime Starter Kit – S',
     description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (XS), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S). Suitable for small breeds like Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.',
     originalPrice: 50.35,
-    discountedPrice: 42.80,
+    discountedPrice: 45.32,
+    discountPercent: 10,
     showEcoLabel: false,
     imageUrls: []
   },
@@ -56,7 +60,8 @@ const PRODUCTS = [
     name: 'Puppy Playtime Starter Kit – M',
     description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (M), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M). Suitable for medium breeds like Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.',
     originalPrice: 64.35,
-    discountedPrice: 54.70,
+    discountedPrice: 57.92,
+    discountPercent: 10,
     showEcoLabel: false,
     imageUrls: []
   },
@@ -65,7 +70,8 @@ const PRODUCTS = [
     name: 'Puppy Playtime Starter Kit – L',
     description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound. Suitable for large breeds like Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.',
     originalPrice: 76.25,
-    discountedPrice: 64.81,
+    discountedPrice: 68.63,
+    discountPercent: 10,
     showEcoLabel: false,
     imageUrls: []
   }
@@ -155,7 +161,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                 Premium Care Products
               </CardTitle>
               <p className="text-sm text-slate-600 mt-1">
-                Special 15% discount for booking clients!
+                Special discount for booking clients!
               </p>
             </div>
             {getSelectedCount() > 0 && (
@@ -258,7 +264,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                         <div className="flex items-center gap-1">
                           <Sparkles className="w-3 h-3 text-green-600" />
                           <span className="text-xs text-green-700 font-medium">
-                            Save ${savings.toFixed(2)} (15% off)
+                            Save ${savings.toFixed(2)} ({product.discountPercent}% off)
                           </span>
                         </div>
                       </div>
@@ -302,7 +308,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                 <div>
                   <p className="text-sm text-slate-600">Products Subtotal</p>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    {getSelectedCount()} item{getSelectedCount() > 1 ? 's' : ''} • 15% discount applied
+                    {getSelectedCount()} item{getSelectedCount() > 1 ? 's' : ''} • Discounts applied
                   </p>
                 </div>
                 <div className="text-right">
@@ -431,7 +437,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                   </span>
                 </div>
                 <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                  Save ${((selectedImage?.originalPrice || 0) - (selectedImage?.discountedPrice || 0)).toFixed(2)} (15% off)
+                  Save ${((selectedImage?.originalPrice || 0) - (selectedImage?.discountedPrice || 0)).toFixed(2)} ({selectedImage?.discountPercent}% off)
                 </Badge>
               </div>
             </div>
