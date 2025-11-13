@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.7.1';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 Deno.serve(async (req) => {
     try {
@@ -13,7 +13,11 @@ Deno.serve(async (req) => {
         
         // Check WhatsApp consent
         if (!booking.whatsapp_consent) {
-            return Response.json({ message: 'Client did not consent to WhatsApp notifications' }, { status: 200 });
+            console.log('Client did not consent to WhatsApp notifications');
+            return Response.json({ 
+                success: false,
+                message: 'Client did not consent to WhatsApp notifications' 
+            }, { status: 200 });
         }
         
         // Extract client information with better fallback handling
@@ -43,6 +47,7 @@ Deno.serve(async (req) => {
         if (!clientMobile) {
             console.warn('No client mobile number found in booking:', booking.id);
             return Response.json({ 
+                success: false,
                 message: 'No client mobile number found - skipping WhatsApp notification',
                 booking_id: booking.id
             }, { status: 200 });
@@ -52,23 +57,9 @@ Deno.serve(async (req) => {
         if (!clientMobile.startsWith('+') || clientMobile.length < 8) {
             console.warn('Invalid mobile number format:', clientMobile);
             return Response.json({ 
+                success: false,
                 message: 'Invalid mobile number format - skipping WhatsApp notification',
                 booking_id: booking.id
-            }, { status: 200 });
-        }
-        
-        // Check if agents API is available
-        if (!base44.asServiceRole || !base44.asServiceRole.agents) {
-            console.warn('Agents API not available. WhatsApp agent may not be connected.');
-            console.log('To enable WhatsApp notifications:');
-            console.log('1. Go to your Base44 Dashboard');
-            console.log('2. Navigate to Agents > booking_assistant');
-            console.log('3. Connect WhatsApp following the setup instructions');
-            
-            return Response.json({ 
-                message: 'WhatsApp agent not connected. Please connect WhatsApp in Dashboard > Agents.',
-                booking_id: booking.id,
-                would_send_to: clientMobile
             }, { status: 200 });
         }
         
@@ -123,39 +114,65 @@ If you need to reschedule, please contact our admin team at +65 8222 8376.
 
 _- Hopefordogs Training Team_ 🐕`;
 
-        // Create a conversation and send the message via the booking assistant agent
-        const conversation = await base44.asServiceRole.agents.createConversation({
-            agent_name: 'booking_assistant',
-            metadata: {
+        console.log('📱 Attempting to send WhatsApp confirmation...');
+        console.log('To:', clientMobile);
+        console.log('Booking ID:', booking.id);
+        
+        try {
+            // Try to create a conversation and send the message via the booking assistant agent
+            const conversation = await base44.asServiceRole.agents.createConversation({
+                agent_name: 'booking_assistant',
+                metadata: {
+                    booking_id: booking.id,
+                    client_mobile: clientMobile,
+                    client_name: clientName,
+                    type: 'booking_confirmation'
+                }
+            });
+            
+            await base44.asServiceRole.agents.addMessage(conversation, {
+                role: 'assistant',
+                content: message
+            });
+            
+            console.log(`✅ Booking confirmation sent to ${clientMobile} for booking ${booking.id}`);
+            
+            return Response.json({ 
+                success: true, 
+                message: 'Booking confirmation sent successfully via WhatsApp',
+                conversation_id: conversation.id,
+                sent_to: clientMobile
+            });
+            
+        } catch (agentError) {
+            console.warn('⚠️ WhatsApp agent not connected or error occurred:', agentError.message);
+            console.log('\n📋 To enable WhatsApp notifications:');
+            console.log('1. Go to your Base44 Dashboard');
+            console.log('2. Navigate to Agents > booking_assistant');
+            console.log('3. Click on "Connect WhatsApp" and follow the setup instructions');
+            console.log('4. Once connected, scan the QR code with your WhatsApp Business account\n');
+            
+            // Return success with a note that WhatsApp wasn't sent
+            return Response.json({ 
+                success: false,
+                message: 'Booking created successfully, but WhatsApp notification could not be sent',
+                reason: 'WhatsApp agent not connected',
+                instructions: 'Connect WhatsApp in Dashboard > Agents > booking_assistant',
                 booking_id: booking.id,
-                client_mobile: clientMobile,
-                client_name: clientName,
-                type: 'booking_confirmation'
-            }
-        });
-        
-        await base44.asServiceRole.agents.addMessage(conversation, {
-            role: 'assistant',
-            content: message
-        });
-        
-        console.log(`Booking confirmation sent to ${clientMobile} for booking ${booking.id}`);
-        
-        return Response.json({ 
-            success: true, 
-            message: 'Booking confirmation sent successfully',
-            conversation_id: conversation.id
-        });
+                would_send_to: clientMobile
+            }, { status: 200 });
+        }
         
     } catch (error) {
-        console.error('Error sending booking confirmation:', error);
+        console.error('❌ Error in booking confirmation function:', error);
         console.error('Error details:', error.stack);
         
-        // Return a 200 response so the booking process isn't blocked
+        // Return success response so booking isn't blocked, but log the error
         return Response.json({ 
-            message: 'Booking created but WhatsApp notification failed',
+            success: false,
+            message: 'Booking created but notification system encountered an error',
             error: error.message,
-            note: 'Please check WhatsApp agent connection in Dashboard'
+            note: 'This does not affect the booking - it was created successfully'
         }, { status: 200 });
     }
 });
