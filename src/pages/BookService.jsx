@@ -450,12 +450,11 @@ export default function BookService() {
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
-      // Try to send WhatsApp confirmation, but don't block navigation if it fails
+      // Try to send WhatsApp confirmation via backend function
       if (formData.whatsappConsent) {
         console.log('Attempting to send WhatsApp confirmation...');
         try {
-          const sendConfirmationModule = await import("@/functions/sendBookingConfirmation");
-          await sendConfirmationModule.sendBookingConfirmation({ booking });
+          await base44.functions.invoke('sendBookingConfirmation', { booking });
           console.log('✅ WhatsApp confirmation sent successfully');
         } catch (error) {
           console.error('⚠️ WhatsApp confirmation failed (non-critical):', error);
