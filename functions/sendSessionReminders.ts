@@ -1,10 +1,9 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.7.1';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Get all active bookings
         const bookings = await base44.asServiceRole.entities.Booking.list();
         const activeBookings = bookings.filter(b => 
             b.booking_status === 'confirmed' && 
@@ -14,24 +13,17 @@ Deno.serve(async (req) => {
         );
         
         const now = new Date();
-        const in48Hours = new Date(now.getTime() + (48 * 60 * 60 * 1000));
-        
         let remindersSent = 0;
         const results = [];
         
         for (const booking of activeBookings) {
-            // Check each session
             for (const session of booking.session_dates) {
-                // Skip completed sessions
                 if (session.completed) continue;
                 
                 const sessionDate = new Date(session.date + 'T' + session.start_time);
-                
-                // Check if session is approximately 48 hours away (within a 2-hour window)
                 const timeDiff = sessionDate.getTime() - now.getTime();
                 const hoursUntilSession = timeDiff / (1000 * 60 * 60);
                 
-                // Send reminder if session is between 47 and 49 hours away
                 if (hoursUntilSession >= 47 && hoursUntilSession <= 49) {
                     const clientMobile = booking.client_mobile || 
                                        (booking.clients && booking.clients.length > 0 ? booking.clients[0].client_mobile : null);
@@ -42,7 +34,6 @@ Deno.serve(async (req) => {
                     
                     if (!clientMobile) continue;
                     
-                    // Format session details
                     const formattedDate = sessionDate.toLocaleDateString('en-SG', { 
                         weekday: 'long', 
                         year: 'numeric', 
@@ -50,7 +41,6 @@ Deno.serve(async (req) => {
                         day: 'numeric' 
                     });
                     
-                    // Preparation tips based on service type
                     let preparationTips = '';
                     if (booking.service_type.includes('kinder_puppy')) {
                         preparationTips = `\n*Preparation Tips:*
@@ -99,7 +89,6 @@ See you soon!
 _- Hopefordogs Training Team_ 🐕`;
 
                     try {
-                        // Create a conversation and send the reminder
                         const conversation = await base44.asServiceRole.agents.createConversation({
                             agent_name: 'booking_assistant',
                             metadata: {
@@ -123,10 +112,7 @@ _- Hopefordogs Training Team_ 🐕`;
                             client_name: clientName,
                             status: 'sent'
                         });
-                        
-                        console.log(`Reminder sent to ${clientMobile} for booking ${booking.id}, session ${session.session_number}`);
                     } catch (error) {
-                        console.error(`Error sending reminder for booking ${booking.id}:`, error);
                         results.push({
                             booking_id: booking.id,
                             session_number: session.session_number,
@@ -148,6 +134,9 @@ _- Hopefordogs Training Team_ 🐕`;
         
     } catch (error) {
         console.error('Error in session reminders function:', error);
-        return Response.json({ error: error.message }, { status: 500 });
+        return Response.json({ 
+            success: false,
+            error: error.message 
+        }, { status: 200 });
     }
 });
