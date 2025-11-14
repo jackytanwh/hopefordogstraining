@@ -445,27 +445,23 @@ export default function BookService() {
         }
       }
       
-      // Save booking info to session storage BEFORE attempting WhatsApp
+      // Save booking info to session storage
       sessionStorage.setItem('latestBookingId', booking.id);
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
-      // Try to send WhatsApp confirmation via backend function
+      // WhatsApp notification - fire and forget, don't wait or block on errors
       if (formData.whatsappConsent) {
-        console.log('Attempting to send WhatsApp confirmation...');
-        try {
-          await base44.functions.invoke('sendBookingConfirmation', { booking });
-          console.log('✅ WhatsApp confirmation sent successfully');
-        } catch (error) {
-          console.error('⚠️ WhatsApp confirmation failed (non-critical):', error);
-          console.error('Booking was created successfully, proceeding anyway...');
-        }
+        console.log('📱 Triggering WhatsApp notification in background...');
+        base44.functions.invoke('sendBookingConfirmation', { booking })
+          .then(() => console.log('✅ WhatsApp notification sent'))
+          .catch((err) => console.log('⚠️ WhatsApp notification skipped:', err.message));
       }
       
       console.log('=== BOOKING SUBMISSION COMPLETE ===');
       console.log('Navigating to Thank You page...');
       
-      // Navigate to thank you page
+      // Navigate immediately - don't wait for WhatsApp
       navigate(createPageUrl("ThankYou"));
       
     } catch (error) {
