@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -196,7 +197,7 @@ export default function BookService() {
     
     let adoptionDiscount = 0;
     if (isFYOG || isGroupClass) {
-      const adoptedCount = formData.furkids.filter(f => f.isAdopted).length;
+      const adoptedCount = (formData.furkids || []).filter(f => f && f.isAdopted).length;
       adoptionDiscount = (service.price * adoptedCount) * 0.1;
     } else {
       adoptionDiscount = formData.isAdopted ? basePrice * 0.1 : 0;
@@ -205,9 +206,9 @@ export default function BookService() {
     let weekendSurcharge = 0;
     let weekendSessions = 0;
     
-    if (!isGroupClass) {
+    if (!isGroupClass && formData.sessionDates && Array.isArray(formData.sessionDates)) {
       weekendSessions = formData.sessionDates.filter(session => {
-        if (!session.date) return false;
+        if (!session || !session.date) return false;
         const date = new Date(session.date);
         const day = date.getDay();
         return day === 0 || day === 6;
