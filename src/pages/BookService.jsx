@@ -293,6 +293,7 @@ export default function BookService() {
     
     try {
       const pricing = calculatePricing();
+      console.log('✅ Pricing calculated:', pricing);
       
       let actualServiceType = formData.serviceType;
       if (formData.serviceType === 'on_demand_training' && formData.onDemandSessions) {
@@ -321,7 +322,7 @@ export default function BookService() {
       }
 
       if (isBasicManners) {
-        bookingData.agreement_no_retractable_leash = Boolean(agreements?.noRetractableLeash);
+        bookingData.agreement_no_ret retractable_leash = Boolean(agreements?.noRetractableLeash);
         bookingData.agreement_no_refunds = Boolean(agreements?.noRefunds);
         bookingData.agreement_dog_behavior = Boolean(agreements?.dogBehavior);
       }
@@ -341,11 +342,15 @@ export default function BookService() {
       }
 
       if (isFYOG || isGroupClass) {
+        console.log('Processing FYOG/Group booking...');
         bookingData.number_of_furkids = formData.numberOfFurkids || 0;
         bookingData.number_of_clients = formData.numberOfClients || 0;
         bookingData.clients = (formData.clients || []).map(client => transformClientFields(client));
         bookingData.furkids = (formData.furkids || []).map(furkid => transformFurkidFields(furkid));
+        console.log('✅ Transformed clients:', bookingData.clients);
+        console.log('✅ Transformed furkids:', bookingData.furkids);
       } else {
+        console.log('Processing single client booking...');
         bookingData.client_name = formData.clientName || '';
         bookingData.client_email = formData.clientEmail || '';
         bookingData.client_mobile = formData.clientMobile || '';
@@ -355,19 +360,11 @@ export default function BookService() {
         bookingData.adoption_proof_url = formData.adoptionProofUrl || '';
         bookingData.furkid_name = formData.furkidName || '';
         
-        console.log('Checking DOB values:', {
-          dobDay: formData.dobDay,
-          dobMonth: formData.dobMonth,
-          dobYear: formData.dobYear
-        });
-        
         if (formData.dobDay && formData.dobMonth && formData.dobYear) {
           const month = formData.dobMonth.toString().padStart(2, '0');
           const day = formData.dobDay.toString().padStart(2, '0');
           bookingData.furkid_dob = `${formData.dobYear}-${month}-${day}`;
-          console.log('Constructed furkid_dob:', bookingData.furkid_dob);
-        } else {
-          console.warn('Missing DOB components - skipping furkid_dob');
+          console.log('✅ Constructed furkid_dob:', bookingData.furkid_dob);
         }
         
         bookingData.furkid_age = formData.furkidAge || '';
@@ -400,6 +397,7 @@ export default function BookService() {
       
       // Handle FYOG/Group Class client creation
       if (isFYOG || isGroupClass) {
+        console.log('Creating client records...');
         try {
           for (let i = 0; i < (formData.furkids || []).length; i++) {
             const furkid = formData.furkids[i];
@@ -450,7 +448,7 @@ export default function BookService() {
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
-      // WhatsApp notification - fire and forget, don't wait or block on errors
+      // WhatsApp notification - fire and forget
       if (formData.whatsappConsent) {
         console.log('📱 Triggering WhatsApp notification in background...');
         base44.functions.invoke('sendBookingConfirmation', { booking })
@@ -461,7 +459,6 @@ export default function BookService() {
       console.log('=== BOOKING SUBMISSION COMPLETE ===');
       console.log('Navigating to Thank You page...');
       
-      // Navigate immediately - don't wait for WhatsApp
       navigate(createPageUrl("ThankYou"));
       
     } catch (error) {
@@ -469,6 +466,7 @@ export default function BookService() {
       console.error('Error object:', error);
       console.error('Error message:', error.message);
       console.error('Error response:', error.response);
+      console.error('Error stack:', error.stack);
       
       if (error.response) {
         console.error('Response status:', error.response.status);
@@ -487,7 +485,7 @@ export default function BookService() {
         errorMessage += 'Please check all fields and try again.';
       }
       
-      errorMessage += '\n\n💡 Check the browser console (F12) for detailed error information.';
+      errorMessage += '\n\n💡 Open browser console (F12) and share the error details with support.';
       
       alert(errorMessage);
     } finally {
