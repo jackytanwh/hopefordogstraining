@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -81,24 +80,19 @@ export default function AdminBookings() {
       const updatedBookings = await base44.entities.Booking.list();
       const updatedBooking = updatedBookings.find(b => b.id === bookingId);
       
-      // Send WhatsApp notification if consent was given (wrapped in try-catch)
+      // Send WhatsApp notification if consent was given (fire and forget)
       if (updatedBooking && updatedBooking.whatsapp_consent) {
-        try {
-          if (newStatus === 'cancelled') {
-            const { sendBookingCancellation } = await import("@/functions/sendBookingCancellation");
-            await sendBookingCancellation({ booking: updatedBooking });
-            console.log('WhatsApp cancellation notification sent');
-          } else {
-            const { sendBookingUpdate } = await import("@/functions/sendBookingUpdate");
-            await sendBookingUpdate({ 
-              booking: updatedBooking, 
-              oldBooking: oldBooking 
-            });
-            console.log('WhatsApp status update sent');
-          }
-        } catch (error) {
-          console.error('Error sending WhatsApp notification:', error);
-          // Don't block the status change if WhatsApp fails
+        if (newStatus === 'cancelled') {
+          base44.functions.invoke('sendBookingCancellation', { booking: updatedBooking })
+            .then(() => console.log('✅ WhatsApp cancellation notification sent'))
+            .catch((err) => console.log('⚠️ WhatsApp notification skipped:', err.message));
+        } else {
+          base44.functions.invoke('sendBookingUpdate', { 
+            booking: updatedBooking, 
+            oldBooking: oldBooking 
+          })
+            .then(() => console.log('✅ WhatsApp status update sent'))
+            .catch((err) => console.log('⚠️ WhatsApp notification skipped:', err.message));
         }
       }
     } catch (error) {
