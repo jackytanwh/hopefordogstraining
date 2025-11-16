@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const [agreementError, setAgreementError] = useState('');
 
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
-  const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog' || service.id === 'kinder_puppy_group_class';
+  const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
 
   const handleSubmit = () => {
@@ -45,7 +44,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
     }
     
     const agreements = {
-      noRet retractableLeash: leashAgreement,
+      noRetractableLeash: leashAgreement,
       noRefunds: refundAgreement,
       dogBehavior: behaviorAgreement,
       behavioralModificationUnderstanding: modificationAgreement,
@@ -140,7 +139,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
         {formData.productSelections && formData.productSelections.length > 0 && (
           <div className="border-t border-slate-200 pt-6 space-y-3">
             <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="w-5 h-5 text-blue-600" />
               Selected Products
             </h3>
             <div className="space-y-2">
@@ -319,6 +318,31 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           )}
         </div>
 
+        {(isFYOG || isGroupClass) && (
+          <div className="border-t border-slate-200 pt-6">
+            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5" />
+              Items Given to Client
+            </h3>
+            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                  Treat Pouch (Clicker+Whistle)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                  Mat
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                  Leash
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
+
         <div className="border-t border-slate-200 pt-6 space-y-3">
           <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
             <DollarSign className="w-5 h-5" />
@@ -379,31 +403,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             </div>
           </div>
         </div>
-
-        {(isFYOG || isGroupClass) && (
-          <div className="border-t border-slate-200 pt-6">
-            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5" />
-              Items Given to Client
-            </h3>
-            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-              <ul className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                  Treat Pouch (Clicker+Whistle)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                  Mat
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                  Leash
-                </li>
-              </ul>
-            </div>
-          </div>
-        )}
 
         {isBasicManners && (
           <div className="border-t border-slate-200 pt-4">
