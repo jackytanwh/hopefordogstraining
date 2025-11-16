@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { format, parseISO, getDay } from "date-fns";
-import { Calendar, User, PawPrint, DollarSign, Loader2, Users, MapPin, ShoppingCart } from "lucide-react";
+import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
 export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false }) {
   const [leashAgreement, setLeashAgreement] = useState(false);
@@ -20,19 +20,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
-
-  // Debug: Log actual data structure
-  useEffect(() => {
-    console.log('BookingSummary - Full formData:', JSON.stringify(formData, null, 2));
-    if (formData.clients && formData.clients[0]) {
-      console.log('First client structure:', formData.clients[0]);
-      console.log('First client keys:', Object.keys(formData.clients[0]));
-    }
-    if (formData.furkids && formData.furkids[0]) {
-      console.log('First furkid structure:', formData.furkids[0]);
-      console.log('First furkid keys:', Object.keys(formData.furkids[0]));
-    }
-  }, [formData]);
 
   const handleSubmit = () => {
     if (isBasicManners) {
@@ -185,44 +172,33 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             
             <div className="space-y-3">
               {formData.clients && formData.clients.length > 0 ? (
-                formData.clients.map((client, idx) => {
-                  console.log(`Rendering client ${idx}:`, client);
-                  
-                  return (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                      <p className="font-semibold text-sm text-slate-900 mb-2">Client {idx + 1}</p>
-                      <div className="space-y-1.5 text-sm">
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Name:</span>
-                          <span className="text-slate-900">{getClientField(client, 'clientName')}</span>
-                        </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Email:</span>
-                          <span className="text-slate-900">{getClientField(client, 'clientEmail')}</span>
-                        </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Mobile:</span>
-                          <span className="text-slate-900">{getClientField(client, 'clientMobile')}</span>
-                        </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Address:</span>
-                          <span className="text-slate-900">{getClientField(client, 'clientAddress')}</span>
-                        </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Postal Code:</span>
-                          <span className="text-slate-900">{getClientField(client, 'clientPostalCode')}</span>
-                        </div>
+                formData.clients.map((client, idx) => (
+                  <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <p className="font-semibold text-sm text-slate-900 mb-2">Client {idx + 1}</p>
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Name:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientName')}</span>
                       </div>
-                      
-                      <details className="mt-3">
-                        <summary className="text-xs text-slate-500 cursor-pointer">Debug: Show raw data</summary>
-                        <pre className="text-xs bg-slate-100 p-2 rounded mt-2 overflow-auto">
-                          {JSON.stringify(client, null, 2)}
-                        </pre>
-                      </details>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Email:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientEmail')}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Mobile:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientMobile')}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Address:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientAddress')}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Postal Code:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientPostalCode')}</span>
+                      </div>
                     </div>
-                  );
-                })
+                  </div>
+                ))
               ) : (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-sm text-red-800 font-semibold">⚠️ No client information available</p>
@@ -276,45 +252,34 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           {(isFYOG || isGroupClass) ? (
             <div className="space-y-3">
               {formData.furkids && formData.furkids.length > 0 ? (
-                formData.furkids.map((furkid, idx) => {
-                  console.log(`Rendering furkid ${idx}:`, furkid);
-                  
-                  return (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                      <p className="font-semibold text-sm text-slate-900 mb-2">
-                        {isKinderPuppy ? 'Puppy' : 'Dog'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
-                      </p>
-                      <div className="space-y-1.5 text-sm">
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Age:</span>
-                          <span className="text-slate-900">{getFurkidField(furkid, 'furkidAge')}</span>
-                        </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Breed:</span>
-                          <span className="text-slate-900">{getFurkidField(furkid, 'furkidBreed')}</span>
-                        </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Gender:</span>
-                          <span className="text-slate-900 capitalize">{getFurkidField(furkid, 'furkidGender')}</span>
-                        </div>
-                        {furkid?.isAdopted && (
-                          <div className="mt-2">
-                            <Badge className="bg-green-100 text-green-800 border-green-300">
-                              Singapore Special / Adopted (10% discount)
-                            </Badge>
-                          </div>
-                        )}
+                formData.furkids.map((furkid, idx) => (
+                  <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <p className="font-semibold text-sm text-slate-900 mb-2">
+                      {isKinderPuppy ? 'Puppy' : 'Dog'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
+                    </p>
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Age:</span>
+                        <span className="text-slate-900">{getFurkidField(furkid, 'furkidAge')}</span>
                       </div>
-                      
-                      <details className="mt-3">
-                        <summary className="text-xs text-slate-500 cursor-pointer">Debug: Show raw data</summary>
-                        <pre className="text-xs bg-slate-100 p-2 rounded mt-2 overflow-auto">
-                          {JSON.stringify(furkid, null, 2)}
-                        </pre>
-                      </details>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Breed:</span>
+                        <span className="text-slate-900">{getFurkidField(furkid, 'furkidBreed')}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-28">Gender:</span>
+                        <span className="text-slate-900 capitalize">{getFurkidField(furkid, 'furkidGender')}</span>
+                      </div>
+                      {furkid?.isAdopted && (
+                        <div className="mt-2">
+                          <Badge className="bg-green-100 text-green-800 border-green-300">
+                            Singapore Special / Adopted (10% discount)
+                          </Badge>
+                        </div>
+                      )}
                     </div>
-                  );
-                })
+                  </div>
+                ))
               ) : (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-sm text-red-800 font-semibold">⚠️ No furkid information available</p>
