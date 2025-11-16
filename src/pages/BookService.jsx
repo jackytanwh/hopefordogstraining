@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -322,7 +321,7 @@ export default function BookService() {
       }
 
       if (isBasicManners) {
-        bookingData.agreement_no_ret retractable_leash = Boolean(agreements?.noRetractableLeash);
+        bookingData.agreement_no_retractable_leash = Boolean(agreements?.noRetractableLeash);
         bookingData.agreement_no_refunds = Boolean(agreements?.noRefunds);
         bookingData.agreement_dog_behavior = Boolean(agreements?.dogBehavior);
       }
