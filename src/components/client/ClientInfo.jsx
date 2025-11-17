@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -275,6 +274,43 @@ export default function ClientInfo({ client, onUpdate }) {
                   />
                   <label 
                     htmlFor={`basic-item-${item.key}`}
+                    className="text-sm text-slate-700 cursor-pointer"
+                  >
+                    {item.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Items Given to Client - For Basic Manners FYOG */}
+        {client.program === 'basic_manners_fyog' && (
+          <div className="mt-6 pt-6 border-t border-slate-100">
+            <h4 className="font-medium text-slate-900 mb-3">Items Given to Client</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {[
+                { key: 'treat_pouch', label: 'Treat Pouch (Clicker+Whistle)' },
+                { key: 'mat', label: 'Mat' },
+                { key: 'leash', label: 'Leash' }
+              ].map((item) => (
+                <div key={item.key} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id={`fyog-item-${item.key}`}
+                    checked={client.basic_manners_items_given?.[item.key] || false}
+                    onChange={async (e) => {
+                      const updatedItems = {
+                        ...(client.basic_manners_items_given || {}),
+                        [item.key]: e.target.checked
+                      };
+                      await base44.entities.Client.update(client.id, { basic_manners_items_given: updatedItems });
+                      if (onUpdate) onUpdate();
+                    }}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                  <label 
+                    htmlFor={`fyog-item-${item.key}`}
                     className="text-sm text-slate-700 cursor-pointer"
                   >
                     {item.label}
