@@ -11,7 +11,7 @@ import BookingCalendar from './pages/BookingCalendar';
 import BookingDetail from './pages/BookingDetail';
 import GroupClassScheduleSettings from './pages/GroupClassScheduleSettings';
 import ThankYou from './pages/ThankYou';
-import __Layout from './Layout.jsx';
+import Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -33,5 +33,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Dashboard",
     Pages: PAGES,
-    Layout: __Layout,
+    Layout: Layout,
 };
