@@ -469,46 +469,46 @@ export default function BookingDetail() {
   // Kinder Puppy Curriculum Data
   const kinderPuppyCurriculum = {
     week1: {
-      title: 'Week 1',
+      title: 'Session 1',
       items: [
-        { key: 'intro_theory', label: 'Introduction + Theory' },
+        { key: 'intro_theory', label: 'Intro Theory' },
         { key: 'name_recognition', label: 'Name Recognition' },
-        { key: 'leash_collar', label: 'Leash & Collar Introduction' },
-        { key: 'intro_walks', label: 'Introduction to Walks' },
-        { key: 'sit_cue_part1', label: 'Sit Cue (Part 1)' }
+        { key: 'leash_collar', label: 'Leash & Collar' },
+        { key: 'intro_walks', label: 'Intro to Walks' },
+        { key: 'sit_cue_part1', label: 'Sit Cue Part 1' }
       ]
     },
     week2: {
-      title: 'Week 2',
+      title: 'Session 2',
       items: [
-        { key: 'intro_walks_advanced', label: 'Introduction to Walks (Advanced)' },
-        { key: 'sit_cue_part2', label: 'Sit Cue (Part 2)' },
+        { key: 'intro_walks_advanced', label: 'Intro to Walks (Advanced)' },
+        { key: 'sit_cue_part2', label: 'Sit Cue Part 2' },
         { key: 'recall_exercise', label: 'Recall Exercise' },
-        { key: 'down_cue_part1', label: 'Down Cue (Part 1)' },
-        { key: 'chin_rest_part1', label: 'Chin Rest (Part 1)' },
+        { key: 'down_cue_part1', label: 'Down Cue Part 1' },
+        { key: 'chin_rest_part1', label: 'Chin Rest Part 1' },
         { key: 'handling_grooming', label: 'Handling & Grooming' }
       ]
     },
     week3: {
-      title: 'Week 3',
+      title: 'Session 3',
       items: [
-        { key: 'down_cue_part2', label: 'Down Cue (Part 2)' },
-        { key: 'chin_rest_part2', label: 'Chin Rest (Part 2)' },
-        { key: 'grooming_tools', label: 'Grooming Tools Introduction' },
-        { key: 'dental_cleaning_part1', label: 'Dental Cleaning (Part 1)' },
-        { key: 'cone_muzzle_part1', label: 'Cone & Muzzle Training (Part 1)' },
+        { key: 'down_cue_part2', label: 'Down Cue Part 2' },
+        { key: 'chin_rest_part2', label: 'Chin Rest Part 2' },
+        { key: 'grooming_tools', label: 'Grooming Tools' },
+        { key: 'dental_cleaning_part1', label: 'Dental Cleaning Part 1' },
+        { key: 'cone_muzzle_part1', label: 'Cone/Muzzle Part 1' },
         { key: 'showering', label: 'Showering' }
       ]
     },
     week4: {
-      title: 'Week 4',
+      title: 'Session 4',
       items: [
-        { key: 'dental_cleaning_part2', label: 'Dental Cleaning (Part 2)' },
-        { key: 'novelty_objects', label: 'Novelty Objects Exposure' },
-        { key: 'scary_sounds', label: 'Scary Sounds Desensitization' },
-        { key: 'cone_muzzle_part2', label: 'Cone & Muzzle Training (Part 2)' },
+        { key: 'dental_cleaning_part2', label: 'Dental Cleaning Part 2' },
+        { key: 'novelty_objects', label: 'Novelty Objects' },
+        { key: 'scary_sounds', label: 'Scary Sounds' },
+        { key: 'cone_muzzle_part2', label: 'Cone/Muzzle Part 2' },
         { key: 'household_appliances', label: 'Household Appliances' },
-        { key: 'vet_visit', label: 'Vet Visit Preparation' }
+        { key: 'vet_visit', label: 'Vet Visit' }
       ]
     }
   };
@@ -516,7 +516,7 @@ export default function BookingDetail() {
   // Basic Manners Curriculum Data
   const basicMannersCurriculum = {
     week1: {
-      title: 'Week 1',
+      title: 'Session 1',
       items: [
         { key: 'check_in_1', label: 'Check-in Part 1' },
         { key: 'lets_go_1', label: "Let's Go Part 1" },
@@ -526,7 +526,7 @@ export default function BookingDetail() {
       ]
     },
     week2: {
-      title: 'Week 2',
+      title: 'Session 2',
       items: [
         { key: 'pattern_game_1', label: 'Pattern Game 1' },
         { key: 'lets_go_2', label: "Let's Go Part 2" },
@@ -536,7 +536,7 @@ export default function BookingDetail() {
       ]
     },
     week3: {
-      title: 'Week 3',
+      title: 'Session 3',
       items: [
         { key: 'pattern_game_2', label: 'Pattern Game 2' },
         { key: 'sit_stay_distraction', label: 'Sit-Stay with Distraction' },
@@ -547,7 +547,7 @@ export default function BookingDetail() {
       ]
     },
     week4: {
-      title: 'Week 4',
+      title: 'Session 4',
       items: [
         { key: 'pattern_game_3', label: 'Pattern Game 3' },
         { key: 'anchor_cue_2', label: 'Anchor Cue Part 2' },
@@ -556,7 +556,7 @@ export default function BookingDetail() {
       ]
     },
     week5: {
-      title: 'Week 5',
+      title: 'Session 5',
       items: [
         { key: 'pattern_game_4', label: 'Pattern Game 4' },
         { key: 'down_stay_distractions', label: 'Down-Stay with Distractions' },
@@ -566,7 +566,7 @@ export default function BookingDetail() {
       ]
     },
     week6: {
-      title: 'Week 6',
+      title: 'Session 6',
       items: [
         { key: 'pattern_game_5', label: 'Pattern Game 5' },
         { key: 'double_recall_2', label: 'Double Recall Part 2' },
