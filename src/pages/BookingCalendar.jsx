@@ -78,6 +78,20 @@ export default function BookingCalendar() {
     }
   };
 
+  const getClientName = (booking) => {
+    if (booking.clients && booking.clients.length > 0) {
+      return booking.clients[0].client_name || booking.clients[0].clientName || 'N/A';
+    }
+    return booking.client_name || 'N/A';
+  };
+
+  const getFurkidName = (booking) => {
+    if (booking.furkids && booking.furkids.length > 0) {
+      return booking.furkids[0].furkid_name || booking.furkids[0].furkidName || 'N/A';
+    }
+    return booking.furkid_name || 'N/A';
+  };
+
   const getBookingsForDate = (date) => {
     const dateString = format(date, 'yyyy-MM-dd');
     const dayBookings = [];
@@ -324,7 +338,7 @@ export default function BookingCalendar() {
                               key={idx}
                               className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded truncate"
                             >
-                              {booking.session.start_time} - {booking.furkid_name || 'N/A'}
+                              {booking.session.start_time} - {getFurkidName(booking)}
                             </div>
                           ))}
                           {dayBookings.length > 2 && (
@@ -420,8 +434,8 @@ export default function BookingCalendar() {
                           <div key={idx} className="border border-slate-200 rounded-lg p-3 space-y-2">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <p className="font-medium text-sm text-slate-900">{booking.furkid_name || 'N/A'}</p>
-                                <p className="text-xs text-slate-600">{booking.client_name || 'N/A'}</p>
+                                <p className="font-medium text-sm text-slate-900">{getFurkidName(booking)}</p>
+                                <p className="text-xs text-slate-600">{getClientName(booking)}</p>
                               </div>
                               <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border text-xs`}>
                                 {booking.booking_status}
