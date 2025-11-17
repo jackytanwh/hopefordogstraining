@@ -393,6 +393,21 @@ export default function BookingDetail() {
     await loadBooking();
   };
 
+  const handleBasicMannersFYOGItemsUpdate = async (itemKey, checked) => {
+    if (!booking) return;
+    
+    const updatedItems = {
+      ...(booking.basic_manners_fyog_items_given || {}),
+      [itemKey]: checked
+    };
+    
+    await base44.entities.Booking.update(bookingId, {
+      basic_manners_fyog_items_given: updatedItems
+    });
+    
+    await loadBooking();
+  };
+
   // Add curriculum update function
   const handleCurriculumUpdate = async (weekKey, itemKey, checked) => {
     if (!booking) return;
@@ -452,6 +467,7 @@ export default function BookingDetail() {
   // Check if this service has items to give
   const hasKinderPuppyItems = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
   const hasBasicMannersItems = booking.service_type === 'basic_manners_in_home';
+  const hasBasicMannersFYOGItems = booking.service_type === 'basic_manners_fyog';
   
   // Check if this service has curriculum
   const hasKinderPuppyCurriculum = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
@@ -835,7 +851,7 @@ export default function BookingDetail() {
             </Card>
 
             {/* Items Given to Client */}
-            {(hasKinderPuppyItems || hasBasicMannersItems) && (
+            {(hasKinderPuppyItems || hasBasicMannersItems || hasBasicMannersFYOGItems) && (
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-slate-100">
                   <CardTitle className="flex items-center gap-2">
@@ -886,6 +902,30 @@ export default function BookingDetail() {
                         />
                         <label 
                           htmlFor={`basic-item-${item.key}`}
+                          className="text-sm text-slate-700 cursor-pointer"
+                        >
+                          {item.label}
+                        </label>
+                      </div>
+                    ))}
+
+                    {hasBasicMannersFYOGItems && [
+                      { key: 'treat_pouch', label: 'Treat Pouch' },
+                      { key: 'mat', label: 'Mat' },
+                      { key: 'lick_mat', label: 'Lick Mat' },
+                      { key: 'cup', label: 'Cup' },
+                      { key: 'dropper', label: 'Dropper' }
+                    ].map((item) => (
+                      <div key={item.key} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`fyog-item-${item.key}`}
+                          checked={booking.basic_manners_fyog_items_given?.[item.key] || false}
+                          onChange={(e) => handleBasicMannersFYOGItemsUpdate(item.key, e.target.checked)}
+                          className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        />
+                        <label 
+                          htmlFor={`fyog-item-${item.key}`}
                           className="text-sm text-slate-700 cursor-pointer"
                         >
                           {item.label}
