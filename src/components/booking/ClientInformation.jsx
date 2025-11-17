@@ -97,8 +97,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       newErrors.whatsappConsent = 'Please provide consent to receive WhatsApp notifications';
     }
 
-    // Validate "How did you know" for Kinder Puppy FYOG or Behavioural Modification
-    if (isHowDidYouKnowRequired && !formData.howDidYouKnow) {
+    // Validate "How did you know" for Behavioural Modification and Kinder Puppy FYOG
+    if ((isBehaviouralModification || service.id === 'kinder_puppy_fyog') && !formData.howDidYouKnow) {
       newErrors.howDidYouKnow = 'Please let us know how you heard about us';
     }
 
