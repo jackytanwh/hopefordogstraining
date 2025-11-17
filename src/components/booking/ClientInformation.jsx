@@ -89,6 +89,11 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
     }
 
+    // Validate "How did you know" for FYOG
+    if (isFYOG && !formData.howDidYouKnow) {
+      newErrors.howDidYouKnow = 'Please let us know how you heard about us';
+    }
+
     // Validate WhatsApp consent
     if (!formData.whatsappConsent) {
       newErrors.whatsappConsent = 'Please provide consent to receive WhatsApp notifications';
@@ -214,6 +219,37 @@ export default function ClientInformation({ service, formData, setFormData, onNe
             </div>
           );
         })}
+
+        {/* How did you know - Only for FYOG */}
+        {isFYOG && (
+          <div className="border-t border-slate-200 pt-6 space-y-2">
+            <Label>How did you know about us? *</Label>
+            <RadioGroup
+              value={formData.howDidYouKnow}
+              onValueChange={(value) => {
+                setFormData({ ...formData, howDidYouKnow: value });
+                if (errors.howDidYouKnow) {
+                  const newErrors = { ...errors };
+                  delete newErrors.howDidYouKnow;
+                  setErrors(newErrors);
+                }
+                if (showValidationMessage) {
+                  setShowValidationMessage(false);
+                }
+              }}
+            >
+              {['Google', 'Facebook', 'Instagram', 'AVS website', 'Recommendation'].map(option => (
+                <div key={option} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option} id={`know-fyog-${option}`} />
+                  <Label htmlFor={`know-fyog-${option}`} className="font-normal cursor-pointer">{option}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+            {errors.howDidYouKnow && (
+              <p className="text-sm text-red-600">{errors.howDidYouKnow}</p>
+            )}
+          </div>
+        )}
 
         {/* WhatsApp Consent */}
         <div className="border-t border-slate-200 pt-6">
