@@ -41,15 +41,68 @@ export default function AdminBookings() {
     }
   };
 
+  // Helper functions to get client and furkid names for both single and FYOG bookings
+  const getClientName = (booking) => {
+    if (booking.clients && booking.clients.length > 0) {
+      const client = booking.clients[0];
+      return client.client_name || client.clientName || 'N/A';
+    }
+    return booking.client_name || 'N/A';
+  };
+
+  const getClientEmail = (booking) => {
+    if (booking.clients && booking.clients.length > 0) {
+      const client = booking.clients[0];
+      return client.client_email || client.clientEmail || 'N/A';
+    }
+    return booking.client_email || 'N/A';
+  };
+
+  const getClientMobile = (booking) => {
+    if (booking.clients && booking.clients.length > 0) {
+      const client = booking.clients[0];
+      return client.client_mobile || client.clientMobile || 'N/A';
+    }
+    return booking.client_mobile || 'N/A';
+  };
+
+  const getFurkidName = (booking) => {
+    if (booking.furkids && booking.furkids.length > 0) {
+      const furkid = booking.furkids[0];
+      return furkid.furkid_name || furkid.furkidName || 'N/A';
+    }
+    return booking.furkid_name || 'N/A';
+  };
+
+  const getFurkidBreed = (booking) => {
+    if (booking.furkids && booking.furkids.length > 0) {
+      const furkid = booking.furkids[0];
+      return furkid.furkid_breed || furkid.furkidBreed || null;
+    }
+    return booking.furkid_breed || null;
+  };
+
+  const getFurkidGender = (booking) => {
+    if (booking.furkids && booking.furkids.length > 0) {
+      const furkid = booking.furkids[0];
+      return furkid.furkid_gender || furkid.furkidGender || null;
+    }
+    return booking.furkid_gender || null;
+  };
+
   useEffect(() => {
     let filtered = bookings;
 
     if (searchTerm) {
-      filtered = filtered.filter(booking =>
-        booking.client_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.furkid_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.client_email?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      filtered = filtered.filter(booking => {
+        const clientName = getClientName(booking);
+        const furkidName = getFurkidName(booking);
+        const clientEmail = getClientEmail(booking);
+        
+        return clientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               furkidName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               clientEmail?.toLowerCase().includes(searchTerm.toLowerCase());
+      });
     }
 
     if (statusFilter !== 'all') {
@@ -159,106 +212,115 @@ export default function AdminBookings() {
             </p>
           </div>
         ) : (
-          filteredBookings.map((booking) => (
-            <Card key={booking.id} className="shadow-lg hover:shadow-xl transition-all">
-              <CardHeader className="border-b border-slate-100 pb-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">{booking.service_name}</CardTitle>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border`}>
-                        {booking.booking_status}
-                      </Badge>
-                      {booking.is_adopted && (
-                        <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
-                          Adopted (10% discount)
+          filteredBookings.map((booking) => {
+            const clientName = getClientName(booking);
+            const clientEmail = getClientEmail(booking);
+            const clientMobile = getClientMobile(booking);
+            const furkidName = getFurkidName(booking);
+            const furkidBreed = getFurkidBreed(booking);
+            const furkidGender = getFurkidGender(booking);
+            
+            return (
+              <Card key={booking.id} className="shadow-lg hover:shadow-xl transition-all">
+                <CardHeader className="border-b border-slate-100 pb-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{booking.service_name}</CardTitle>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border`}>
+                          {booking.booking_status}
                         </Badge>
-                      )}
+                        {booking.is_adopted && (
+                          <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
+                            Adopted (10% discount)
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-xl text-blue-600">${booking.total_price?.toFixed(2)}</p>
+                      <p className="text-sm text-slate-500">Total</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-xl text-blue-600">${booking.total_price?.toFixed(2)}</p>
-                    <p className="text-sm text-slate-500">Total</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900 mb-1">Client</p>
-                      <p className="text-sm text-slate-700">{booking.client_name}</p>
-                      <p className="text-sm text-slate-600">{booking.client_email}</p>
-                      <p className="text-sm text-slate-600">{booking.client_mobile}</p>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900 mb-1">Client</p>
+                        <p className="text-sm text-slate-700">{clientName}</p>
+                        <p className="text-sm text-slate-600">{clientEmail}</p>
+                        <p className="text-sm text-slate-600">{clientMobile}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900 mb-1">Furkid</p>
+                        <p className="text-sm text-slate-700">{furkidName}</p>
+                        {furkidBreed && (
+                          <p className="text-sm text-slate-600">{furkidBreed} • {furkidGender}</p>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900 mb-1">Furkid</p>
-                      <p className="text-sm text-slate-700">{booking.furkid_name}</p>
-                      {booking.furkid_breed && (
-                        <p className="text-sm text-slate-600">{booking.furkid_breed} • {booking.furkid_gender}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-semibold text-slate-900">Session Schedule</p>
-                    <div className="space-y-1">
-                      {booking.session_dates?.slice(0, 3).map((session, idx) => (
-                        <p key={idx} className="text-sm text-slate-600">
-                          Session {session.session_number}: {format(parseISO(session.date), 'MMM d, yyyy')} at {session.start_time}
-                        </p>
-                      ))}
-                      {booking.session_dates?.length > 3 && (
-                        <p className="text-sm text-slate-500 italic">
-                          +{booking.session_dates.length - 3} more session{booking.session_dates.length - 3 > 1 ? 's' : ''}
-                        </p>
-                      )}
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-slate-900">Session Schedule</p>
+                      <div className="space-y-1">
+                        {booking.session_dates?.slice(0, 3).map((session, idx) => (
+                          <p key={idx} className="text-sm text-slate-600">
+                            Session {session.session_number}: {format(parseISO(session.date), 'MMM d, yyyy')} at {session.start_time}
+                          </p>
+                        ))}
+                        {booking.session_dates?.length > 3 && (
+                          <p className="text-sm text-slate-500 italic">
+                            +{booking.session_dates.length - 3} more session{booking.session_dates.length - 3 > 1 ? 's' : ''}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
-                  <div className="flex gap-2">
-                    {booking.booking_status === 'pending' && (
-                      <>
+                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
+                    <div className="flex gap-2">
+                      {booking.booking_status === 'pending' && (
+                        <>
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusChange(booking.id, 'confirmed')}
+                            className="bg-green-600 hover:bg-green-700"
+                          >
+                            <Check className="w-4 h-4 mr-1" />
+                            Confirm
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleStatusChange(booking.id, 'cancelled')}
+                            className="text-red-600 border-red-200 hover:bg-red-50"
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            Cancel
+                          </Button>
+                        </>
+                      )}
+                      {booking.booking_status === 'confirmed' && (
                         <Button
                           size="sm"
-                          onClick={() => handleStatusChange(booking.id, 'confirmed')}
-                          className="bg-green-600 hover:bg-green-700"
+                          onClick={() => handleStatusChange(booking.id, 'completed')}
+                          className="bg-blue-600 hover:bg-blue-700"
                         >
-                          <Check className="w-4 h-4 mr-1" />
-                          Confirm
+                          Mark as Completed
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleStatusChange(booking.id, 'cancelled')}
-                          className="text-red-600 border-red-200 hover:bg-red-50"
-                        >
-                          <X className="w-4 h-4 mr-1" />
-                          Cancel
-                        </Button>
-                      </>
-                    )}
-                    {booking.booking_status === 'confirmed' && (
-                      <Button
-                        size="sm"
-                        onClick={() => handleStatusChange(booking.id, 'completed')}
-                        className="bg-blue-600 hover:bg-blue-700"
-                      >
-                        Mark as Completed
+                      )}
+                    </div>
+                    <Link to={createPageUrl(`BookingDetail?id=${booking.id}`)}>
+                      <Button size="sm" variant="outline">
+                        <Eye className="w-4 h-4 mr-1" />
+                        View Details
                       </Button>
-                    )}
+                    </Link>
                   </div>
-                  <Link to={createPageUrl(`BookingDetail?id=${booking.id}`)}>
-                    <Button size="sm" variant="outline">
-                      <Eye className="w-4 h-4 mr-1" />
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </div>
     </div>
