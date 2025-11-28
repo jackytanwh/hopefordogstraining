@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -124,13 +123,14 @@ export default function BookingDetail() {
       // Send WhatsApp notification if consent was given (wrapped in try-catch)
       if (updatedBooking && updatedBooking.whatsapp_consent) {
         try {
-          if (newStatus === 'cancelled') {
-            const { sendBookingCancellation } = await import("@/functions/sendBookingCancellation");
-            await sendBookingCancellation({ booking: updatedBooking });
+          if (newStatus === 'confirmed') {
+            await base44.functions.invoke('sendWhatsappBookingConfirmation', { booking: updatedBooking });
+            console.log('WhatsApp booking confirmation sent');
+          } else if (newStatus === 'cancelled') {
+            await base44.functions.invoke('sendBookingCancellation', { booking: updatedBooking });
             console.log('WhatsApp cancellation notification sent');
           } else {
-            const { sendBookingUpdate } = await import("@/functions/sendBookingUpdate");
-            await sendBookingUpdate({ 
+            await base44.functions.invoke('sendBookingUpdate', { 
               booking: updatedBooking, 
               oldBooking: oldBooking 
             });

@@ -135,7 +135,11 @@ export default function AdminBookings() {
       
       // Send WhatsApp notification if consent was given (fire and forget)
       if (updatedBooking && updatedBooking.whatsapp_consent) {
-        if (newStatus === 'cancelled') {
+        if (newStatus === 'confirmed') {
+          base44.functions.invoke('sendWhatsappBookingConfirmation', { booking: updatedBooking })
+            .then(() => console.log('✅ WhatsApp booking confirmation sent'))
+            .catch((err) => console.log('⚠️ WhatsApp confirmation skipped:', err.message));
+        } else if (newStatus === 'cancelled') {
           base44.functions.invoke('sendBookingCancellation', { booking: updatedBooking })
             .then(() => console.log('✅ WhatsApp cancellation notification sent'))
             .catch((err) => console.log('⚠️ WhatsApp notification skipped:', err.message));
