@@ -2,24 +2,34 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 import { format, parseISO } from 'npm:date-fns@3.6.0';
 
 Deno.serve(async (req) => {
+    console.log("🚀 sendWhatsappBookingConfirmation function triggered");
+    
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
 
         if (!user) {
+            console.log("❌ Unauthorized - no user found");
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
+        console.log("✅ User authenticated:", user.email);
 
         const { booking } = await req.json();
 
         if (!booking) {
+            console.log("❌ No booking data provided");
             return Response.json({ error: 'Booking data is required' }, { status: 400 });
         }
+        console.log("✅ Booking received:", booking.id, "- Service:", booking.service_name);
 
         const WHATSAPP_ACCESS_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
         const WHATSAPP_PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
 
+        console.log("🔑 Credentials check - Phone Number ID:", WHATSAPP_PHONE_NUMBER_ID ? "SET" : "MISSING");
+        console.log("🔑 Credentials check - Access Token:", WHATSAPP_ACCESS_TOKEN ? "SET (length: " + WHATSAPP_ACCESS_TOKEN.length + ")" : "MISSING");
+
         if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
+            console.log("❌ WhatsApp API credentials not configured");
             return Response.json({ error: 'WhatsApp API credentials not configured' }, { status: 500 });
         }
 
@@ -75,8 +85,20 @@ Deno.serve(async (req) => {
         }
 
         if (!recipientMobile) {
+            console.log("❌ Client mobile number is missing");
             return Response.json({ error: 'Client mobile number is missing' }, { status: 400 });
         }
+        
+        console.log("📱 Recipient mobile (E.164):", recipientMobile);
+        console.log("📋 Variables extracted:", {
+            clientName,
+            dogName,
+            program,
+            dateStart,
+            timeStart,
+            dayOfWeekStart,
+            address
+        });
 
         // Build WhatsApp message payload
         const whatsappMessagePayload = {
@@ -106,6 +128,9 @@ Deno.serve(async (req) => {
             }
         };
 
+        console.log("📤 Full WhatsApp payload:", JSON.stringify(whatsappMessagePayload, null, 2));
+        console.log("🌐 Sending to URL:", `https://graph.facebook.com/v19.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`);
+
         const response = await fetch(
             `https://graph.facebook.com/v19.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
             {
@@ -119,12 +144,15 @@ Deno.serve(async (req) => {
         );
 
         const data = await response.json();
+        console.log("📥 WhatsApp API Response Status:", response.status);
+        console.log("📥 WhatsApp API Response Body:", JSON.stringify(data, null, 2));
 
         if (!response.ok) {
-            console.error("WhatsApp API Error:", data);
+            console.error("❌ WhatsApp API Error:", data);
             return Response.json({ error: 'Failed to send WhatsApp message', details: data }, { status: response.status });
         }
 
+        console.log("✅ WhatsApp message sent successfully!");
         return Response.json({ success: true, whatsappResponse: data });
 
     } catch (error) {
