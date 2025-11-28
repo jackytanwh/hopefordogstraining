@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
 
   const numberOfClients = isFYOG ? formData.numberOfClients : 1;
   const isBehaviouralModification = service.id === 'behavioural_modification';
+  const isGroupClass = service.id === 'basic_manners_group_class';
+  const isFYOGProgram = service.id === 'kinder_puppy_fyog' || service.id === 'basic_manners_fyog';
   // New variable to check if 'howDidYouKnow' is required for the current service
   const isHowDidYouKnowRequired = service.id === 'kinder_puppy_fyog' || isBehaviouralModification;
 
@@ -22,6 +23,27 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     if (!postalCode) return false;
     const code = parseInt(postalCode);
     return code >= 90000 && code <= 99999;
+  };
+
+  // Handle shared address/postal code for FYOG programs
+  const handleSharedLocationChange = (field, value) => {
+    const updatedFormData = { ...formData, [field]: value };
+    
+    if (field === 'sharedPostalCode') {
+      updatedFormData.isSentosa = checkSentosaPostalCode(value);
+    }
+    
+    setFormData(updatedFormData);
+    
+    if (errors[field]) {
+      const newErrors = { ...errors };
+      delete newErrors[field];
+      setErrors(newErrors);
+    }
+    
+    if (showValidationMessage) {
+      setShowValidationMessage(false);
+    }
   };
 
   const handleInputChange = (clientIndex, field, value) => {
@@ -81,14 +103,29 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         newErrors[`${prefix}clientMobile`] = 'Mobile number is required';
       }
 
-      if (!client.clientAddress?.trim()) {
-        newErrors[`${prefix}clientAddress`] = 'Address is required';
-      }
+      // For non-FYOG and non-Group Class, validate address per client
+      if (!isFYOGProgram && !isGroupClass) {
+        if (!client.clientAddress?.trim()) {
+          newErrors[`${prefix}clientAddress`] = 'Address is required';
+        }
 
-      if (!client.clientPostalCode?.trim()) {
-        newErrors[`${prefix}clientPostalCode`] = 'Postal code is required';
-      } else if (!/^\d{6}$/.test(client.clientPostalCode)) {
-        newErrors[`${prefix}clientPostalCode`] = 'Invalid postal code (6 digits required)';
+        if (!client.clientPostalCode?.trim()) {
+          newErrors[`${prefix}clientPostalCode`] = 'Postal code is required';
+        } else if (!/^\d{6}$/.test(client.clientPostalCode)) {
+          newErrors[`${prefix}clientPostalCode`] = 'Invalid postal code (6 digits required)';
+        }
+      }
+    }
+
+    // For FYOG programs, validate shared address/postal code
+    if (isFYOGProgram) {
+      if (!formData.sharedAddress?.trim()) {
+        newErrors.sharedAddress = 'Training location address is required';
+      }
+      if (!formData.sharedPostalCode?.trim()) {
+        newErrors.sharedPostalCode = 'Postal code is required';
+      } else if (!/^\d{6}$/.test(formData.sharedPostalCode)) {
+        newErrors.sharedPostalCode = 'Invalid postal code (6 digits required)';
       }
     }
 
@@ -119,10 +156,19 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
+        {/* Group Class default location notice */}
+        {isGroupClass && (
+          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <span className="font-semibold">📍 Training Location:</span> 73 Redhill Rd, Singapore
+            </p>
+          </div>
+        )}
+
         {Array.from({ length: numberOfClients }, (_, index) => {
           const client = isFYOG ? formData.clients[index] || {} : formData;
           const prefix = isFYOG ? `${index}_` : '';
-          const isSentosaClient = checkSentosaPostalCode(client.clientPostalCode);
+          const isSentosaClient = !isFYOGProgram && !isGroupClass && checkSentosaPostalCode(client.clientPostalCode);
 
           return (
             <div key={index} className={`space-y-4 ${isFYOG && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
@@ -176,47 +222,99 @@ export default function ClientInformation({ service, formData, setFormData, onNe
                 <p className="text-xs text-slate-500">This number will be used for booking confirmations and reminders via WhatsApp</p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor={`${prefix}clientAddress`}>Address *</Label>
-                <Textarea
-                  id={`${prefix}clientAddress`}
-                  value={client.clientAddress || ''}
-                  onChange={(e) => handleInputChange(index, 'clientAddress', e.target.value)}
-                  placeholder="Enter full address"
-                  className={errors[`${prefix}clientAddress`] ? 'border-red-500' : ''}
-                  rows={1}
-                />
-                {errors[`${prefix}clientAddress`] && (
-                  <p className="text-sm text-red-600">{errors[`${prefix}clientAddress`]}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor={`${prefix}clientPostalCode`}>Postal Code *</Label>
-                <Input
-                  id={`${prefix}clientPostalCode`}
-                  value={client.clientPostalCode || ''}
-                  onChange={(e) => handleInputChange(index, 'clientPostalCode', e.target.value)}
-                  placeholder="123456"
-                  maxLength={6}
-                  className={errors[`${prefix}clientPostalCode`] ? 'border-red-500' : ''}
-                />
-                {errors[`${prefix}clientPostalCode`] && (
-                  <p className="text-sm text-red-600">{errors[`${prefix}clientPostalCode`]}</p>
-                )}
-                {isSentosaClient && (
-                  <div className="flex items-start gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm text-orange-800">
-                      <p className="font-semibold">Sentosa Island Surcharge</p>
-                      <p>An additional $10 per session surcharge will apply to your booking. Thank you for the understanding.</p>
-                    </div>
+              {/* Show address/postal per client only for non-FYOG and non-Group Class */}
+              {!isFYOGProgram && !isGroupClass && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor={`${prefix}clientAddress`}>Address *</Label>
+                    <Textarea
+                      id={`${prefix}clientAddress`}
+                      value={client.clientAddress || ''}
+                      onChange={(e) => handleInputChange(index, 'clientAddress', e.target.value)}
+                      placeholder="Enter full address"
+                      className={errors[`${prefix}clientAddress`] ? 'border-red-500' : ''}
+                      rows={1}
+                    />
+                    {errors[`${prefix}clientAddress`] && (
+                      <p className="text-sm text-red-600">{errors[`${prefix}clientAddress`]}</p>
+                    )}
                   </div>
-                )}
-              </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`${prefix}clientPostalCode`}>Postal Code *</Label>
+                    <Input
+                      id={`${prefix}clientPostalCode`}
+                      value={client.clientPostalCode || ''}
+                      onChange={(e) => handleInputChange(index, 'clientPostalCode', e.target.value)}
+                      placeholder="123456"
+                      maxLength={6}
+                      className={errors[`${prefix}clientPostalCode`] ? 'border-red-500' : ''}
+                    />
+                    {errors[`${prefix}clientPostalCode`] && (
+                      <p className="text-sm text-red-600">{errors[`${prefix}clientPostalCode`]}</p>
+                    )}
+                    {isSentosaClient && (
+                      <div className="flex items-start gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                        <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-orange-800">
+                          <p className="font-semibold">Sentosa Island Surcharge</p>
+                          <p>An additional $10 per session surcharge will apply to your booking. Thank you for the understanding.</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           );
         })}
+
+        {/* Shared Training Location for FYOG programs */}
+        {isFYOGProgram && (
+          <div className="pt-6 border-t border-slate-200 space-y-4">
+            <h3 className="font-semibold text-slate-900 text-lg">Training Location</h3>
+            <p className="text-sm text-slate-600">Please provide the address where the training sessions will take place.</p>
+            
+            <div className="space-y-2">
+              <Label htmlFor="sharedAddress">Training Address *</Label>
+              <Textarea
+                id="sharedAddress"
+                value={formData.sharedAddress || ''}
+                onChange={(e) => handleSharedLocationChange('sharedAddress', e.target.value)}
+                placeholder="Enter full address for training sessions"
+                className={errors.sharedAddress ? 'border-red-500' : ''}
+                rows={1}
+              />
+              {errors.sharedAddress && (
+                <p className="text-sm text-red-600">{errors.sharedAddress}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="sharedPostalCode">Postal Code *</Label>
+              <Input
+                id="sharedPostalCode"
+                value={formData.sharedPostalCode || ''}
+                onChange={(e) => handleSharedLocationChange('sharedPostalCode', e.target.value)}
+                placeholder="123456"
+                maxLength={6}
+                className={errors.sharedPostalCode ? 'border-red-500' : ''}
+              />
+              {errors.sharedPostalCode && (
+                <p className="text-sm text-red-600">{errors.sharedPostalCode}</p>
+              )}
+              {formData.isSentosa && (
+                <div className="flex items-start gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                  <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm text-orange-800">
+                    <p className="font-semibold">Sentosa Island Surcharge</p>
+                    <p>An additional $10 per session surcharge will apply to your booking. Thank you for the understanding.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* How did you know - Only for Kinder Puppy FYOG and Behavioural Modification */}
         {isHowDidYouKnowRequired && (
