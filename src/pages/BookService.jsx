@@ -447,18 +447,36 @@ export default function BookService() {
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
-      // WhatsApp notification - fire and forget
-      if (formData.whatsappConsent) {
-        console.log('📱 Triggering WhatsApp notification in background...');
-        base44.functions.invoke('sendBookingConfirmation', { booking })
-          .then(() => console.log('✅ WhatsApp notification sent'))
-          .catch((err) => console.log('⚠️ WhatsApp notification skipped:', err.message));
+      console.log('=== INITIATING HITPAY PAYMENT ===');
+      
+      // Get client details for HitPay
+      const clientName = (isFYOG || isGroupClass) 
+        ? (formData.clients?.[0]?.clientName || formData.clients?.[0]?.client_name || '')
+        : formData.clientName;
+      const clientEmail = (isFYOG || isGroupClass)
+        ? (formData.clients?.[0]?.clientEmail || formData.clients?.[0]?.client_email || '')
+        : formData.clientEmail;
+      const clientMobile = (isFYOG || isGroupClass)
+        ? (formData.clients?.[0]?.clientMobile || formData.clients?.[0]?.client_mobile || '')
+        : formData.clientMobile;
+      
+      // Call HitPay to create payment request
+      const hitpayResponse = await base44.functions.invoke('createHitpayPayment', {
+        bookingId: booking.id,
+        amount: pricing.total,
+        clientName,
+        clientEmail,
+        clientMobile
+      });
+      
+      console.log('📥 HitPay response:', hitpayResponse.data);
+      
+      if (hitpayResponse.data && hitpayResponse.data.payment_url) {
+        console.log('✅ Redirecting to HitPay payment page...');
+        window.location.href = hitpayResponse.data.payment_url;
+      } else {
+        throw new Error('Failed to get HitPay payment URL');
       }
-      
-      console.log('=== BOOKING SUBMISSION COMPLETE ===');
-      console.log('Navigating to Thank You page...');
-      
-      navigate(createPageUrl("ThankYou"));
       
     } catch (error) {
       console.error('❌❌❌ ERROR CREATING BOOKING ❌❌❌');

@@ -559,9 +559,9 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
         <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-slate-700">
           <p className="font-semibold mb-2">Next Steps:</p>
           <ul className="space-y-1 list-disc list-inside">
-            <li>We will review your booking and contact you within 24 hours</li>
-            <li>Payment details will be provided upon confirmation</li>
-            <li>A confirmation email will be sent to {(isFYOG || isGroupClass) && formData.clients && formData.clients[0] ? formData.clients[0].clientEmail : formData.clientEmail}</li>
+            <li>You will be redirected to our secure payment page</li>
+            <li>After payment, your booking will be confirmed automatically</li>
+            <li>A WhatsApp confirmation will be sent to your mobile number</li>
             {isGroupClass && <li>The fixed training schedule will be shared after confirmation</li>}
           </ul>
         </div>
@@ -570,14 +570,14 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           <Button variant="outline" onClick={onBack} disabled={isSubmitting} className="flex-1">
             Back
           </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting} className="flex-1">
+          <Button onClick={handleSubmit} disabled={isSubmitting} className="flex-1 bg-green-600 hover:bg-green-700">
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Submitting...
+                Processing...
               </>
             ) : (
-              'Confirm Booking'
+              'Proceed to Payment'
             )}
           </Button>
         </div>
