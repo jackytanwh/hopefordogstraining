@@ -11,6 +11,7 @@ import BookingCalendar from './pages/BookingCalendar';
 import BookingDetail from './pages/BookingDetail';
 import GroupClassScheduleSettings from './pages/GroupClassScheduleSettings';
 import ThankYou from './pages/ThankYou';
+import PaymentSuccess from './pages/PaymentSuccess';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +29,7 @@ export const PAGES = {
     "BookingDetail": BookingDetail,
     "GroupClassScheduleSettings": GroupClassScheduleSettings,
     "ThankYou": ThankYou,
+    "PaymentSuccess": PaymentSuccess,
 }
 
 export const pagesConfig = {
