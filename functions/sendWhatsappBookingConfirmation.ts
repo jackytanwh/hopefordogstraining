@@ -6,13 +6,6 @@ Deno.serve(async (req) => {
     
     try {
         const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
-
-        if (!user) {
-            console.log("❌ Unauthorized - no user found");
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-        console.log("✅ User authenticated:", user.email);
 
         const { booking } = await req.json();
 
