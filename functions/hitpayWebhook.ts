@@ -62,22 +62,7 @@ Deno.serve(async (req) => {
                 confirmation_date: new Date().toISOString()
             });
             console.log(`✅ Booking ${bookingId} status updated to 'confirmed'`);
-
-            // Fetch the updated booking to send WhatsApp confirmation
-            const bookings = await base44.asServiceRole.entities.Booking.list();
-            const updatedBooking = bookings.find(b => b.id === bookingId);
-
-            if (updatedBooking && updatedBooking.whatsapp_consent) {
-                try {
-                    await base44.asServiceRole.functions.invoke('sendWhatsappBookingConfirmation', { booking: updatedBooking });
-                    console.log(`📱 WhatsApp confirmation sent for booking ${bookingId}`);
-                } catch (whatsappError) {
-                    console.error(`⚠️ WhatsApp notification failed:`, whatsappError);
-                    // Don't fail the webhook if WhatsApp fails
-                }
-            } else {
-                console.log(`ℹ️ WhatsApp confirmation skipped for booking ${bookingId} (no consent or booking not found)`);
-            }
+            
         } else {
             console.log(`ℹ️ Payment status '${status}' - no action taken`);
         }
