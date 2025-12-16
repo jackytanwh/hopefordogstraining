@@ -448,7 +448,7 @@ export default function BookService() {
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
       console.log('=== INITIATING HITPAY PAYMENT ===');
-      
+
       // Get client details for HitPay
       const clientName = (isFYOG || isGroupClass) 
         ? (formData.clients?.[0]?.clientName || formData.clients?.[0]?.client_name || '')
@@ -459,8 +459,17 @@ export default function BookService() {
       const clientMobile = (isFYOG || isGroupClass)
         ? (formData.clients?.[0]?.clientMobile || formData.clients?.[0]?.client_mobile || '')
         : formData.clientMobile;
-      
+
+      console.log('💳 Payment details:', {
+        bookingId: booking.id,
+        amount: pricing.total,
+        clientName,
+        clientEmail,
+        clientMobile
+      });
+
       // Call HitPay to create payment request
+      console.log('Calling createHitpayPayment function...');
       const hitpayResponse = await base44.functions.invoke('createHitpayPayment', {
         bookingId: booking.id,
         amount: pricing.total,
@@ -468,15 +477,33 @@ export default function BookService() {
         clientEmail,
         clientMobile
       });
-      
-      console.log('📥 HitPay response:', hitpayResponse.data);
-      
-      if (hitpayResponse.data && hitpayResponse.data.payment_url) {
-        console.log('✅ Redirecting to HitPay payment page...');
-        window.location.href = hitpayResponse.data.payment_url;
-      } else {
-        throw new Error('Failed to get HitPay payment URL');
+
+      console.log('📥 Full HitPay response:', JSON.stringify(hitpayResponse, null, 2));
+      console.log('📥 Response status:', hitpayResponse.status);
+      console.log('📥 Response data:', hitpayResponse.data);
+
+      if (!hitpayResponse || !hitpayResponse.data) {
+        console.error('❌ No response from createHitpayPayment');
+        throw new Error('No response from payment service');
       }
+
+      if (hitpayResponse.status !== 200) {
+        console.error('❌ Payment service returned error status:', hitpayResponse.status);
+        console.error('Error details:', hitpayResponse.data);
+        throw new Error(`Payment service error: ${JSON.stringify(hitpayResponse.data)}`);
+      }
+
+      const paymentUrl = hitpayResponse.data.payment_url;
+
+      if (!paymentUrl) {
+        console.error('❌ No payment_url in response');
+        console.error('Response data:', JSON.stringify(hitpayResponse.data, null, 2));
+        throw new Error('Payment URL not received from payment service');
+      }
+
+      console.log('✅ Payment URL received:', paymentUrl);
+      console.log('🔄 Redirecting to HitPay payment page...');
+      window.location.href = paymentUrl;
       
     } catch (error) {
       console.error('❌❌❌ ERROR CREATING BOOKING ❌❌❌');
