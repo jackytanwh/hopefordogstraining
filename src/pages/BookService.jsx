@@ -460,7 +460,7 @@ export default function BookService() {
         ? (formData.clients?.[0]?.clientMobile || formData.clients?.[0]?.client_mobile || '')
         : formData.clientMobile;
 
-      console.log('💳 Payment details:', {
+      console.log('💳 Calling HitPay with:', {
         bookingId: booking.id,
         amount: pricing.total,
         clientName,
@@ -469,7 +469,6 @@ export default function BookService() {
       });
 
       // Call HitPay to create payment request
-      console.log('Calling createHitpayPayment function...');
       const hitpayResponse = await base44.functions.invoke('createHitpayPayment', {
         bookingId: booking.id,
         amount: pricing.total,
@@ -478,31 +477,20 @@ export default function BookService() {
         clientMobile
       });
 
-      console.log('📥 Full HitPay response:', JSON.stringify(hitpayResponse, null, 2));
-      console.log('📥 Response status:', hitpayResponse.status);
-      console.log('📥 Response data:', hitpayResponse.data);
+      console.log('📥 HitPay response status:', hitpayResponse?.status);
+      console.log('📥 HitPay response data:', hitpayResponse?.data);
 
-      if (!hitpayResponse || !hitpayResponse.data) {
-        console.error('❌ No response from createHitpayPayment');
-        throw new Error('No response from payment service');
-      }
-
-      if (hitpayResponse.status !== 200) {
-        console.error('❌ Payment service returned error status:', hitpayResponse.status);
-        console.error('Error details:', hitpayResponse.data);
-        throw new Error(`Payment service error: ${JSON.stringify(hitpayResponse.data)}`);
-      }
-
-      const paymentUrl = hitpayResponse.data.payment_url;
+      // Extract payment URL from response
+      const paymentUrl = hitpayResponse?.data?.payment_url;
 
       if (!paymentUrl) {
-        console.error('❌ No payment_url in response');
-        console.error('Response data:', JSON.stringify(hitpayResponse.data, null, 2));
-        throw new Error('Payment URL not received from payment service');
+        console.error('❌ No payment URL received');
+        throw new Error('Failed to get payment URL from HitPay');
       }
 
-      console.log('✅ Payment URL received:', paymentUrl);
-      console.log('🔄 Redirecting to HitPay payment page...');
+      console.log('✅ Payment URL received, redirecting...');
+
+      // Redirect to HitPay payment page
       window.location.href = paymentUrl;
       
     } catch (error) {
