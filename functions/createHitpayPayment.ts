@@ -39,6 +39,7 @@ Deno.serve(async (req) => {
 
         console.log("📤 HitPay request payload:", JSON.stringify(paymentRequestBody, null, 2));
 
+        console.log("🌐 Making request to HitPay API...");
         const response = await fetch("https://api.hit-pay.com/v1/payment-requests", {
             method: "POST",
             headers: {
@@ -48,16 +49,42 @@ Deno.serve(async (req) => {
             body: new URLSearchParams(paymentRequestBody).toString(),
         });
 
-        const data = await response.json();
         console.log("📥 HitPay API Response Status:", response.status);
-        console.log("📥 HitPay API Response Body:", JSON.stringify(data, null, 2));
+        
+        let data;
+        try {
+            data = await response.json();
+            console.log("📥 HitPay API Response Body:", JSON.stringify(data, null, 2));
+        } catch (parseError) {
+            console.error("❌ Failed to parse HitPay response as JSON");
+            const text = await response.text();
+            console.error("Raw response:", text);
+            return Response.json({ error: 'Invalid response from HitPay', details: text }, { status: 500 });
+        }
 
         if (!response.ok) {
-            console.error("❌ HitPay API Error:", data);
-            return Response.json({ error: 'Failed to create HitPay payment', details: data }, { status: response.status });
+            console.error("❌ HitPay API Error - Status:", response.status);
+            console.error("❌ HitPay API Error - Details:", JSON.stringify(data, null, 2));
+            return Response.json({ 
+                error: 'Failed to create HitPay payment', 
+                details: data,
+                status: response.status 
+            }, { status: response.status });
+        }
+
+        if (!data.url) {
+            console.error("❌ HitPay response missing 'url' field");
+            console.error("Response data:", JSON.stringify(data, null, 2));
+            return Response.json({ 
+                error: 'Payment URL not returned by HitPay', 
+                details: data 
+            }, { status: 500 });
         }
 
         console.log("✅ HitPay payment request created successfully!");
+        console.log("✅ Payment URL:", data.url);
+        console.log("✅ Payment ID:", data.id);
+        
         return Response.json({ 
             payment_url: data.url,
             payment_id: data.id 
