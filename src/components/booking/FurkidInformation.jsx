@@ -432,14 +432,43 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={`${prefix}furkidJoinedFamily`}>When did your furkid join the family? (Month/Year) *</Label>
-                <Input
-                  id={`${prefix}furkidJoinedFamily`}
-                  type="month"
-                  value={furkid.furkidJoinedFamily || ''}
-                  onChange={(e) => handleInputChange(index, 'furkidJoinedFamily', e.target.value)}
-                  className={errors[`${prefix}furkidJoinedFamily`] ? 'border-red-500' : ''}
-                />
+                <Label>When did your furkid join the family? (Month/Year) *</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Select 
+                    value={furkid.joinedMonth} 
+                    onValueChange={(v) => {
+                      handleInputChange(index, 'joinedMonth', v);
+                      if (furkid.joinedYear) {
+                        const monthStr = v.padStart(2, '0');
+                        handleInputChange(index, 'furkidJoinedFamily', `${furkid.joinedYear}-${monthStr}`);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className={errors[`${prefix}furkidJoinedFamily`] ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {months.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select 
+                    value={furkid.joinedYear} 
+                    onValueChange={(v) => {
+                      handleInputChange(index, 'joinedYear', v);
+                      if (furkid.joinedMonth) {
+                        const monthStr = furkid.joinedMonth.padStart(2, '0');
+                        handleInputChange(index, 'furkidJoinedFamily', `${v}-${monthStr}`);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className={errors[`${prefix}furkidJoinedFamily`] ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {years.map(y => <SelectItem key={y} value={y.toString()}>{y}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
                 {errors[`${prefix}furkidJoinedFamily`] && (
                   <p className="text-sm text-red-600">{errors[`${prefix}furkidJoinedFamily`]}</p>
                 )}
