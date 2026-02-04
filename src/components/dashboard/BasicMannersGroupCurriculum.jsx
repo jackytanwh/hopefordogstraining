@@ -90,8 +90,6 @@ export default function BasicMannersGroupCurriculum({ clients, onUpdate, program
     week7: false
   });
 
-  const [groupStartDate, setGroupStartDate] = useState('');
-
   const programClients = clients.filter(c =>
     programName === "Basic Manners Group"
       ? c.program === 'basic_manners_group'
@@ -143,31 +141,12 @@ export default function BasicMannersGroupCurriculum({ clients, onUpdate, program
       {programClients.map((client) => (
         <Card key={client.id} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="border-b border-slate-100">
-            <CardTitle className="flex items-center justify-between text-xl font-semibold text-slate-900">
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5" />
-                {programName} Curriculum - {client.dog_name}
-              </div>
+            <CardTitle className="flex items-center gap-2 text-xl font-semibold text-slate-900">
+              <BookOpen className="w-5 h-5" />
+              {programName} Curriculum - {client.dog_name}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Group Start Date (Week 1)
-              </label>
-              <input
-                type="date"
-                value={groupStartDate}
-                onChange={(e) => setGroupStartDate(e.target.value)}
-                className="w-full md:w-64 px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              {groupStartDate && (
-                <p className="text-xs text-slate-600 mt-2">
-                  Week 2: {new Date(new Date(groupStartDate).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}, 
-                  Week 3: {new Date(new Date(groupStartDate).getTime() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString()}, etc.
-                </p>
-              )}
-            </div>
             <div className="space-y-3">
               {Object.entries(curriculumData).map(([weekKey, weekData]) => {
                 const { completed, total } = getClientWeekProgress(client, weekKey);
