@@ -91,6 +91,8 @@ export default function BasicMannersGroupFYOGCurriculum({ clients, onUpdate, pro
     week7: false
   });
 
+  const [groupStartDate, setGroupStartDate] = useState('');
+
   const toggleWeek = (weekKey) => {
     setExpandedWeeks(prev => ({
       ...prev,
@@ -117,42 +119,6 @@ export default function BasicMannersGroupFYOGCurriculum({ clients, onUpdate, pro
     if (onUpdate) onUpdate();
   };
 
-  const handleWeekDateChange = async (clientId, week, date) => {
-    const client = clients.find(c => c.id === clientId);
-    if (!client) return;
-
-    const updatedProgress = {
-      ...(client.basic_manners_fyog_progress || {}),
-      [week]: {
-        ...(client.basic_manners_fyog_progress?.[week] || {}),
-        week_date: date
-      }
-    };
-
-    // Auto-populate subsequent weeks if this is week1 and has a date
-    if (week === 'week1' && date) {
-      const baseDate = new Date(date);
-      const weeks = ['week2', 'week3', 'week4', 'week5', 'week6', 'week7'];
-      
-      weeks.forEach((weekKey, index) => {
-        const weekDate = new Date(baseDate);
-        weekDate.setDate(weekDate.getDate() + (7 * (index + 1)));
-        const formattedDate = weekDate.toISOString().split('T')[0];
-        
-        updatedProgress[weekKey] = {
-          ...(client.basic_manners_fyog_progress?.[weekKey] || {}),
-          week_date: formattedDate
-        };
-      });
-    }
-
-    await Client.update(clientId, {
-      basic_manners_fyog_progress: updatedProgress
-    });
-
-    if (onUpdate) onUpdate();
-  };
-
   const getClientWeekProgress = (client, week) => {
     const weekData = curriculumData[week];
     const weekProgress = client.basic_manners_fyog_progress?.[week] || {};
@@ -165,12 +131,31 @@ export default function BasicMannersGroupFYOGCurriculum({ clients, onUpdate, pro
       {clients.map((client) => (
         <Card key={client.id} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="border-b border-slate-100">
-            <CardTitle className="flex items-center gap-2 text-xl font-semibold text-slate-900">
-              <BookOpen className="w-5 h-5" />
-              {programName} Curriculum - {client.dog_name}
+            <CardTitle className="flex items-center justify-between text-xl font-semibold text-slate-900">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5" />
+                {programName} Curriculum - {client.dog_name}
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Group Start Date (Week 1)
+              </label>
+              <input
+                type="date"
+                value={groupStartDate}
+                onChange={(e) => setGroupStartDate(e.target.value)}
+                className="w-full md:w-64 px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              {groupStartDate && (
+                <p className="text-xs text-slate-600 mt-2">
+                  Week 2: {new Date(new Date(groupStartDate).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}, 
+                  Week 3: {new Date(new Date(groupStartDate).getTime() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString()}, etc.
+                </p>
+              )}
+            </div>
             <div className="space-y-3">
               {Object.entries(curriculumData).map(([weekKey, weekData]) => {
                 const { completed, total } = getClientWeekProgress(client, weekKey);
@@ -190,19 +175,6 @@ export default function BasicMannersGroupFYOGCurriculum({ clients, onUpdate, pro
                           }`}
                         />
                         <h3 className="text-lg font-semibold text-slate-900">{weekData.title}</h3>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-slate-500" />
-                          <Input
-                            type="date"
-                            value={weekProgress.week_date || ''}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              handleWeekDateChange(client.id, weekKey, e.target.value);
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-40 h-8 text-sm"
-                          />
-                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-slate-600">{completed}/{total}</span>
