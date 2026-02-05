@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -28,10 +27,29 @@ import BasicMannersGroupCurriculum from "../components/dashboard/BasicMannersGro
 import BasicMannersGroupFYOGCurriculum from "../components/dashboard/BasicMannersGroupFYOGCurriculum";
 
 export default function Dashboard() {
+  const [user, setUser] = useState(null);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedbackStats, setFeedbackStats] = useState(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        
+        if (currentUser.role !== 'admin') {
+          window.location.href = createPageUrl("Home");
+        }
+      } catch (error) {
+        console.error("Authentication error:", error);
+        window.location.href = createPageUrl("Home");
+      }
+    };
+    
+    checkAuth();
+  }, []);
 
   const urlParams = new URLSearchParams(window.location.search);
   const programFilter = urlParams.get('program');
