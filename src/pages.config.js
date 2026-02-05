@@ -56,12 +56,12 @@ import BookingDetail from './pages/BookingDetail';
 import BookingSystem from './pages/BookingSystem';
 import ClientDetail from './pages/ClientDetail';
 import Clients from './pages/Clients';
-import Dashboard from './pages/Dashboard';
 import EditClient from './pages/EditClient';
 import GroupClassScheduleSettings from './pages/GroupClassScheduleSettings';
 import Home from './pages/Home';
 import PaymentSuccess from './pages/PaymentSuccess';
 import ThankYou from './pages/ThankYou';
+import Dashboard from './pages/Dashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -75,12 +75,12 @@ export const PAGES = {
     "BookingSystem": BookingSystem,
     "ClientDetail": ClientDetail,
     "Clients": Clients,
-    "Dashboard": Dashboard,
     "EditClient": EditClient,
     "GroupClassScheduleSettings": GroupClassScheduleSettings,
     "Home": Home,
     "PaymentSuccess": PaymentSuccess,
     "ThankYou": ThankYou,
+    "Dashboard": Dashboard,
 }
 
 export const pagesConfig = {
