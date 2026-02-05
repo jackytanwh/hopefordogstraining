@@ -28,7 +28,6 @@ import BasicMannersGroupFYOGCurriculum from "../components/dashboard/BasicManner
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedbackStats, setFeedbackStats] = useState(null);
@@ -38,17 +37,14 @@ export default function Dashboard() {
     const checkAuth = async () => {
       try {
         const currentUser = await base44.auth.me();
+        setUser(currentUser);
         
         if (currentUser.role !== 'admin') {
-          window.location.href = createPageUrl("BookingSystem");
-          return;
+          window.location.href = createPageUrl("Home");
         }
-        
-        setUser(currentUser);
-        setAuthChecked(true);
       } catch (error) {
         console.error("Authentication error:", error);
-        window.location.href = createPageUrl("BookingSystem");
+        window.location.href = createPageUrl("Home");
       }
     };
     
@@ -144,13 +140,11 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (authChecked && user) {
-      loadClients();
-      if (!programFilter) {
-        loadFeedbackStats();
-      }
+    loadClients();
+    if (!programFilter) {
+      loadFeedbackStats();
     }
-  }, [authChecked, user, loadClients, loadFeedbackStats, programFilter]);
+  }, [loadClients, loadFeedbackStats, programFilter]);
 
   useEffect(() => {
     if (!loading && clients.length > 0) {
@@ -577,12 +571,12 @@ export default function Dashboard() {
     );
   };
 
-  if (!authChecked || !user) {
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600">Verifying access...</p>
+          <p className="text-slate-600">Loading...</p>
         </div>
       </div>
     );
