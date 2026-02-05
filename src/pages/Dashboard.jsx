@@ -144,11 +144,13 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    loadClients();
-    if (!programFilter) {
-      loadFeedbackStats();
+    if (authChecked && user) {
+      loadClients();
+      if (!programFilter) {
+        loadFeedbackStats();
+      }
     }
-  }, [loadClients, loadFeedbackStats, programFilter]);
+  }, [authChecked, user, loadClients, loadFeedbackStats, programFilter]);
 
   useEffect(() => {
     if (!loading && clients.length > 0) {
