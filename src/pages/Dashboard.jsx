@@ -28,6 +28,7 @@ import BasicMannersGroupFYOGCurriculum from "../components/dashboard/BasicManner
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedbackStats, setFeedbackStats] = useState(null);
@@ -37,14 +38,17 @@ export default function Dashboard() {
     const checkAuth = async () => {
       try {
         const currentUser = await base44.auth.me();
-        setUser(currentUser);
         
         if (currentUser.role !== 'admin') {
-          window.location.href = createPageUrl("Home");
+          window.location.href = createPageUrl("BookingSystem");
+          return;
         }
+        
+        setUser(currentUser);
+        setAuthChecked(true);
       } catch (error) {
         console.error("Authentication error:", error);
-        window.location.href = createPageUrl("Home");
+        window.location.href = createPageUrl("BookingSystem");
       }
     };
     
