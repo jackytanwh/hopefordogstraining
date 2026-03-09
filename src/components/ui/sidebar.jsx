@@ -441,20 +441,23 @@ const sidebarMenuButtonVariants = cva(
   }
 )
 
-function SidebarMenuButtonInner(
-  { asChild = false, isActive = false, variant = "default", size = "default", tooltip, className, ...rest },
-  ref
-) {
-  const Comp = asChild ? Slot : "button"
+function SidebarMenuButtonInner(allProps, ref) {
+  const { asChild, isActive, variant, size, tooltip, className, ...rest } = allProps
+  const resolvedAsChild = asChild === undefined ? false : asChild
+  const resolvedIsActive = isActive === undefined ? false : isActive
+  const resolvedVariant = variant === undefined ? "default" : variant
+  const resolvedSize = size === undefined ? "default" : size
+
+  const Comp = resolvedAsChild ? Slot : "button"
   const { isMobile, state } = useSidebar()
 
   const button = (
     <Comp
       ref={ref}
       data-sidebar="menu-button"
-      data-size={size}
-      data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+      data-size={resolvedSize}
+      data-active={resolvedIsActive}
+      className={cn(sidebarMenuButtonVariants({ variant: resolvedVariant, size: resolvedSize }), className)}
       {...rest}
     />
   )
