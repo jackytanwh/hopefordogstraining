@@ -357,15 +357,15 @@ export default function BookingCalendar() {
                         </div>
                       )}
                       {dayBookings.length > 0 && !hasFullDayBlock && (
-                        <div className="space-y-1">
-                          {dayBookings.slice(0, 2).map((booking, idx) => (
-                            <div
-                              key={idx}
-                              className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded truncate"
-                            >
-                              {booking.session.start_time} - {getFurkidName(booking)}
-                            </div>
-                          ))}
+                       <div className="space-y-1">
+                         {dayBookings.slice(0, 2).map((booking, idx) => (
+                           <div
+                             key={idx}
+                             className={`text-xs px-1 py-0.5 rounded truncate ${programColors[booking.service_type] || "bg-blue-100 text-blue-800"}`}
+                           >
+                             {booking.session.start_time} - {getFurkidName(booking)}
+                           </div>
+                         ))}
                           {dayBookings.length > 2 && (
                             <div className="text-xs text-slate-500">
                               +{dayBookings.length - 2} more
