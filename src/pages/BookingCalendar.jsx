@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -251,9 +250,9 @@ export default function BookingCalendar() {
         </Card>
       )}
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-4 gap-6">
         {/* Calendar */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
             <CardHeader className="border-b border-slate-100">
               <div className="flex items-center justify-between">
