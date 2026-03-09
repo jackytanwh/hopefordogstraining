@@ -528,10 +528,6 @@ export default function BookingCalendar() {
                 <span>Today</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-blue-100 rounded"></div>
-                <span>Has bookings</span>
-              </div>
-              <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-red-50 border border-red-200 rounded flex items-center justify-center">
                   <Ban className="w-3 h-3 text-red-500" />
                 </div>
@@ -544,6 +540,15 @@ export default function BookingCalendar() {
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className={`${statusColors.confirmed} border text-xs`}>Confirmed</Badge>
                 <span>Confirmed booking</span>
+              </div>
+              <div className="border-t border-slate-100 pt-2 mt-2 space-y-1.5">
+                <p className="font-semibold text-slate-600 mb-1">Programs</p>
+                {Object.entries(programLabels).map(([key, label]) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <div className={`w-4 h-4 rounded ${programColors[key] || "bg-blue-100"}`}></div>
+                    <span>{label}</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
