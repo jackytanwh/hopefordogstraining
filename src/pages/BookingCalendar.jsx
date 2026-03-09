@@ -22,16 +22,16 @@ const statusColors = {
 };
 
 const programColors = {
-  kinder_puppy_in_home:    "bg-pink-100 text-pink-800",
-  kinder_puppy_fyog:       "bg-fuchsia-100 text-fuchsia-800",
-  basic_manners_in_home:   "bg-blue-100 text-blue-800",
-  basic_manners_fyog:      "bg-indigo-100 text-indigo-800",
-  basic_manners_group_class:"bg-purple-100 text-purple-800",
-  canine_assessment:       "bg-teal-100 text-teal-800",
-  behavioural_modification:"bg-orange-100 text-orange-800",
-  on_demand_1_session:     "bg-green-100 text-green-800",
-  on_demand_2_sessions:    "bg-emerald-100 text-emerald-800",
-  on_demand_3_sessions:    "bg-cyan-100 text-cyan-800",
+  kinder_puppy_in_home:    "bg-rose-200 text-rose-900",
+  kinder_puppy_fyog:       "bg-purple-200 text-purple-900",
+  basic_manners_in_home:   "bg-emerald-200 text-emerald-900",
+  basic_manners_fyog:      "bg-sky-200 text-sky-900",
+  basic_manners_group_class:"bg-orange-200 text-orange-900",
+  canine_assessment:       "bg-lime-200 text-lime-900",
+  behavioural_modification:"bg-red-200 text-red-900",
+  on_demand_1_session:     "bg-cyan-200 text-cyan-900",
+  on_demand_2_sessions:    "bg-yellow-200 text-yellow-900",
+  on_demand_3_sessions:    "bg-blue-200 text-blue-900",
 };
 
 const programLabels = {
