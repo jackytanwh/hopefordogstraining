@@ -21,6 +21,32 @@ const statusColors = {
   cancelled: "bg-red-100 text-red-800 border-red-200"
 };
 
+const programColors = {
+  kinder_puppy_in_home:    "bg-pink-100 text-pink-800",
+  kinder_puppy_fyog:       "bg-fuchsia-100 text-fuchsia-800",
+  basic_manners_in_home:   "bg-blue-100 text-blue-800",
+  basic_manners_fyog:      "bg-indigo-100 text-indigo-800",
+  basic_manners_group_class:"bg-purple-100 text-purple-800",
+  canine_assessment:       "bg-teal-100 text-teal-800",
+  behavioural_modification:"bg-orange-100 text-orange-800",
+  on_demand_1_session:     "bg-green-100 text-green-800",
+  on_demand_2_sessions:    "bg-emerald-100 text-emerald-800",
+  on_demand_3_sessions:    "bg-cyan-100 text-cyan-800",
+};
+
+const programLabels = {
+  kinder_puppy_in_home:    "Kinder Puppy",
+  kinder_puppy_fyog:       "Kinder Puppy FYOG",
+  basic_manners_in_home:   "Basic Manners",
+  basic_manners_fyog:      "Basic Manners FYOG",
+  basic_manners_group_class:"Basic Manners Group",
+  canine_assessment:       "Canine Assessment",
+  behavioural_modification:"Behavioural Mod.",
+  on_demand_1_session:     "On Demand (1)",
+  on_demand_2_sessions:    "On Demand (2)",
+  on_demand_3_sessions:    "On Demand (3)",
+};
+
 const timeSlots = [
   "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
   "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
