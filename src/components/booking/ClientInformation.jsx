@@ -342,49 +342,6 @@ export default function ClientInformation({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {/* WhatsApp Consent */}
-        <div className="border-t border-slate-200 pt-6">
-          <div className="bg-green-50 border border-green-200 p-4 rounded-lg mb-4">
-            <div className="flex items-start gap-3">
-              <MessageCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-green-800">
-                <p className="font-semibold mb-1">Stay Connected via WhatsApp</p>
-                <p>Receive instant booking confirmations and session reminders directly on WhatsApp. You can also contact our team for any rescheduling needs.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-start space-x-3">
-              <Checkbox
-                id="whatsappConsent"
-                checked={formData.whatsappConsent || false}
-                onCheckedChange={(checked) => {
-                  setFormData({ ...formData, whatsappConsent: checked });
-                  if (checked && errors.whatsappConsent) {
-                    const newErrors = { ...errors };
-                    delete newErrors.whatsappConsent;
-                    setErrors(newErrors);
-                  }
-                  if (showValidationMessage) {
-                    setShowValidationMessage(false);
-                  }
-                }}
-                className={errors.whatsappConsent ? 'border-red-500' : ''}
-              />
-              <Label 
-                htmlFor="whatsappConsent" 
-                className="text-sm leading-relaxed cursor-pointer font-normal"
-              >
-                I consent to receive booking confirmations, session reminders, and training updates via WhatsApp on the mobile number provided above. *
-              </Label>
-            </div>
-            {errors.whatsappConsent && (
-              <p className="text-sm text-red-600 ml-8">{errors.whatsappConsent}</p>
-            )}
-          </div>
-        </div>
-
         {showValidationMessage && Object.keys(errors).length > 0 && (
           <div className="bg-amber-50 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
             <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
