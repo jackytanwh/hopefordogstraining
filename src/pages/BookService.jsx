@@ -164,6 +164,13 @@ export default function BookService() {
         name: `On-Demand Training (${formData.onDemandSessions} Session${formData.onDemandSessions > 1 ? 's' : ''})`
       };
     }
+    if (serviceId === 'kinder_puppy_in_home' && formData.kinderPuppyPrice) {
+      return {
+        ...services[serviceId],
+        price: formData.kinderPuppyPrice,
+        name: `Kinder Puppy Program (In-Home) — ${formData.kinderPuppyCount} Pupp${formData.kinderPuppyCount > 1 ? 'ies' : 'y'}`
+      };
+    }
     return services[serviceId];
   };
 
