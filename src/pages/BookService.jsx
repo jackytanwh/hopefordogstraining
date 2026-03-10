@@ -175,8 +175,8 @@ export default function BookService() {
   };
 
   const service = getService();
-  const isFYOG = serviceId === 'kinder_puppy_fyog' || serviceId === 'basic_manners_fyog';
-  const isKinderPuppy = serviceId === 'kinder_puppy_in_home' || serviceId === 'kinder_puppy_fyog';
+  const isFYOG = serviceId === 'basic_manners_fyog';
+  const isKinderPuppy = serviceId === 'kinder_puppy_in_home';
   const isGroupClass = serviceId === 'basic_manners_group_class';
   const isBasicManners = serviceId === 'basic_manners_in_home' || serviceId === 'basic_manners_fyog' || serviceId === 'basic_manners_group_class';
   const isBehaviouralModification = serviceId === 'behavioural_modification';
