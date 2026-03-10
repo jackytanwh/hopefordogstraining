@@ -141,7 +141,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
         <CardTitle>
-          {(isFYOG || isKinderPuppyMulti) ? 'Clients Information' : 'Your Information'}
+          {isMultiClient ? 'Clients Information' : 'Your Information'}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
