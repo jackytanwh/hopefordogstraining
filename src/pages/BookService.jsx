@@ -748,6 +748,8 @@ export default function BookService() {
             onNext={handleNext}
             onBack={handleBack}
             isFYOG={false}
+            isKinderPuppy={true}
+            kinderPuppyCount={formData.kinderPuppyCount || 1}
           />
         );
       } else if (step === 4) {
