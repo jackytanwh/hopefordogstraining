@@ -211,8 +211,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
                 <p className="text-xs text-slate-500">This number will be used for booking confirmations and reminders via WhatsApp</p>
               </div>
 
-              {/* Show address/postal per client only for non-FYOG, non-Group Class, non-KinderPuppyMulti */}
-              {!isFYOGProgram && !isGroupClass && !isKinderPuppyMulti && (
+              {/* Show address/postal per client only for single-client flows */}
+              {!isFYOGProgram && !isGroupClass && !isMultiClient && (
                 <>
                   <div className="space-y-2">
                     <Label htmlFor={`${prefix}clientAddress`}>Address *</Label>
