@@ -178,7 +178,7 @@ export default function BookService() {
       return {
         ...services[serviceId],
         price: formData.basicMannersFYOGPrice,
-        name: `Basic Manners Program (FYOG) — ${formData.basicMannersFYOGCount} Dog${formData.basicMannersFYOGCount > 1 ? 's' : ''}`
+        name: `Basic Manners Program — ${formData.basicMannersFYOGCount} Dog${formData.basicMannersFYOGCount > 1 ? 's' : ''}`
       };
     }
     return services[serviceId];
