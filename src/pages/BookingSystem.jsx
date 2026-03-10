@@ -201,7 +201,7 @@ export default function BookingSystem() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {services.map((service) => {
-            const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
+            const isKinderPuppy = service.id === 'kinder_puppy_in_home';
             const perLabel = isKinderPuppy ? 'puppy' : 'dog';
             const isOnDemand = service.id === 'on_demand_training';
             const isGroupClass = service.id === 'basic_manners_group_class';
