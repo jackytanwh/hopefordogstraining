@@ -419,8 +419,7 @@ export default function BookService() {
               dog_age: furkid.furkidAge || furkid.furkid_age || '',
               breed: furkid.furkidBreed || furkid.furkid_breed || '',
               gender: furkid.furkidGender || furkid.furkid_gender || '',
-              program: serviceId === 'kinder_puppy_fyog' ? 'kinder_puppy' : 
-                       serviceId === 'basic_manners_fyog' ? 'basic_manners_fyog' :
+              program: serviceId === 'basic_manners_fyog' ? 'basic_manners_fyog' :
                        serviceId === 'basic_manners_group_class' ? 'basic_manners_group' : 'basic_manners',
               training_status: 'in_progress',
               diet: furkid.furkidDiet || furkid.furkid_diet || '',
