@@ -283,12 +283,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
               <Input
                 id="sharedPostalCode"
                 value={formData.sharedPostalCode || ''}
-                onChange={(e) => {
-                handleSharedLocationChange('sharedPostalCode', e.target.value);
-                if (isKinderPuppyMulti) {
-                  setFormData(prev => ({ ...prev, sharedPostalCode: e.target.value, isSentosa: checkSentosaPostalCode(e.target.value) }));
-                }
-              }}
+                onChange={(e) => handleSharedLocationChange('sharedPostalCode', e.target.value)}
                 placeholder="123456"
                 maxLength={6}
                 className={errors.sharedPostalCode ? 'border-red-500' : ''}
