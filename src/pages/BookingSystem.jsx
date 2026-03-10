@@ -20,17 +20,6 @@ const services = [
     description: "One-on-one puppy training at your home. 1 puppy $520, 2nd & 3rd puppy at half price ($260 each). Sessions 1-2 weekly, 1-week break, then sessions 3-4 weekly"
   },
   {
-    id: "basic_manners_in_home",
-    name: "Basic Manners Program (In-Home)",
-    price: 720,
-    duration: 1,
-    sessions: 6,
-    minParticipants: 1,
-    maxParticipants: 1,
-    description: "Comprehensive in-home training. Sessions 1-4 weekly, 1-week break, then sessions 5-6 weekly"
-  },
-
-  {
     id: "basic_manners_fyog",
     name: "Basic Manners Program (FYOG)",
     price: 720,
