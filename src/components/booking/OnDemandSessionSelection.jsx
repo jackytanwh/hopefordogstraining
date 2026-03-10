@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Check, Calendar, DollarSign } from "lucide-react";
+import { Check, Calendar } from "lucide-react";
 
 const SESSION_PACKAGES = [
   {
