@@ -44,7 +44,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
   const [uploadingProof, setUploadingProof] = useState({});
   const [customBreeds, setCustomBreeds] = useState({});
 
-  const numberOfFurkids = isFYOG ? formData.numberOfFurkids : 1;
+  const numberOfFurkids = isFYOG ? (kinderPuppyCount || formData.numberOfFurkids || formData.basicMannersFYOGCount || 1) : 1;
 
   const showFoodAllergy = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
 
