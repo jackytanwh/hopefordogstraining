@@ -81,8 +81,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     const newErrors = {};
 
     for (let i = 0; i < numberOfClients; i++) {
-      const client = (isFYOG || isKinderPuppyMulti) ? formData.clients[i] || {} : formData;
-      const prefix = (isFYOG || isKinderPuppyMulti) ? `${i}_` : '';
+      const client = isMultiClient ? formData.clients[i] || {} : formData;
+      const prefix = isMultiClient ? `${i}_` : '';
 
       if (!client.clientName?.trim()) {
         newErrors[`${prefix}clientName`] = 'Name is required';
