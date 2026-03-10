@@ -21,7 +21,13 @@ const SESSION_PACKAGES = [
     sessions: 3,
     price: 330,
     savings: 30,
-    description: "Best value! Comprehensive training with consistent follow-up"
+    description: "Comprehensive training with consistent follow-up"
+  },
+  {
+    sessions: 4,
+    price: 400,
+    savings: 80,
+    description: "Best value! In-depth training for lasting behavioural change"
   }
 ];
 
