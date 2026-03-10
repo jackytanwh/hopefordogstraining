@@ -504,7 +504,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {(isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy) && (
+        {(isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy || isOnDemandMultiSession) && (
           <div className="space-y-2">
             <Label>Scheduling Preference</Label>
             <Select value={schedulingMode} onValueChange={handleSchedulingModeChange}>
@@ -512,10 +512,20 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="recurring">
-                  Recurring sessions ({isThreeWeekly ? 'every 3 weeks' : isKinderPuppy ? 'weekly with 1-week break after session 2' : isBasicMannersWithBreak ? 'weekly with 1-week break after session 4' : 'weekly'})
-                </SelectItem>
-                <SelectItem value="manual">Choose my own date and time for each session</SelectItem>
+                {isOnDemandMultiSession ? (
+                  <>
+                    <SelectItem value="recurring">Recurring sessions (every 3 weeks)</SelectItem>
+                    <SelectItem value="recurring_weekly">Recurring sessions (weekly)</SelectItem>
+                    <SelectItem value="manual">Choose my own date and time for each session</SelectItem>
+                  </>
+                ) : (
+                  <>
+                    <SelectItem value="recurring">
+                      Recurring sessions ({isKinderPuppy ? 'weekly with 1-week break after session 2' : isBasicMannersWithBreak ? 'weekly with 1-week break after session 4' : 'weekly'})
+                    </SelectItem>
+                    <SelectItem value="manual">Choose my own date and time for each session</SelectItem>
+                  </>
+                )}
               </SelectContent>
             </Select>
           </div>
