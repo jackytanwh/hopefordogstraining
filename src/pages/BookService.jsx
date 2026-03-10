@@ -40,12 +40,12 @@ const services = {
 
   basic_manners_fyog: {
     id: "basic_manners_fyog",
-    name: "Basic Manners FYOG",
-    price: 520,
+    name: "Basic Manners Program (FYOG)",
+    price: 720,
     duration: 1,
-    sessions: 7,
-    minParticipants: 2,
-    maxParticipants: 3,
+    sessions: 6,
+    minParticipants: 1,
+    maxParticipants: 4,
     buffer: 1
   },
   basic_manners_group_class: {
