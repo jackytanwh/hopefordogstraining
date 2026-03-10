@@ -29,16 +29,7 @@ const services = [
     maxParticipants: 1,
     description: "Comprehensive in-home training. Sessions 1-4 weekly, 1-week break, then sessions 5-6 weekly"
   },
-  {
-    id: "kinder_puppy_fyog",
-    name: "Kinder Puppy Program (FYOG)",
-    price: 298,
-    duration: 1,
-    sessions: 4,
-    minParticipants: 2,
-    maxParticipants: 2,
-    description: "Group training for puppies, 2 puppies per group. Sessions 1-2 weekly, 1-week break, then sessions 3-4 weekly"
-  },
+
   {
     id: "basic_manners_fyog",
     name: "Basic Manners Program (FYOG)",
