@@ -314,7 +314,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           <div className="border-t border-slate-200 pt-6">
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
               <ShoppingCart className="w-5 h-5" />
-              Items Given to Client
+              Training Kit Provided
             </h3>
             <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
               <ul className="space-y-2 text-sm text-slate-700">
