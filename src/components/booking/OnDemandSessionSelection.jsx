@@ -104,7 +104,6 @@ export default function OnDemandSessionSelection({ formData, setFormData, onNext
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <DollarSign className="w-5 h-5 text-green-600" />
                             <span className="text-xl font-bold text-blue-600">
                               ${pkg.price}
                             </span>
