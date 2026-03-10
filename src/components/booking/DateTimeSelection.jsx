@@ -477,11 +477,20 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {isThreeWeekly && schedulingMode === 'recurring' && (
+        {isOnDemandMultiSession && schedulingMode === 'recurring' && (
           <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
             <p className="font-semibold">📆 Three-Weekly Sessions</p>
             <p className="text-sm mt-1">
               Sessions are scheduled every 3 weeks. Select the date and time for your first session, and we'll automatically schedule the rest on the same day and time every 3 weeks.
+            </p>
+          </div>
+        )}
+
+        {isOnDemandMultiSession && schedulingMode === 'recurring_weekly' && (
+          <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
+            <p className="font-semibold">📆 Weekly Sessions</p>
+            <p className="text-sm mt-1">
+              Sessions are scheduled weekly. Select the date and time for your first session, and we'll automatically schedule the rest on the same day and time each week.
             </p>
           </div>
         )}
