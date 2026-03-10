@@ -216,8 +216,15 @@ export default function BookService() {
       const adoptedCount = (formData.furkids || []).filter(f => f && f.isAdopted).length;
       adoptionDiscount = (service.price * adoptedCount) * 0.1;
     } else if (isFYOG) {
-      // No adoption discount for FYOG (tiered pricing already applied)
-      adoptionDiscount = 0;
+      // Apply 10% discount per adopted furkid (first dog $720, extra dogs $360)
+      const fyogBasePrice = 720;
+      const fyogExtraPrice = 360;
+      const furkids = formData.furkids || [];
+      furkids.forEach((furkid, idx) => {
+        if (furkid && furkid.isAdopted) {
+          adoptionDiscount += (idx === 0 ? fyogBasePrice : fyogExtraPrice) * 0.1;
+        }
+      });
     } else {
       adoptionDiscount = formData.isAdopted ? basePrice * 0.1 : 0;
     }
