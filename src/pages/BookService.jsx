@@ -182,7 +182,7 @@ export default function BookService() {
   const isBehaviouralModification = serviceId === 'behavioural_modification';
   const isCanineAssessment = serviceId === 'canine_assessment';
 
-  const totalSteps = isOnDemand ? 6 : (isGroupClass ? 5 : isFYOG ? 6 : (isBehaviouralModification || isCanineAssessment) ? 5 : 5);
+  const totalSteps = isOnDemand ? 6 : (isGroupClass ? 5 : isFYOG ? 6 : isKinderPuppy ? 6 : (isBehaviouralModification || isCanineAssessment) ? 5 : 5);
 
   useEffect(() => {
     if (!serviceId || !services[serviceId]) {
