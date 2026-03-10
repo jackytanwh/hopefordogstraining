@@ -247,7 +247,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
 
           return (
             <div key={index} className={`space-y-4 ${isFYOG && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
-              {isFYOG && (
+              {isFYOG && numberOfFurkids > 1 && (
                 <h3 className="font-semibold text-slate-900 text-lg">
                   {service.id === 'kinder_puppy_fyog' ? 'Puppy' : 'Dog'} {index + 1}
                 </h3>
