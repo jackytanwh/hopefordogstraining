@@ -818,6 +818,13 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </>
         )}
 
+        {hasWeekendSession && (
+          <div className="bg-amber-50 border border-amber-300 p-3 rounded-lg text-sm text-amber-800 flex items-start gap-2">
+            <span className="text-base">⚠️</span>
+            <span><span className="font-semibold">Weekend Surcharge applies.</span> A 5% surcharge will be added for sessions scheduled on Saturday or Sunday.</span>
+          </div>
+        )}
+
         {hasManualSelections && (
           <div className="mt-6 pt-6 border-t border-slate-200">
             <p className="font-medium text-sm text-slate-900 mb-3">📅 Your Schedule Summary:</p>
