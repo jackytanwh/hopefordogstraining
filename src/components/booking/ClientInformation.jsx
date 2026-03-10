@@ -8,12 +8,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertCircle, MessageCircle } from "lucide-react";
 
-export default function ClientInformation({ service, formData, setFormData, onNext, onBack, isFYOG, isKinderPuppy, kinderPuppyCount }) {
+export default function ClientInformation({ service, formData, setFormData, onNext, onBack, isFYOG, isFYOGMulti, fyogCount, isKinderPuppy, kinderPuppyCount }) {
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
-  const numberOfClients = isKinderPuppyMulti ? kinderPuppyCount : isFYOG ? formData.numberOfClients : 1;
+  const isMultiClient = isKinderPuppyMulti || isFYOGMulti;
+  const numberOfClients = isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : isFYOG ? (formData.numberOfClients || 1) : 1;
   const isBehaviouralModification = service.id === 'behavioural_modification';
   const isGroupClass = service.id === 'basic_manners_group_class';
   const isFYOGProgram = service.id === 'basic_manners_fyog';
