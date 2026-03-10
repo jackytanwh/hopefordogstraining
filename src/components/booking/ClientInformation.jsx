@@ -47,19 +47,13 @@ export default function ClientInformation({ service, formData, setFormData, onNe
   };
 
   const handleInputChange = (clientIndex, field, value) => {
-    if (isFYOG) {
+    if (isFYOG || isKinderPuppyMulti) {
       const newClients = [...(formData.clients || [])];
       if (!newClients[clientIndex]) {
         newClients[clientIndex] = {};
       }
       newClients[clientIndex][field] = value;
-      
-      if (field === 'clientPostalCode') {
-        const anySentosa = newClients.some(client => checkSentosaPostalCode(client.clientPostalCode));
-        setFormData({ ...formData, clients: newClients, isSentosa: anySentosa });
-      } else {
-        setFormData({ ...formData, clients: newClients });
-      }
+      setFormData({ ...formData, clients: newClients });
     } else {
       const updatedFormData = { ...formData, [field]: value };
       
