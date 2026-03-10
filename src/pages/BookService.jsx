@@ -193,7 +193,11 @@ export default function BookService() {
   const calculatePricing = () => {
     if (!service) return { basePrice: 0, discount: 0, surcharge: 0, sentosaSurcharge: 0, productsTotal: 0, total: 0 };
     
-    const basePrice = (isFYOG || isGroupClass) ? service.price * (formData.numberOfFurkids || 1) : service.price;
+    const basePrice = (isFYOG || isGroupClass) 
+      ? service.price * (formData.numberOfFurkids || 1) 
+      : isKinderPuppy && formData.kinderPuppyPrice
+      ? formData.kinderPuppyPrice
+      : service.price;
     
     let adoptionDiscount = 0;
     if (isFYOG || isGroupClass) {
