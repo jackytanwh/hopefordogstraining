@@ -99,6 +99,8 @@ export default function BookService() {
     serviceType: serviceId || '',
     onDemandSessions: null,
     onDemandPrice: null,
+    kinderPuppyCount: null,
+    kinderPuppyPrice: null,
     sessionDates: [],
     numberOfFurkids: null,
     numberOfClients: null,
