@@ -73,7 +73,8 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
   const minDate = addDays(new Date(), minAdvanceDays);
 
   const isRecurringApplicable = service.id !== 'canine_assessment' && 
-                                service.id !== 'behavioural_modification';
+                                service.id !== 'behavioural_modification' &&
+                                !(service.id === 'on_demand_training' && service.sessions === 1);
 
   const isWeekdaysOnly = service.id === 'canine_assessment' || 
                          service.id === 'behavioural_modification';
