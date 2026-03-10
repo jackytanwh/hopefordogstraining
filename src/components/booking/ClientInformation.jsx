@@ -48,7 +48,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
   };
 
   const handleInputChange = (clientIndex, field, value) => {
-    if (isFYOG || isKinderPuppyMulti) {
+    if (isMultiClient) {
       const newClients = [...(formData.clients || [])];
       if (!newClients[clientIndex]) {
         newClients[clientIndex] = {};
