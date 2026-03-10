@@ -37,7 +37,7 @@ const commonBreeds = [
   "Others"
 ];
 
-export default function FurkidInformation({ service, formData, setFormData, onNext, onBack, isFYOG }) {
+export default function FurkidInformation({ service, formData, setFormData, onNext, onBack, isFYOG, kinderPuppyCount }) {
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [uploading, setUploading] = useState({});
