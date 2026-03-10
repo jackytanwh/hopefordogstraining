@@ -30,8 +30,8 @@ const programColors = {
   canine_assessment:       "bg-lime-200 text-lime-900",
   behavioural_modification:"bg-red-200 text-red-900",
   on_demand_1_session:     "bg-cyan-200 text-cyan-900",
-  on_demand_2_sessions:    "bg-yellow-200 text-yellow-900",
-  on_demand_3_sessions:    "bg-blue-200 text-blue-900",
+  on_demand_2_sessions:    "bg-cyan-200 text-cyan-900",
+  on_demand_3_sessions:    "bg-cyan-200 text-cyan-900",
 };
 
 const programLabels = {
