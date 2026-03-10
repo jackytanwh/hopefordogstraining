@@ -233,7 +233,13 @@ export default function BookService() {
         return day === 0 || day === 6;
       }).length;
       
-      const pricePerSession = (isFYOG || isGroupClass) ? service.price * (formData.numberOfFurkids || 1) : service.price;
+      const pricePerSession = isGroupClass
+        ? service.price * (formData.numberOfFurkids || 1)
+        : isFYOG && formData.basicMannersFYOGPrice
+        ? formData.basicMannersFYOGPrice
+        : isKinderPuppy && formData.kinderPuppyPrice
+        ? formData.kinderPuppyPrice
+        : service.price;
       const pricePerSessionCalculated = pricePerSession / service.sessions;
       
       weekendSurcharge = weekendSessions > 0 ? (pricePerSessionCalculated * weekendSessions * 0.05) : 0;
