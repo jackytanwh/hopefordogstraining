@@ -543,7 +543,9 @@ export default function BookingCalendar() {
               </div>
               <div className="border-t border-slate-100 pt-2 mt-2 space-y-1.5">
                 <p className="font-semibold text-slate-600 mb-1">Programs</p>
-                {Object.entries(programLabels).map(([key, label]) => (
+                {Object.entries(programLabels).filter(([key], idx, arr) => 
+                  arr.findIndex(([, v]) => v === programLabels[key]) === idx
+                ).map(([key, label]) => (
                   <div key={key} className="flex items-center gap-2">
                     <div className={`w-4 h-4 rounded ${programColors[key] || "bg-blue-100"}`}></div>
                     <span>{label}</span>
