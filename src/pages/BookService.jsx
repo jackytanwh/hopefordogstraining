@@ -720,6 +720,70 @@ export default function BookService() {
           />
         );
       }
+    } else if (isKinderPuppy) {
+      if (step === 1) {
+        return (
+          <KinderPuppyCountSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 2) {
+        return (
+          <DateTimeSelection
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 3) {
+        return (
+          <ClientInformation
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+            isFYOG={false}
+          />
+        );
+      } else if (step === 4) {
+        return (
+          <FurkidInformation
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+            isFYOG={false}
+          />
+        );
+      } else if (step === 5) {
+        return (
+          <ProductSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 6) {
+        return (
+          <BookingSummary
+            service={service}
+            formData={formData}
+            pricing={calculatePricing()}
+            onBack={handleBack}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            isFYOG={false}
+          />
+        );
+      }
     } else if (isBehaviouralModification || isCanineAssessment) {
       if (step === 1) {
         return (
