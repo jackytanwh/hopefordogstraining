@@ -168,7 +168,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
               )}
 
               <div className="space-y-2">
-                <Label htmlFor={`${prefix}clientName`}>{(isFYOG || isKinderPuppyMulti) ? 'Name' : 'Your Name'} *</Label>
+                <Label htmlFor={`${prefix}clientName`}>{isMultiClient ? 'Name' : 'Your Name'} *</Label>
                 <Input
                   id={`${prefix}clientName`}
                   value={client.clientName || ''}
