@@ -98,8 +98,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         newErrors[`${prefix}clientMobile`] = 'Mobile number is required';
       }
 
-      // For non-multi, non-Group Class: validate address per client
-      if (!isFYOGProgram && !isGroupClass && !isMultiClient) {
+      // For non-multi, non-Group Class, non-FYOG-multi: validate address per client
+      if (!(isFYOGProgram && isFYOGMulti) && !isGroupClass && !isMultiClient) {
         if (!client.clientAddress?.trim()) {
           newErrors[`${prefix}clientAddress`] = 'Address is required';
         }
