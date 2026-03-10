@@ -157,7 +157,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         {Array.from({ length: numberOfClients }, (_, index) => {
           const client = isMultiClient ? formData.clients[index] || {} : formData;
           const prefix = isMultiClient ? `${index}_` : '';
-          const isSentosaClient = !isFYOGProgram && !isGroupClass && !isMultiClient && checkSentosaPostalCode(client.clientPostalCode);
+          const isSentosaClient = !(isFYOGProgram && isFYOGMulti) && !isGroupClass && !isMultiClient && checkSentosaPostalCode(client.clientPostalCode);
 
           return (
             <div key={index} className={`space-y-4 ${isMultiClient && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
