@@ -21,7 +21,7 @@ const services = [
   },
   {
     id: "basic_manners_fyog",
-    name: "Basic Manners Program (In-home)",
+    name: "Basic Manners Program",
     price: 720,
     duration: 1,
     sessions: 6,
