@@ -464,14 +464,15 @@ export default function BookService() {
       console.log('=== INITIATING HITPAY PAYMENT ===');
 
       // Get client details for HitPay
-      const clientName = (isFYOG || isGroupClass) 
-        ? (formData.clients?.[0]?.clientName || formData.clients?.[0]?.client_name || '')
+      const useClientsArray = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
+      const clientName = useClientsArray
+        ? (formData.clients?.[0]?.clientName || '')
         : formData.clientName;
-      const clientEmail = (isFYOG || isGroupClass)
-        ? (formData.clients?.[0]?.clientEmail || formData.clients?.[0]?.client_email || '')
+      const clientEmail = useClientsArray
+        ? (formData.clients?.[0]?.clientEmail || '')
         : formData.clientEmail;
-      const clientMobile = (isFYOG || isGroupClass)
-        ? (formData.clients?.[0]?.clientMobile || formData.clients?.[0]?.client_mobile || '')
+      const clientMobile = useClientsArray
+        ? (formData.clients?.[0]?.clientMobile || '')
         : formData.clientMobile;
 
       console.log('💳 Calling HitPay with:', {
