@@ -88,6 +88,14 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                                    service.id === 'basic_manners_fyog' || 
                                    service.id === 'basic_manners_group_class';
 
+  // Weekend surcharge applies to Kinder Puppy and Basic Manners (non-group) only
+  const isWeekendSurchargeApplicable = isKinderPuppy || 
+    service.id === 'basic_manners_in_home' || 
+    service.id === 'basic_manners_fyog';
+
+  const hasWeekendSession = isWeekendSurchargeApplicable && 
+    selectedDates.some(s => s.date && [0, 6].includes(new Date(s.date).getDay()));
+
   // Check if this is an on-demand training with multiple sessions
   const isOnDemandMultiSession = service.id === 'on_demand_training' && service.sessions > 1;
   
