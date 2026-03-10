@@ -42,9 +42,9 @@ const programLabels = {
   basic_manners_group_class:"Basic Manners Group",
   canine_assessment:       "Canine Assessment",
   behavioural_modification:"Behavioural Mod.",
-  on_demand_1_session:     "On Demand (1)",
-  on_demand_2_sessions:    "On Demand (2)",
-  on_demand_3_sessions:    "On Demand (3)",
+  on_demand_1_session:     "On Demand",
+  on_demand_2_sessions:    "On Demand",
+  on_demand_3_sessions:    "On Demand",
 };
 
 const timeSlots = [
