@@ -16,8 +16,8 @@ const services = [
     duration: 1,
     sessions: 4,
     minParticipants: 1,
-    maxParticipants: 1,
-    description: "One-on-one puppy training at your home. Sessions 1-2 weekly, 1-week break, then sessions 3-4 weekly"
+    maxParticipants: 3,
+    description: "One-on-one puppy training at your home. 1 puppy $520, 2nd & 3rd puppy at half price ($260 each). Sessions 1-2 weekly, 1-week break, then sessions 3-4 weekly"
   },
   {
     id: "basic_manners_in_home",
