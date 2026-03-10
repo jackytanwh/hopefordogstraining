@@ -368,14 +368,15 @@ export default function BookService() {
 
       const kinderPuppyCount = formData.kinderPuppyCount || 1;
       const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
+      const fyogCount = formData.basicMannersFYOGCount || 1;
 
       if (isFYOG || isGroupClass || isKinderPuppyMulti) {
         console.log('Processing FYOG/Group/KinderPuppyMulti booking...');
-        bookingData.number_of_furkids = isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfFurkids || 0);
-        bookingData.number_of_clients = isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfClients || 0);
+        bookingData.number_of_furkids = isFYOG ? fyogCount : isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfFurkids || 0);
+        bookingData.number_of_clients = isFYOG ? fyogCount : isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfClients || 0);
         bookingData.clients = (formData.clients || []).map(client => transformClientFields(client));
         bookingData.furkids = (formData.furkids || []).map(furkid => transformFurkidFields(furkid));
-        if (isKinderPuppyMulti) {
+        if (isFYOG || isKinderPuppyMulti) {
           bookingData.client_address = formData.sharedAddress || '';
           bookingData.client_postal_code = formData.sharedPostalCode || '';
         }
