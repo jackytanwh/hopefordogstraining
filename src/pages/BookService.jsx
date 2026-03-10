@@ -23,7 +23,7 @@ const services = {
     duration: 1,
     sessions: 4,
     minParticipants: 1,
-    maxParticipants: 1,
+    maxParticipants: 3,
     buffer: 1
   },
   basic_manners_in_home: {
