@@ -102,6 +102,8 @@ export default function BookService() {
     onDemandPrice: null,
     kinderPuppyCount: null,
     kinderPuppyPrice: null,
+    basicMannersFYOGCount: null,
+    basicMannersFYOGPrice: null,
     sessionDates: [],
     numberOfFurkids: null,
     numberOfClients: null,
