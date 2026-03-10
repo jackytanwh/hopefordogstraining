@@ -345,12 +345,19 @@ export default function BookService() {
         bookingData.agreement_kinder_puppy_refund_policy = Boolean(agreements?.kinderPuppyRefundPolicy);
       }
 
-      if (isFYOG || isGroupClass) {
-        console.log('Processing FYOG/Group booking...');
-        bookingData.number_of_furkids = formData.numberOfFurkids || 0;
-        bookingData.number_of_clients = formData.numberOfClients || 0;
+      const kinderPuppyCount = formData.kinderPuppyCount || 1;
+      const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
+
+      if (isFYOG || isGroupClass || isKinderPuppyMulti) {
+        console.log('Processing FYOG/Group/KinderPuppyMulti booking...');
+        bookingData.number_of_furkids = isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfFurkids || 0);
+        bookingData.number_of_clients = isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfClients || 0);
         bookingData.clients = (formData.clients || []).map(client => transformClientFields(client));
         bookingData.furkids = (formData.furkids || []).map(furkid => transformFurkidFields(furkid));
+        if (isKinderPuppyMulti) {
+          bookingData.client_address = formData.sharedAddress || '';
+          bookingData.client_postal_code = formData.sharedPostalCode || '';
+        }
         console.log('✅ Transformed clients:', bookingData.clients);
         console.log('✅ Transformed furkids:', bookingData.furkids);
       } else {
