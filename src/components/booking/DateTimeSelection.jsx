@@ -540,7 +540,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           </div>
         )}
 
-        {((schedulingMode === 'recurring' && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy)) || isAutoRecurring) ? (
+        {((schedulingMode === 'recurring' || schedulingMode === 'recurring_weekly') && (isRecurringApplicable || isOnDemandMultiSession || isBasicMannersWithBreak || isKinderPuppy) || isAutoRecurring) ? (
           <div className="border border-slate-200 rounded-lg p-4 space-y-4">
             <h3 className="font-semibold text-slate-900">
               {isAutoRecurring 
