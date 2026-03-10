@@ -203,8 +203,10 @@ export default function BookService() {
   const calculatePricing = () => {
     if (!service) return { basePrice: 0, discount: 0, surcharge: 0, sentosaSurcharge: 0, productsTotal: 0, total: 0 };
     
-    const basePrice = (isFYOG || isGroupClass) 
-      ? service.price * (formData.numberOfFurkids || 1) 
+    const basePrice = isGroupClass
+      ? service.price * (formData.numberOfFurkids || 1)
+      : isFYOG && formData.basicMannersFYOGPrice
+      ? formData.basicMannersFYOGPrice
       : isKinderPuppy && formData.kinderPuppyPrice
       ? formData.kinderPuppyPrice
       : service.price;
