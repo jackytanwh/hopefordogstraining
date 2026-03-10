@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
 import OnDemandSessionSelection from "../components/booking/OnDemandSessionSelection";
+import KinderPuppyCountSelection from "../components/booking/KinderPuppyCountSelection";
 import DateTimeSelection from "../components/booking/DateTimeSelection";
 import ParticipantSelection from "../components/booking/ParticipantSelection";
 import ClientInformation from "../components/booking/ClientInformation";
