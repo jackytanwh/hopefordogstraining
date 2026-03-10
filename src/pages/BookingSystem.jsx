@@ -107,7 +107,7 @@ export default function BookingSystem() {
   }, []);
 
   const getParticipantLabel = (service) => {
-    const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
+    const isKinderPuppy = service.id === 'kinder_puppy_in_home';
     const label = isKinderPuppy ? 'puppy' : 'dog';
     const labelPlural = isKinderPuppy ? 'puppies' : 'dogs';
     
