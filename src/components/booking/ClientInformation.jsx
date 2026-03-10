@@ -194,6 +194,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
                 {errors[`${prefix}clientEmail`] && (
                   <p className="text-sm text-red-600">{errors[`${prefix}clientEmail`]}</p>
                 )}
+                <p className="text-xs text-slate-500">This email will be used for booking confirmations and reminders</p>
               </div>
 
               <div className="space-y-2">
