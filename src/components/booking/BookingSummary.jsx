@@ -324,11 +324,11 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                  Mat
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                  Leash
+                  Dog Mat
+                  </li>
+                  <li className="flex items-center gap-2">
+                   <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                   3m Leash
                 </li>
               </ul>
             </div>
