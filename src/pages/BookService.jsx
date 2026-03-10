@@ -36,16 +36,7 @@ const services = {
     maxParticipants: 1,
     buffer: 1
   },
-  kinder_puppy_fyog: {
-    id: "kinder_puppy_fyog",
-    name: "Kinder Puppy Program (FYOG)",
-    price: 298,
-    duration: 1,
-    sessions: 4,
-    minParticipants: 2,
-    maxParticipants: 2,
-    buffer: 1
-  },
+
   basic_manners_fyog: {
     id: "basic_manners_fyog",
     name: "Basic Manners FYOG",
