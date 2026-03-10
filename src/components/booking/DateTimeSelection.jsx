@@ -252,7 +252,10 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
         else if (isAutoRecurring) {
           weeksToAdd = i * 3;
         }
-        // On-demand multi-session: 3 weeks apart
+        // On-demand multi-session: 3 weeks apart (or weekly if selected)
+        else if (isOnDemandMultiSession && (modeOverride || schedulingMode) === 'recurring_weekly') {
+          weeksToAdd = i;
+        }
         else if (isThreeWeekly) {
           weeksToAdd = i * 3;
         }
