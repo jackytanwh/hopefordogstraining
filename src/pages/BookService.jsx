@@ -689,8 +689,7 @@ export default function BookService() {
     } else if (isFYOG) {
       if (step === 1) {
         return (
-          <DateTimeSelection
-            service={service}
+          <BasicMannersFYOGCountSelection
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
@@ -699,7 +698,7 @@ export default function BookService() {
         );
       } else if (step === 2) {
         return (
-          <ParticipantSelection
+          <DateTimeSelection
             service={service}
             formData={formData}
             setFormData={setFormData}
@@ -715,7 +714,9 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={isFYOG}
+            isFYOG={true}
+            isFYOGMulti={true}
+            fyogCount={formData.basicMannersFYOGCount || 1}
           />
         );
       } else if (step === 4) {
@@ -726,7 +727,7 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={isFYOG}
+            isFYOG={true}
           />
         );
       } else if (step === 5) {
@@ -747,7 +748,7 @@ export default function BookService() {
             onBack={handleBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
-            isFYOG={isFYOG}
+            isFYOG={true}
           />
         );
       }
