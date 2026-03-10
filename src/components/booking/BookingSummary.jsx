@@ -163,48 +163,40 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {(isFYOG || isGroupClass) ? (
+        {(isFYOG || isGroupClass) && formData.clients && formData.clients.length > 0 ? (
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
               <Users className="w-5 h-5" />
               Clients Information
             </h3>
-            
             <div className="space-y-3">
-              {formData.clients && formData.clients.length > 0 ? (
-                formData.clients.map((client, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                    <p className="font-semibold text-sm text-slate-900 mb-2">Client {idx + 1}</p>
-                    <div className="space-y-1.5 text-sm">
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Name:</span>
-                        <span className="text-slate-900">{getClientField(client, 'clientName')}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Email:</span>
-                        <span className="text-slate-900">{getClientField(client, 'clientEmail')}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Mobile:</span>
-                        <span className="text-slate-900">{getClientField(client, 'clientMobile')}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Address:</span>
-                        <span className="text-slate-900">{getClientField(client, 'clientAddress')}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Postal Code:</span>
-                        <span className="text-slate-900">{getClientField(client, 'clientPostalCode')}</span>
-                      </div>
+              {formData.clients.map((client, idx) => (
+                <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <p className="font-semibold text-sm text-slate-900 mb-2">Client {idx + 1}</p>
+                  <div className="space-y-1.5 text-sm">
+                    <div className="flex">
+                      <span className="font-medium text-slate-600 w-28">Name:</span>
+                      <span className="text-slate-900">{getClientField(client, 'clientName')}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-medium text-slate-600 w-28">Email:</span>
+                      <span className="text-slate-900">{getClientField(client, 'clientEmail')}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-medium text-slate-600 w-28">Mobile:</span>
+                      <span className="text-slate-900">{getClientField(client, 'clientMobile')}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-medium text-slate-600 w-28">Address:</span>
+                      <span className="text-slate-900">{getClientField(client, 'clientAddress')}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-medium text-slate-600 w-28">Postal Code:</span>
+                      <span className="text-slate-900">{getClientField(client, 'clientPostalCode')}</span>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800 font-semibold">⚠️ No client information available</p>
-                  <p className="text-xs text-red-600 mt-1">Expected {formData.numberOfClients} client(s)</p>
                 </div>
-              )}
+              ))}
             </div>
           </div>
         ) : (
