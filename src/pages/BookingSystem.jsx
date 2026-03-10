@@ -11,7 +11,7 @@ import { format, addWeeks } from "date-fns";
 const services = [
   {
     id: "kinder_puppy_in_home",
-    name: "Kinder Puppy Program (In-Home)",
+    name: "Kinder Puppy Program",
     price: 520,
     duration: 1,
     sessions: 4,
