@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -216,7 +215,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     return null;
   };
 
-  const autoFillWithRescheduling = (firstSession) => {
+  const autoFillWithRescheduling = (firstSession, modeOverride = null) => {
     if (!firstSession || !firstSession.date || !firstSession.start_time) {
       return;
     }
