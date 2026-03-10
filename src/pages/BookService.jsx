@@ -716,7 +716,7 @@ export default function BookService() {
             onNext={handleNext}
             onBack={handleBack}
             isFYOG={true}
-            isFYOGMulti={true}
+            isFYOGMulti={(formData.basicMannersFYOGCount || 1) > 1}
             fyogCount={formData.basicMannersFYOGCount || 1}
           />
         );
