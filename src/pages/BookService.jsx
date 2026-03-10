@@ -40,7 +40,7 @@ const services = {
 
   basic_manners_fyog: {
     id: "basic_manners_fyog",
-    name: "Basic Manners Program (FYOG)",
+    name: "Basic Manners Program",
     price: 720,
     duration: 1,
     sessions: 6,
