@@ -429,7 +429,8 @@ export default function BookService() {
               breed: furkid.furkidBreed || furkid.furkid_breed || '',
               gender: furkid.furkidGender || furkid.furkid_gender || '',
               program: serviceId === 'basic_manners_fyog' ? 'basic_manners_fyog' :
-                       serviceId === 'basic_manners_group_class' ? 'basic_manners_group' : 'basic_manners',
+                       serviceId === 'basic_manners_group_class' ? 'basic_manners_group' :
+                       serviceId === 'kinder_puppy_in_home' ? 'kinder_puppy' : 'basic_manners',
               training_status: 'in_progress',
               diet: furkid.furkidDiet || furkid.furkid_diet || '',
               sleep_area: furkid.furkidSleepArea || furkid.furkid_sleep_area || '',
