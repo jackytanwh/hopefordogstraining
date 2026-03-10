@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Check, Calendar } from "lucide-react";
+import { Check, Calendar, DollarSign } from "lucide-react";
 
 const SESSION_PACKAGES = [
   {
@@ -21,13 +21,7 @@ const SESSION_PACKAGES = [
     sessions: 3,
     price: 330,
     savings: 30,
-    description: "Comprehensive training with consistent follow-up"
-  },
-  {
-    sessions: 4,
-    price: 400,
-    savings: 80,
-    description: "Best value! In-depth training for lasting behavioural change"
+    description: "Best value! Comprehensive training with consistent follow-up"
   }
 ];
 
@@ -104,6 +98,7 @@ export default function OnDemandSessionSelection({ formData, setFormData, onNext
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
+                            <DollarSign className="w-5 h-5 text-green-600" />
                             <span className="text-xl font-bold text-blue-600">
                               ${pkg.price}
                             </span>

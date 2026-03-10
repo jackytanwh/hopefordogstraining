@@ -32,7 +32,6 @@ const programColors = {
   on_demand_1_session:     "bg-cyan-200 text-cyan-900",
   on_demand_2_sessions:    "bg-cyan-200 text-cyan-900",
   on_demand_3_sessions:    "bg-cyan-200 text-cyan-900",
-  on_demand_4_sessions:    "bg-cyan-200 text-cyan-900",
 };
 
 const programLabels = {
@@ -46,7 +45,6 @@ const programLabels = {
   on_demand_1_session:     "On Demand",
   on_demand_2_sessions:    "On Demand",
   on_demand_3_sessions:    "On Demand",
-  on_demand_4_sessions:    "On Demand",
 };
 
 const timeSlots = [

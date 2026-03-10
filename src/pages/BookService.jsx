@@ -296,8 +296,7 @@ export default function BookService() {
       
       let actualServiceType = formData.serviceType;
       if (formData.serviceType === 'on_demand_training' && formData.onDemandSessions) {
-        const n = formData.onDemandSessions;
-        actualServiceType = `on_demand_${n}_session${n > 1 ? 's' : ''}`;
+        actualServiceType = `on_demand_${formData.onDemandSessions}_session${formData.onDemandSessions > 1 ? 's' : ''}`;
       }
       
       const bookingData = {
