@@ -229,7 +229,7 @@ export default function BookingSystem() {
                     {!isOnDemand && (
                       <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
                         <DollarSign className="w-4 h-4 text-green-600" />
-                        {isKinderPuppy ? (
+                        {(isKinderPuppy || service.id === 'basic_manners_fyog') ? (
                           <span className="font-semibold">from ${service.price}</span>
                         ) : (
                           <>
