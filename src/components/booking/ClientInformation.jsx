@@ -80,8 +80,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     const newErrors = {};
 
     for (let i = 0; i < numberOfClients; i++) {
-      const client = isFYOG ? formData.clients[i] || {} : formData;
-      const prefix = isFYOG ? `${i}_` : '';
+      const client = (isFYOG || isKinderPuppyMulti) ? formData.clients[i] || {} : formData;
+      const prefix = (isFYOG || isKinderPuppyMulti) ? `${i}_` : '';
 
       if (!client.clientName?.trim()) {
         newErrors[`${prefix}clientName`] = 'Name is required';
@@ -97,8 +97,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         newErrors[`${prefix}clientMobile`] = 'Mobile number is required';
       }
 
-      // For non-FYOG and non-Group Class, validate address per client
-      if (!isFYOGProgram && !isGroupClass) {
+      // For non-FYOG, non-Group Class, non-KinderPuppyMulti: validate address per client
+      if (!isFYOGProgram && !isGroupClass && !isKinderPuppyMulti) {
         if (!client.clientAddress?.trim()) {
           newErrors[`${prefix}clientAddress`] = 'Address is required';
         }
@@ -111,8 +111,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
     }
 
-    // For FYOG programs, validate shared address/postal code
-    if (isFYOGProgram) {
+    // For FYOG programs and Kinder Puppy multi, validate shared address/postal code
+    if (isFYOGProgram || isKinderPuppyMulti) {
       if (!formData.sharedAddress?.trim()) {
         newErrors.sharedAddress = 'Training location address is required';
       }
@@ -123,8 +123,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
     }
 
-    // Validate "How did you know" for Behavioural Modification and Kinder Puppy FYOG
-    if ((isBehaviouralModification || service.id === 'kinder_puppy_fyog') && !formData.howDidYouKnow) {
+    if (isBehaviouralModification && !formData.howDidYouKnow) {
       newErrors.howDidYouKnow = 'Please let us know how you heard about us';
     }
 
