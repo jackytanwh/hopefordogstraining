@@ -90,8 +90,8 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
   // Check if this is an on-demand training with multiple sessions
   const isOnDemandMultiSession = service.id === 'on_demand_training' && service.sessions > 1;
   
-  // On-demand uses 3-week intervals
-  const isThreeWeekly = isOnDemandMultiSession;
+  // On-demand uses 3-week intervals (default), but can switch to weekly
+  const isThreeWeekly = isOnDemandMultiSession && schedulingMode !== 'recurring_weekly';
 
   const timeToMinutes = (timeStr) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
