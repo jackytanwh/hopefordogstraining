@@ -8,16 +8,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertCircle, MessageCircle } from "lucide-react";
 
-export default function ClientInformation({ service, formData, setFormData, onNext, onBack, isFYOG }) {
+export default function ClientInformation({ service, formData, setFormData, onNext, onBack, isFYOG, isKinderPuppy, kinderPuppyCount }) {
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
-  const numberOfClients = isFYOG ? formData.numberOfClients : 1;
+  const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
+  const numberOfClients = isKinderPuppyMulti ? kinderPuppyCount : isFYOG ? formData.numberOfClients : 1;
   const isBehaviouralModification = service.id === 'behavioural_modification';
   const isGroupClass = service.id === 'basic_manners_group_class';
-  const isFYOGProgram = service.id === 'kinder_puppy_fyog' || service.id === 'basic_manners_fyog';
-  // New variable to check if 'howDidYouKnow' is required for the current service
-  const isHowDidYouKnowRequired = service.id === 'kinder_puppy_fyog' || isBehaviouralModification;
+  const isFYOGProgram = service.id === 'basic_manners_fyog';
+  const isHowDidYouKnowRequired = isBehaviouralModification;
 
   const checkSentosaPostalCode = (postalCode) => {
     if (!postalCode) return false;
