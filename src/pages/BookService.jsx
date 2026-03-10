@@ -174,6 +174,13 @@ export default function BookService() {
         name: `Kinder Puppy Program (In-Home) — ${formData.kinderPuppyCount} Pupp${formData.kinderPuppyCount > 1 ? 'ies' : 'y'}`
       };
     }
+    if (serviceId === 'basic_manners_fyog' && formData.basicMannersFYOGPrice) {
+      return {
+        ...services[serviceId],
+        price: formData.basicMannersFYOGPrice,
+        name: `Basic Manners Program (FYOG) — ${formData.basicMannersFYOGCount} Dog${formData.basicMannersFYOGCount > 1 ? 's' : ''}`
+      };
+    }
     return services[serviceId];
   };
 
