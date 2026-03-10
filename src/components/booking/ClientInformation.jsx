@@ -155,13 +155,13 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         )}
 
         {Array.from({ length: numberOfClients }, (_, index) => {
-          const client = (isFYOG || isKinderPuppyMulti) ? formData.clients[index] || {} : formData;
-          const prefix = (isFYOG || isKinderPuppyMulti) ? `${index}_` : '';
-          const isSentosaClient = !isFYOGProgram && !isGroupClass && !isKinderPuppyMulti && checkSentosaPostalCode(client.clientPostalCode);
+          const client = isMultiClient ? formData.clients[index] || {} : formData;
+          const prefix = isMultiClient ? `${index}_` : '';
+          const isSentosaClient = !isFYOGProgram && !isGroupClass && !isMultiClient && checkSentosaPostalCode(client.clientPostalCode);
 
           return (
-            <div key={index} className={`space-y-4 ${(isFYOG || isKinderPuppyMulti) && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
-              {(isFYOG || isKinderPuppyMulti) && (
+            <div key={index} className={`space-y-4 ${isMultiClient && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
+              {isMultiClient && (
                 <h3 className="font-semibold text-slate-900 text-lg">
                   Client {index + 1}
                 </h3>
