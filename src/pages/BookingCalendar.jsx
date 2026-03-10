@@ -46,6 +46,7 @@ const programLabels = {
   on_demand_1_session:     "On Demand",
   on_demand_2_sessions:    "On Demand",
   on_demand_3_sessions:    "On Demand",
+  on_demand_4_sessions:    "On Demand",
 };
 
 const timeSlots = [
