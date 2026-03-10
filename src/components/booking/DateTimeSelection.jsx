@@ -343,7 +343,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
 
-    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy || (schedulingMode === 'recurring' && isRecurringApplicable)) && sessionNumber === 1) {
+    if ((isAutoRecurring || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy || (schedulingMode === 'recurring' && isRecurringApplicable) || schedulingMode === 'recurring_weekly') && sessionNumber === 1) {
       if (updatedSession.start_time) {
         autoFillWithRescheduling(updatedSession);
       }
