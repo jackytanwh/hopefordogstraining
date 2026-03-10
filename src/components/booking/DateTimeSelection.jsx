@@ -398,8 +398,8 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     setRescheduledSessions([]);
     setShowRescheduleInfo(false);
     
-    if (mode === 'recurring' && selectedDates[0]?.date && selectedDates[0]?.start_time && (isRecurringApplicable || isThreeWeekly || isBasicMannersWithBreak || isKinderPuppy)) {
-      autoFillWithRescheduling(selectedDates[0]);
+    if ((mode === 'recurring' || mode === 'recurring_weekly') && selectedDates[0]?.date && selectedDates[0]?.start_time && (isRecurringApplicable || isOnDemandMultiSession || isBasicMannersWithBreak || isKinderPuppy)) {
+      autoFillWithRescheduling(selectedDates[0], mode);
     }
     if (mode === 'manual') {
       const firstSession = selectedDates.find(s => s.session_number === 1);
