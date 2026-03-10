@@ -556,15 +556,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-slate-700">
-          <p className="font-semibold mb-2">Next Steps:</p>
-          <ul className="space-y-1 list-disc list-inside">
-            <li>You will be redirected to our secure payment page</li>
-            <li>After payment, your booking will be confirmed automatically</li>
-            <li>A WhatsApp confirmation will be sent to your mobile number</li>
-            {isGroupClass && <li>The fixed training schedule will be shared after confirmation</li>}
-          </ul>
-        </div>
 
         <div className="flex gap-3 pt-4">
           <Button variant="outline" onClick={onBack} disabled={isSubmitting} className="flex-1">
