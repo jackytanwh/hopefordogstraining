@@ -545,7 +545,9 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             <h3 className="font-semibold text-slate-900">
               {isAutoRecurring 
                 ? 'First Session (Second session will be auto-scheduled 3 weeks later)' 
-                : isThreeWeekly
+                : isOnDemandMultiSession && schedulingMode === 'recurring_weekly'
+                ? 'First Session (Others will auto-fill weekly)'
+                : isOnDemandMultiSession
                 ? 'First Session (Others will auto-fill every 3 weeks)'
                 : isKinderPuppy
                 ? 'First Session (Others will auto-fill weekly with break after session 2)'
