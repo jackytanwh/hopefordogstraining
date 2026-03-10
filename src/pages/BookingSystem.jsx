@@ -21,13 +21,13 @@ const services = [
   },
   {
     id: "basic_manners_fyog",
-    name: "Basic Manners Program (FYOG)",
+    name: "Basic Manners Program (In-home)",
     price: 720,
     duration: 1,
     sessions: 6,
     minParticipants: 1,
     maxParticipants: 4,
-    description: "In-home group training. 1 dog $720, 2nd–4th dog at half price ($360 each). Sessions 1-3 weekly, 1-week break, then sessions 4-6 weekly"
+    description: "Comprehensive in-home training. Sessions 1-4 weekly, 1-week break, then sessions 5-6. 2nd–4th dog at half price each."
   },
   {
     id: "basic_manners_group_class",
