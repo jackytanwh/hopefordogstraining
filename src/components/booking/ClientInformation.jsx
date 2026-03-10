@@ -257,8 +257,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
           );
         })}
 
-        {/* Shared Training Location for FYOG programs */}
-        {isFYOGProgram && (
+        {/* Shared Training Location for FYOG programs and Kinder Puppy multi */}
+        {(isFYOGProgram || isKinderPuppyMulti) && (
           <div className="pt-6 border-t border-slate-200 space-y-4">
             <h3 className="font-semibold text-slate-900 text-lg">Training Location</h3>
             <p className="text-sm text-slate-600">Please provide the address where the training sessions will take place.</p>
