@@ -112,8 +112,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
     }
 
-    // For FYOG programs and multi-client, validate shared address/postal code
-    if (isFYOGProgram || isMultiClient) {
+    // For multi-dog FYOG programs and other multi-client flows, validate shared address/postal code
+    if ((isFYOGProgram && isFYOGMulti) || isMultiClient) {
       if (!formData.sharedAddress?.trim()) {
         newErrors.sharedAddress = 'Training location address is required';
       }
