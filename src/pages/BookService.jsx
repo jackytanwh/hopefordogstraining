@@ -48,6 +48,16 @@ const services = {
     maxParticipants: 4,
     buffer: 1
   },
+  adore_hdb_approval: {
+    id: "adore_hdb_approval",
+    name: "ADORE/HDB Approval Program",
+    price: 520,
+    duration: 0.75,
+    sessions: 4,
+    minParticipants: 1,
+    maxParticipants: 1,
+    buffer: 1
+  },
   basic_manners_group_class: {
     id: "basic_manners_group_class",
     name: "Basic Manners Program (Group)",
