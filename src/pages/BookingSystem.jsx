@@ -40,6 +40,16 @@ const services = [
     description: "Group class training. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly with fixed schedule"
   },
   {
+    id: "adore_hdb_approval",
+    name: "ADORE/HDB Approval Program",
+    price: 520,
+    duration: 1,
+    sessions: 6,
+    minParticipants: 1,
+    maxParticipants: 1,
+    description: "Suitable for dogs that require ADORE training or HDB approval but do not need the full comprehensive training programme"
+  },
+  {
     id: "canine_assessment",
     name: "Canine Assessment",
     price: 158,
