@@ -30,6 +30,16 @@ const services = [
     description: "Comprehensive in-home training. Sessions 1-4 weekly, 1-week break, then sessions 5-6. 2nd–4th dog at half price each."
   },
   {
+    id: "adore_hdb_approval",
+    name: "ADORE/HDB Approval Program",
+    price: 520,
+    duration: 0.75,
+    sessions: 4,
+    minParticipants: 1,
+    maxParticipants: 1,
+    description: "Suitable for dogs that require ADORE training or HDB approval but do not need the full comprehensive training programme."
+  },
+  {
     id: "basic_manners_group_class",
     name: "Basic Manners Program (Group)",
     price: 520,
