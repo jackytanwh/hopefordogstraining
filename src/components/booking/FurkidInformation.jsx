@@ -214,9 +214,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
         newErrors[`${prefix}walkingFrequency`] = 'Please specify walking frequency';
       }
 
-      if (furkid.isAdopted && !furkid.adoptionProofUrl) {
-        newErrors[`${prefix}adoptionProofUrl`] = 'Adoption proof is required';
-      }
+
     }
 
     if (!isFYOG && !formData.howDidYouKnow) {
@@ -272,7 +270,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
 
               {furkid.isAdopted && (
                 <div className="space-y-2">
-                  <Label htmlFor={`${prefix}adoptionProof`}>Upload Proof of Adoption * (Max 10MB)</Label>
+                  <Label htmlFor={`${prefix}adoptionProof`}>Upload Proof of Adoption (for non-Singapore Specials) (Max 10MB)</Label>
                   <div className="flex items-center gap-2">
                     <Input
                       id={`${prefix}adoptionProof`}
@@ -280,15 +278,11 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => handleFileUpload(index, 'adoptionProofUrl', e.target.files?.[0])}
                       disabled={uploadingProof[index]}
-                      className={errors[`${prefix}adoptionProofUrl`] ? 'border-red-500' : ''}
                     />
                     {uploadingProof[index] && <Loader2 className="w-4 h-4 animate-spin" />}
                   </div>
                   {furkid.adoptionProofUrl && (
                     <p className="text-sm text-green-600">✓ File uploaded successfully</p>
-                  )}
-                  {errors[`${prefix}adoptionProofUrl`] && (
-                    <p className="text-sm text-red-600">{errors[`${prefix}adoptionProofUrl`]}</p>
                   )}
                 </div>
               )}
