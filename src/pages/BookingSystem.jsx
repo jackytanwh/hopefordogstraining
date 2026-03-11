@@ -137,9 +137,11 @@ export default function BookingSystem() {
     }
   };
 
-  const formatDuration = (duration) => {
+  const formatDuration = (duration, serviceId) => {
     if (duration === 0.75) {
       return '45 mins';
+    } else if (duration === 1 && serviceId === 'on_demand_training') {
+      return '45mins to 1 hour';
     } else if (duration === 1) {
       return '1 hour';
     } else if (duration === 1.5) {
@@ -236,7 +238,7 @@ export default function BookingSystem() {
                     
                     <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
                       <Clock className="w-4 h-4 text-purple-600" />
-                      <span>{formatDuration(service.duration)} per session</span>
+                      <span>{formatDuration(service.duration, service.id)} per session</span>
                     </div>
                     
                     <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
