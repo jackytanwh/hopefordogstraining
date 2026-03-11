@@ -152,6 +152,8 @@ export default function BookingSystem() {
       return '45 mins';
     } else if (duration === 1 && serviceId === 'on_demand_training') {
       return '45mins to 1 hour';
+    } else if (duration === 1 && serviceId === 'basic_manners_fyog') {
+      return '45 mins to 1 hour';
     } else if (duration === 1) {
       return '1 hour';
     } else if (duration === 1.5) {
