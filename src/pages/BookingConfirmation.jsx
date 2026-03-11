@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -58,40 +57,7 @@ export default function BookingConfirmation() {
             </ul>
           </div>
 
-          {whatsappConsent ? (
-            <div className="bg-green-50 border border-green-200 p-4 md:p-6 rounded-lg space-y-3 md:space-y-4">
-              <div className="flex items-center justify-center gap-2 text-green-800">
-                <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
-                <h3 className="font-semibold text-base md:text-lg">Connect on WhatsApp</h3>
-              </div>
-              <p className="text-sm md:text-base text-slate-700">
-                Click the button below to connect with our WhatsApp assistant. You'll receive your booking confirmation and session reminders directly on WhatsApp!
-              </p>
-              <WhatsAppButton className="bg-green-600 hover:bg-green-700 w-full" />
-              <p className="text-xs md:text-sm text-slate-500">
-                Need to reschedule? Contact our admin team at{' '}
-                <a 
-                  href="https://wa.me/6582228376" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-green-600 hover:text-green-700 font-medium"
-                >
-                  +65 8222 8376
-                </a>
-              </p>
-            </div>
-          ) : (
-            <div className="bg-green-50 border border-green-200 p-4 md:p-6 rounded-lg space-y-3 md:space-y-4">
-              <div className="flex items-center justify-center gap-2 text-green-800">
-                <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
-                <h3 className="font-semibold text-base md:text-lg">Stay Connected on WhatsApp</h3>
-              </div>
-              <p className="text-sm md:text-base text-slate-700">
-                Get instant updates, session reminders, and chat with our team directly on WhatsApp!
-              </p>
-              <WhatsAppButton className="bg-green-600 hover:bg-green-700 w-full" />
-            </div>
-          )}
+
 
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Link to={createPageUrl("BookingSystem")} className="flex-1">
