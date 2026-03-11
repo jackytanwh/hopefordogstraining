@@ -88,10 +88,11 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                                    service.id === 'basic_manners_fyog' || 
                                    service.id === 'basic_manners_group_class';
 
-  // Weekend surcharge applies to Kinder Puppy and Basic Manners (non-group) only
+  // Weekend surcharge applies to Kinder Puppy, Basic Manners (non-group), and ADORE/HDB Approval
   const isWeekendSurchargeApplicable = isKinderPuppy || 
     service.id === 'basic_manners_in_home' || 
-    service.id === 'basic_manners_fyog';
+    service.id === 'basic_manners_fyog' ||
+    service.id === 'adore_hdb_approval';
 
   const hasWeekendSession = isWeekendSurchargeApplicable && 
     selectedDates.some(s => s.date && [0, 6].includes(new Date(s.date).getDay()));
