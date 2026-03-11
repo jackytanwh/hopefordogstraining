@@ -141,7 +141,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
         <CardTitle>
-          {isMultiClient ? 'Clients Information' : 'Your Information'}
+          {isMultiClient ? 'Pawrents Information' : 'Your Information'}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
@@ -163,7 +163,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
             <div key={index} className={`space-y-4 ${isMultiClient && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
               {isMultiClient && (
                 <h3 className="font-semibold text-slate-900 text-lg">
-                  Client {index + 1}
+                  Pawrent {index + 1}
                 </h3>
               )}
 
