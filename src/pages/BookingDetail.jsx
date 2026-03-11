@@ -406,6 +406,8 @@ export default function BookingDetail() {
       progressField = 'basic_manners_fyog_progress';
     } else if (booking.service_type === 'group_class_basic_manners') {
       progressField = 'basic_manners_group_class_progress';
+    } else if (booking.service_type === 'adore_hdb_approval') {
+      progressField = 'adore_hdb_progress';
     }
     else {
       return;
@@ -465,6 +467,7 @@ export default function BookingDetail() {
   const hasBasicMannersCurriculum = booking.service_type === 'basic_manners_in_home';
   const hasBasicMannersFYOGCurriculum = booking.service_type === 'basic_manners_fyog';
   const hasBasicMannersGroupClassCurriculum = booking.service_type === 'group_class_basic_manners'; // New curriculum type
+  const hasAdoreHDBCurriculum = booking.service_type === 'adore_hdb_approval';
 
   // Kinder Puppy Curriculum Data
   const kinderPuppyCurriculum = {
@@ -649,6 +652,48 @@ export default function BookingDetail() {
         { key: 'triangle_success', label: 'Triangle Success' },
         { key: 'recall_sit_final', label: 'Recall to Sit Final' },
         { key: 'leave_it_final', label: 'Leave It Final' }
+      ]
+    }
+  };
+
+  // ADORE/HDB Approval Curriculum Data
+  const adoreHDBCurriculum = {
+    session1: {
+      title: 'Session 1',
+      items: [
+        { key: 'check_in_1', label: 'Check-in Part 1' },
+        { key: 'pattern_game_three', label: '123 Pattern Game (Three!)' },
+        { key: 'sit_lure', label: 'Sit with Lure' },
+        { key: 'scatter_feeding', label: 'Scatter Feeding' },
+        { key: 'body_language_theory', label: 'Body Language Theory' }
+      ]
+    },
+    session2: {
+      title: 'Session 2',
+      items: [
+        { key: 'pattern_game_full', label: '123 Pattern Game (One, Two, Three!)' },
+        { key: 'sit_verbal', label: 'Sit with Verbal/Hand Cue' },
+        { key: 'check_in_2', label: 'Check-in Part 2' },
+        { key: 'down_lure', label: 'Down with Lure' }
+      ]
+    },
+    session3: {
+      title: 'Session 3',
+      items: [
+        { key: 'pattern_game_pace', label: '123 Pattern Game (Changing pace)' },
+        { key: 'down_verbal', label: 'Down with Verbal/Hand Cue' },
+        { key: 'anchor_cue_1', label: 'Anchor Cue Part 1' },
+        { key: 'down_stay_duration', label: 'Down-Stay (Duration)' },
+        { key: 'leave_it_1', label: 'Leave It Part 1' }
+      ]
+    },
+    session4: {
+      title: 'Session 4',
+      items: [
+        { key: 'pattern_game_3', label: 'Pattern Game Part 3' },
+        { key: 'anchor_cue_2', label: 'Anchor Cue Part 2' },
+        { key: 'down_stay_distance', label: 'Down-Stay (Distance)' },
+        { key: 'leave_it_2', label: 'Leave It Part 2' }
       ]
     }
   };
@@ -1082,7 +1127,7 @@ export default function BookingDetail() {
             )}
 
             {/* Curriculum Tracker */}
-            {(hasKinderPuppyCurriculum || hasBasicMannersCurriculum || hasBasicMannersFYOGCurriculum || hasBasicMannersGroupClassCurriculum) && (
+            {(hasKinderPuppyCurriculum || hasBasicMannersCurriculum || hasBasicMannersFYOGCurriculum || hasBasicMannersGroupClassCurriculum || hasAdoreHDBCurriculum) && (
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-slate-100">
                   <CardTitle className="flex items-center gap-2">
@@ -1225,6 +1270,42 @@ export default function BookingDetail() {
                                 />
                                 <label 
                                   htmlFor={`group-class-${weekKey}-${item.key}`}
+                                  className="text-sm text-slate-700 cursor-pointer"
+                                >
+                                  {item.label}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {hasAdoreHDBCurriculum && Object.entries(adoreHDBCurriculum).map(([sessionKey, session]) => {
+                      const sessionProgress = booking.adore_hdb_progress?.[sessionKey] || {};
+                      const completedItems = session.items.filter(item => sessionProgress[item.key]).length;
+                      const totalItems = session.items.length;
+                      
+                      return (
+                        <div key={sessionKey} className="border border-slate-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-slate-900">{session.title}</h4>
+                            <Badge variant="outline" className="text-xs">
+                              {completedItems}/{totalItems} completed
+                            </Badge>
+                          </div>
+                          <div className="space-y-2">
+                            {session.items.map((item) => (
+                              <div key={item.key} className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  id={`adore-${sessionKey}-${item.key}`}
+                                  checked={sessionProgress[item.key] || false}
+                                  onChange={(e) => handleCurriculumUpdate(sessionKey, item.key, e.target.checked)}
+                                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                                />
+                                <label 
+                                  htmlFor={`adore-${sessionKey}-${item.key}`}
                                   className="text-sm text-slate-700 cursor-pointer"
                                 >
                                   {item.label}
