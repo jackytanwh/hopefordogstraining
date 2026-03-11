@@ -125,7 +125,7 @@ export default function PaymentSuccess() {
             ) : (
               <div className="text-center py-8">
                 <p className="text-slate-600 mb-4">
-                  Your payment was successful! We're processing your booking.
+                  Thank you for choosing Hopefordogs Canine Training. Please refer to your email for more details.
                 </p>
               </div>
             )}
