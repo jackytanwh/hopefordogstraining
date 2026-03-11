@@ -351,7 +351,8 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
                     <SelectValue placeholder="Select breed" />
                   </SelectTrigger>
                   <SelectContent>
-                    {commonBreeds.map(breed => (
+                    <SelectItem value="Others">Others</SelectItem>
+                    {commonBreeds.filter(breed => breed !== 'Others').map(breed => (
                       <SelectItem key={breed} value={breed}>{breed}</SelectItem>
                     ))}
                   </SelectContent>
