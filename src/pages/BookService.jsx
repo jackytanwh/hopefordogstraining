@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 
 import OnDemandSessionSelection from "../components/booking/OnDemandSessionSelection";
@@ -102,6 +103,7 @@ const services = {
 
 export default function BookService() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const urlParams = new URLSearchParams(window.location.search);
   const serviceId = urlParams.get('service');
   
@@ -327,6 +329,11 @@ export default function BookService() {
     return transformed;
   };
 
+  const getClientFieldValue = (client, camelKey, snakeKey) => {
+    if (!client) return '';
+    return client[camelKey] || client[snakeKey] || '';
+  };
+
   const handleSubmit = async (agreements) => {
     setIsSubmitting(true);
     
@@ -504,14 +511,15 @@ export default function BookService() {
 
       // Get client details for HitPay
       const useClientsArray = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
+      const firstClient = useClientsArray ? (formData.clients?.[0] || {}) : null;
       const clientName = useClientsArray
-        ? (formData.clients?.[0]?.clientName || '')
+        ? getClientFieldValue(firstClient, 'clientName', 'client_name')
         : formData.clientName;
       const clientEmail = useClientsArray
-        ? (formData.clients?.[0]?.clientEmail || '')
+        ? getClientFieldValue(firstClient, 'clientEmail', 'client_email')
         : formData.clientEmail;
       const clientMobile = useClientsArray
-        ? (formData.clients?.[0]?.clientMobile || '')
+        ? getClientFieldValue(firstClient, 'clientMobile', 'client_mobile')
         : formData.clientMobile;
 
       console.log('💳 Calling HitPay with:', {
@@ -560,20 +568,22 @@ export default function BookService() {
         console.error('Response headers:', error.response.headers);
       }
       
-      let errorMessage = '❌ Booking submission failed!\n\n';
+      let errorMessage = 'Booking submission failed.';
       if (error.response?.data?.message) {
-        errorMessage += '📋 Error: ' + error.response.data.message;
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
       } else if (error.response?.data?.detail) {
-        errorMessage += '📋 Error: ' + error.response.data.detail;
+        errorMessage = error.response.data.detail;
       } else if (error.message) {
-        errorMessage += '📋 Error: ' + error.message;
-      } else {
-        errorMessage += 'Please check all fields and try again.';
+        errorMessage = error.message;
       }
-      
-      errorMessage += '\n\n💡 Open browser console (F12) and share the error details with support.';
-      
-      alert(errorMessage);
+
+      toast({
+        title: "Booking submission failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
