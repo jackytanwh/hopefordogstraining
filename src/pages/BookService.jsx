@@ -568,7 +568,10 @@ export default function BookService() {
       const prefillEmail = firstNonEmptyValue(primaryClient?.email, formData.clientEmail);
       const prefillMobile = firstNonEmptyValue(primaryClient?.mobile, formData.clientMobile);
 
-      await loadRazorpayScript();
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded || !window.Razorpay) {
+        throw new Error('Could not load Razorpay checkout. Please check your internet connection and try again.');
+      }
 
       await new Promise((resolve, reject) => {
         const options = {

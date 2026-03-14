@@ -43,13 +43,34 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'ignored' });
         }
 
-        const bookingId =
+        let bookingId =
             paymentEntity.notes?.booking_id ||
             paymentEntity.description ||
             '';
 
+        // Fallback: fetch order receipt if notes don't have booking_id
+        if (!bookingId && paymentEntity.order_id) {
+            try {
+                const RAZORPAY_KEY_ID = Deno.env.get("RAZORPAY_KEY_ID");
+                const RAZORPAY_KEY_SECRET = Deno.env.get("RAZORPAY_KEY_SECRET");
+                if (RAZORPAY_KEY_ID && RAZORPAY_KEY_SECRET) {
+                    const authHeader = "Basic " + btoa(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`);
+                    const orderRes = await fetch(`https://api.razorpay.com/v1/orders/${paymentEntity.order_id}`, {
+                        headers: { "Authorization": authHeader },
+                    });
+                    if (orderRes.ok) {
+                        const orderData = await orderRes.json();
+                        bookingId = orderData.receipt || orderData.notes?.booking_id || '';
+                        console.log(`📋 Resolved bookingId from order receipt: ${bookingId}`);
+                    }
+                }
+            } catch (orderLookupError) {
+                console.warn("⚠️ Order lookup failed:", orderLookupError);
+            }
+        }
+
         if (!bookingId) {
-            console.warn("⚠️ No booking_id found in payment notes");
+            console.warn("⚠️ No booking_id found in payment notes or order receipt");
             return Response.json({ status: 'ignored', reason: 'no_booking_id' });
         }
 

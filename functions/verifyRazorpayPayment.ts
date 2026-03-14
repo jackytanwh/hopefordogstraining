@@ -37,7 +37,15 @@ Deno.serve(async (req) => {
 
         console.log("✅ Razorpay signature verified");
 
-        // Update booking to confirmed
+        // Check current booking state to avoid overwriting confirmation_date
+        const allBookingsCheck = await base44.asServiceRole.entities.Booking.list();
+        const currentBooking = allBookingsCheck.find((b: any) => b.id === bookingId);
+
+        if (currentBooking?.booking_status === 'confirmed') {
+            console.log(`ℹ️ Booking ${bookingId} already confirmed`);
+            return Response.json({ status: 'confirmed', bookingId });
+        }
+
         await base44.asServiceRole.entities.Booking.update(bookingId, {
             booking_status: "confirmed",
             confirmation_date: new Date().toISOString(),
