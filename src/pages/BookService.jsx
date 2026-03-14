@@ -334,6 +334,33 @@ export default function BookService() {
     return client[camelKey] || client[snakeKey] || '';
   };
 
+  const firstNonEmptyValue = (...values) => {
+    for (const value of values) {
+      if (typeof value === 'string' && value.trim()) {
+        return value.trim();
+      }
+    }
+    return '';
+  };
+
+  const getPrimaryClientContact = (clients = []) => {
+    let name = '';
+    let email = '';
+    let mobile = '';
+
+    for (const client of clients) {
+      name = firstNonEmptyValue(name, getClientFieldValue(client, 'clientName', 'client_name'));
+      email = firstNonEmptyValue(email, getClientFieldValue(client, 'clientEmail', 'client_email'));
+      mobile = firstNonEmptyValue(mobile, getClientFieldValue(client, 'clientMobile', 'client_mobile'));
+
+      if (name && email) {
+        break;
+      }
+    }
+
+    return { name, email, mobile };
+  };
+
   const handleSubmit = async (agreements) => {
     setIsSubmitting(true);
     
@@ -511,16 +538,16 @@ export default function BookService() {
 
       // Get client details for HitPay
       const useClientsArray = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
-      const firstClient = useClientsArray ? (formData.clients?.[0] || {}) : null;
+      const primaryClient = useClientsArray ? getPrimaryClientContact(formData.clients || []) : null;
       const clientName = useClientsArray
-        ? getClientFieldValue(firstClient, 'clientName', 'client_name')
-        : formData.clientName;
+        ? firstNonEmptyValue(primaryClient?.name, formData.clientName)
+        : firstNonEmptyValue(formData.clientName);
       const clientEmail = useClientsArray
-        ? getClientFieldValue(firstClient, 'clientEmail', 'client_email')
-        : formData.clientEmail;
+        ? firstNonEmptyValue(primaryClient?.email, formData.clientEmail)
+        : firstNonEmptyValue(formData.clientEmail);
       const clientMobile = useClientsArray
-        ? getClientFieldValue(firstClient, 'clientMobile', 'client_mobile')
-        : formData.clientMobile;
+        ? firstNonEmptyValue(primaryClient?.mobile, formData.clientMobile)
+        : firstNonEmptyValue(formData.clientMobile);
 
       console.log('💳 Calling HitPay with:', {
         bookingId: booking.id,

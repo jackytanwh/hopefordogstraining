@@ -9,6 +9,21 @@ const firstNonEmpty = (...values: unknown[]) => {
     return '';
 };
 
+const pickClientField = (clients: any[] | undefined, fieldNames: string[]) => {
+    if (!Array.isArray(clients)) {
+        return '';
+    }
+    for (const client of clients) {
+        for (const fieldName of fieldNames) {
+            const value = client?.[fieldName];
+            if (typeof value === 'string' && value.trim()) {
+                return value.trim();
+            }
+        }
+    }
+    return '';
+};
+
 Deno.serve(async (req) => {
     console.log("🚀 createHitpayPayment function triggered");
     
@@ -54,20 +69,17 @@ Deno.serve(async (req) => {
                     resolvedName = firstNonEmpty(
                         resolvedName,
                         booking.client_name,
-                        booking.clients?.[0]?.client_name,
-                        booking.clients?.[0]?.clientName
+                        pickClientField(booking.clients, ['client_name', 'clientName'])
                     );
                     resolvedEmail = firstNonEmpty(
                         resolvedEmail,
                         booking.client_email,
-                        booking.clients?.[0]?.client_email,
-                        booking.clients?.[0]?.clientEmail
+                        pickClientField(booking.clients, ['client_email', 'clientEmail'])
                     );
                     resolvedMobile = firstNonEmpty(
                         resolvedMobile,
                         booking.client_mobile,
-                        booking.clients?.[0]?.client_mobile,
-                        booking.clients?.[0]?.clientMobile
+                        pickClientField(booking.clients, ['client_mobile', 'clientMobile'])
                     );
                 }
             } catch (lookupError) {
