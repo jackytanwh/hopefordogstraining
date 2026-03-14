@@ -101,6 +101,20 @@ const services = {
   }
 };
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export default function BookService() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -534,53 +548,86 @@ export default function BookService() {
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
-      console.log('=== INITIATING HITPAY PAYMENT ===');
+      console.log('=== INITIATING RAZORPAY PAYMENT ===');
 
-      // Get client details for HitPay
-      const useClientsArray = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
-      const primaryClient = useClientsArray ? getPrimaryClientContact(formData.clients || []) : null;
-      const clientName = useClientsArray
-        ? firstNonEmptyValue(primaryClient?.name, formData.clientName)
-        : firstNonEmptyValue(formData.clientName);
-      const clientEmail = useClientsArray
-        ? firstNonEmptyValue(primaryClient?.email, formData.clientEmail)
-        : firstNonEmptyValue(formData.clientEmail);
-      const clientMobile = useClientsArray
-        ? firstNonEmptyValue(primaryClient?.mobile, formData.clientMobile)
-        : firstNonEmptyValue(formData.clientMobile);
-
-      console.log('💳 Calling HitPay with:', {
+      const orderResponse = await base44.functions.invoke('createRazorpayOrder', {
         bookingId: booking.id,
         amount: pricing.total,
-        clientName,
-        clientEmail,
-        clientMobile
       });
 
-      // Call HitPay to create payment request
-      const hitpayResponse = await base44.functions.invoke('createHitpayPayment', {
-        bookingId: booking.id,
-        amount: pricing.total,
-        clientName,
-        clientEmail,
-        clientMobile
-      });
+      const orderData = orderResponse?.data;
+      console.log('📥 Razorpay order response:', orderData);
 
-      console.log('📥 HitPay response status:', hitpayResponse?.status);
-      console.log('📥 HitPay response data:', hitpayResponse?.data);
-
-      // Extract payment URL from response
-      const paymentUrl = hitpayResponse?.data?.payment_url;
-
-      if (!paymentUrl) {
-        console.error('❌ No payment URL received');
-        throw new Error('Failed to get payment URL from HitPay');
+      if (!orderData?.order_id || !orderData?.razorpay_key_id) {
+        throw new Error('Failed to create Razorpay order');
       }
 
-      console.log('✅ Payment URL received, redirecting...');
+      const useClientsArray = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
+      const primaryClient = useClientsArray ? getPrimaryClientContact(formData.clients || []) : null;
+      const prefillName = firstNonEmptyValue(primaryClient?.name, formData.clientName);
+      const prefillEmail = firstNonEmptyValue(primaryClient?.email, formData.clientEmail);
+      const prefillMobile = firstNonEmptyValue(primaryClient?.mobile, formData.clientMobile);
 
-      // Redirect to HitPay payment page
-      window.location.href = paymentUrl;
+      await loadRazorpayScript();
+
+      await new Promise((resolve, reject) => {
+        const options = {
+          key: orderData.razorpay_key_id,
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: "Hope For Dogs Training",
+          description: service.name,
+          order_id: orderData.order_id,
+          prefill: {
+            name: prefillName || undefined,
+            email: prefillEmail || undefined,
+            contact: prefillMobile || undefined,
+          },
+          handler: async function (response) {
+            try {
+              console.log('✅ Razorpay payment success:', response);
+              const verifyResponse = await base44.functions.invoke('verifyRazorpayPayment', {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                bookingId: booking.id,
+              });
+              console.log('✅ Verification result:', verifyResponse?.data);
+              window.location.href = `/PaymentSuccess?booking_id=${booking.id}`;
+              resolve();
+            } catch (verifyError) {
+              console.error('❌ Payment verification failed:', verifyError);
+              reject(verifyError);
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              console.log('ℹ️ Razorpay checkout closed by user');
+              setIsSubmitting(false);
+              toast({
+                title: "Payment cancelled",
+                description: "You closed the payment window. Your booking is saved — you can retry payment.",
+              });
+              resolve();
+            },
+          },
+          theme: {
+            color: "#2563eb",
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+          console.error('❌ Razorpay payment failed:', response.error);
+          toast({
+            title: "Payment failed",
+            description: response.error?.description || "Payment could not be completed. Please try again.",
+            variant: "destructive",
+          });
+          reject(new Error(response.error?.description || 'Payment failed'));
+        });
+        rzp.open();
+      });
       
     } catch (error) {
       console.error('❌❌❌ ERROR CREATING BOOKING ❌❌❌');
