@@ -52,6 +52,11 @@ export default function PaymentSuccess() {
     return booking?.client_name || 'Valued Customer';
   };
 
+  const getFurkidName = () => {
+    if (booking?.furkids?.[0]?.furkid_name) return booking.furkids[0].furkid_name;
+    return booking?.furkid_name || null;
+  };
+
   const getClientEmail = () => {
     if (booking?.clients?.[0]?.clientEmail) return booking.clients[0].clientEmail;
     if (booking?.clients?.[0]?.client_email) return booking.clients[0].client_email;
