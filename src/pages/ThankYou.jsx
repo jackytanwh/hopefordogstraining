@@ -210,21 +210,6 @@ export default function ThankYou() {
               </RadioGroup>
             </div>
 
-            {/* Most Difficult Part */}
-            <div className="space-y-3">
-              <Label htmlFor="difficult" className="text-base font-semibold text-slate-900">
-                What was the most difficult part? (Optional)
-              </Label>
-              <Textarea
-                id="difficult"
-                value={feedback.most_difficult_part}
-                onChange={(e) => setFeedback({ ...feedback, most_difficult_part: e.target.value })}
-                placeholder="e.g., Finding available time slots, uploading documents, understanding requirements..."
-                rows={3}
-                className="text-sm md:text-base"
-              />
-            </div>
-
             {/* Suggestions */}
             <div className="space-y-3">
               <Label htmlFor="suggestions" className="text-base font-semibold text-slate-900">
