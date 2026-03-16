@@ -328,17 +328,19 @@ export default function BookingDetail() {
   const getClientField = (client, field) => {
     if (!client) return 'N/A';
     
+    const hasValue = (v) => v !== undefined && v !== null && v !== '';
+
     // Try direct access with original field name
-    if (client[field]) return client[field];
+    if (hasValue(client[field])) return client[field];
     
     // Try without 'client' prefix (e.g., 'clientName' -> 'name')
     const fieldWithoutPrefix = field.startsWith('client') ? 
       field.substring(6).charAt(0).toLowerCase() + field.substring(7) : field;
-    if (client[fieldWithoutPrefix]) return client[fieldWithoutPrefix];
+    if (hasValue(client[fieldWithoutPrefix])) return client[fieldWithoutPrefix];
     
     // Try with underscore format (e.g., 'clientName' -> 'client_name')
     const underscoreField = field.replace(/([A-Z])/g, '_$1').toLowerCase();
-    if (client[underscoreField]) return client[underscoreField];
+    if (hasValue(client[underscoreField])) return client[underscoreField];
     
     return 'N/A';
   };
