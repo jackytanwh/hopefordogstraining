@@ -848,6 +848,7 @@ export default function BookService() {
           />
         );
       } else if (step === 6) {
+        const fyogCountSummary = formData.basicMannersFYOGCount || 1;
         return (
           <BookingSummary
             service={service}
@@ -856,7 +857,7 @@ export default function BookService() {
             onBack={handleBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
-            isFYOG={true}
+            isFYOG={fyogCountSummary > 1}
           />
         );
       }
