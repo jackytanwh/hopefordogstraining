@@ -52,62 +52,17 @@ Deno.serve(async (req) => {
         });
         console.log(`✅ Booking ${bookingId} confirmed`);
 
-        // Send WhatsApp notification (fire and forget)
-        try {
-            const allBookings = await base44.asServiceRole.entities.Booking.list();
-            const booking = allBookings.find((b: any) => b.id === bookingId);
+        // Re-fetch the confirmed booking once for notifications
+        const refreshedBookings = await base44.asServiceRole.entities.Booking.list();
+        const booking = refreshedBookings.find((b: any) => b.id === bookingId);
 
-            if (booking?.whatsapp_consent) {
-                await base44.asServiceRole.functions.invoke('sendWhatsappBookingConfirmation', { booking });
-                console.log(`✅ WhatsApp confirmation sent for ${bookingId}`);
-            }
-        } catch (notifError) {
-            console.error("⚠️ WhatsApp notification failed:", notifError);
-        }
-
-        // Send email notification if Resend is configured
-        const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-        const RESEND_FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL");
-
-        if (RESEND_API_KEY && RESEND_FROM_EMAIL) {
+        // Delegate to sendBookingConfirmation which handles both WhatsApp + Email
+        if (booking) {
             try {
-                const { Resend } = await import('npm:resend');
-                const allBookings = await base44.asServiceRole.entities.Booking.list();
-                const booking = allBookings.find((b: any) => b.id === bookingId);
-
-                const toEmail =
-                    booking?.client_email ||
-                    booking?.clients?.[0]?.client_email ||
-                    booking?.clients?.[0]?.clientEmail ||
-                    '';
-
-                if (toEmail) {
-                    const clientName =
-                        booking?.client_name ||
-                        booking?.clients?.[0]?.client_name ||
-                        booking?.clients?.[0]?.clientName ||
-                        'Client';
-                    const serviceName = booking?.service_name || 'Training Service';
-                    const totalPrice = Number(booking?.total_price || 0).toFixed(2);
-
-                    const resend = new Resend(RESEND_API_KEY);
-                    await resend.emails.send({
-                        from: RESEND_FROM_EMAIL,
-                        to: [toEmail],
-                        subject: `Booking Confirmed: ${serviceName}`,
-                        html: `
-                            <p>Hi ${clientName},</p>
-                            <p>Your payment has been received and your booking is now confirmed.</p>
-                            <p><strong>Service:</strong> ${serviceName}<br/>
-                            <strong>Booking ID:</strong> ${bookingId}<br/>
-                            <strong>Amount Paid:</strong> SGD ${totalPrice}</p>
-                            <p>Thank you for choosing Hope For Dogs Training.</p>
-                        `,
-                    });
-                    console.log(`✅ Confirmation email sent to ${toEmail}`);
-                }
-            } catch (emailError) {
-                console.error("⚠️ Email notification failed:", emailError);
+                await base44.asServiceRole.functions.invoke('sendBookingConfirmation', { booking });
+                console.log(`✅ Notifications dispatched for ${bookingId}`);
+            } catch (notifError) {
+                console.error("⚠️ Notification dispatch failed:", notifError);
             }
         }
 
