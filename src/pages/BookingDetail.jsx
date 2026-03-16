@@ -623,8 +623,7 @@ export default function BookingDetail() {
         { key: 'lets_go_pace', label: "Let's Go Pace" },
         { key: 'down_stay_distance', label: 'Down-Stay (Distance)' },
         { key: 'anchor_proof', label: 'Anchor Proof' },
-        { key: 'leave_it_1', label: 'Leave It Part 1' },
-        { key: 'say_hello', label: 'Say Hello' }
+        { key: 'leave_it_1', label: 'Leave It Part 1' }
       ]
     },
     week5: {
