@@ -827,6 +827,7 @@ export default function BookService() {
           />
         );
       } else if (step === 4) {
+        const fyogCountStep = formData.basicMannersFYOGCount || 1;
         return (
           <FurkidInformation
             service={service}
@@ -834,7 +835,7 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={true}
+            isFYOG={fyogCountStep > 1}
           />
         );
       } else if (step === 5) {
