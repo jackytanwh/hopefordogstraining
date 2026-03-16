@@ -544,7 +544,6 @@ export default function BookingDetail() {
       title: 'Session 3',
       items: [
         { key: 'pattern_game_2', label: 'Pattern Game 2' },
-        { key: 'sit_stay_distraction', label: 'Sit-Stay with Distraction' },
         { key: 'down_verbal', label: 'Down with Verbal Cue' },
         { key: 'anchor_cue_1', label: 'Anchor Cue Part 1' },
         { key: 'down_stay_duration', label: 'Down-Stay (Duration)' },
