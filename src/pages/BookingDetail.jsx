@@ -347,17 +347,19 @@ export default function BookingDetail() {
   const getFurkidField = (furkid, field) => {
     if (!furkid) return 'N/A';
     
+    const hasValue = (v) => v !== undefined && v !== null && v !== '';
+
     // Try direct access with original field name
-    if (furkid[field]) return furkid[field];
+    if (hasValue(furkid[field])) return furkid[field];
     
     // Try without 'furkid' prefix (e.g., 'furkidName' -> 'name')
     const fieldWithoutPrefix = field.startsWith('furkid') ? 
       field.substring(6).charAt(0).toLowerCase() + field.substring(7) : field;
-    if (furkid[fieldWithoutPrefix]) return furkid[fieldWithoutPrefix];
+    if (hasValue(furkid[fieldWithoutPrefix])) return furkid[fieldWithoutPrefix];
     
     // Try with underscore format (e.g., 'furkidName' -> 'furkid_name')
     const underscoreField = field.replace(/([A-Z])/g, '_$1').toLowerCase();
-    if (furkid[underscoreField]) return furkid[underscoreField];
+    if (hasValue(furkid[underscoreField])) return furkid[underscoreField];
     
     return 'N/A';
   };
