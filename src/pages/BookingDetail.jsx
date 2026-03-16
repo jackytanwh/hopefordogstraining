@@ -404,10 +404,8 @@ export default function BookingDetail() {
     let progressField;
     if (booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog') {
       progressField = 'kinder_puppy_progress';
-    } else if (booking.service_type === 'basic_manners_in_home') {
+    } else if (booking.service_type === 'basic_manners_in_home' || booking.service_type === 'basic_manners_fyog') {
       progressField = 'basic_manners_progress';
-    } else if (booking.service_type === 'basic_manners_fyog') {
-      progressField = 'basic_manners_fyog_progress';
     } else if (booking.service_type === 'group_class_basic_manners') {
       progressField = 'basic_manners_group_class_progress';
     } else if (booking.service_type === 'adore_hdb_approval') {
