@@ -141,21 +141,18 @@ export default function PaymentSuccess() {
                   <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
                     {isConfirmed ? (
                       <>
-                        <li>You will receive a WhatsApp confirmation shortly</li>
-                        <li>Our trainer will contact you before your first session</li>
                         <li>Please have treats ready for training</li>
+                        <li>Please check your email for more details.</li>
                       </>
                     ) : isFailed ? (
                       <>
-                        <li>Please retry payment from a new booking submission</li>
-                        <li>If payment was deducted, contact support with your booking ID</li>
                         <li>Our team can help you restore your booking quickly</li>
+                        <li>Please check your email for more details.</li>
                       </>
                     ) : (
                       <>
-                        <li>We are waiting for final payment confirmation from HitPay</li>
                         <li>Refresh this page after 30-60 seconds</li>
-                        <li>If status does not change, contact support with your booking ID</li>
+                        <li>Please check your email for more details.</li>
                       </>
                     )}
                   </ul>
