@@ -573,7 +573,6 @@ export default function BookingDetail() {
       title: 'Session 6',
       items: [
         { key: 'pattern_game_5', label: 'Pattern Game 5' },
-        { key: 'double_recall_2', label: 'Double Recall Part 2' },
         { key: 'recall_sit_distance', label: 'Recall to Sit (Distance)' },
         { key: 'down_stay_proof', label: 'Down-Stay Proofing' },
         { key: 'leave_it_proof', label: 'Leave It Proofing' }
