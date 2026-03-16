@@ -468,7 +468,7 @@ export default function BookingDetail() {
   
   // Check if this service has curriculum
   const hasKinderPuppyCurriculum = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
-  const hasBasicMannersCurriculum = booking.service_type === 'basic_manners_in_home';
+  const hasBasicMannersCurriculum = booking.service_type === 'basic_manners_in_home' || booking.service_type === 'basic_manners_fyog';
   const hasBasicMannersFYOGCurriculum = false; // replaced by 6-week Basic Manners curriculum below
   const hasBasicMannersGroupClassCurriculum = booking.service_type === 'group_class_basic_manners'; // New curriculum type
   const hasAdoreHDBCurriculum = booking.service_type === 'adore_hdb_approval';
