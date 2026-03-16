@@ -328,17 +328,19 @@ export default function BookingDetail() {
   const getClientField = (client, field) => {
     if (!client) return 'N/A';
     
+    const hasValue = (v) => v !== undefined && v !== null && v !== '';
+
     // Try direct access with original field name
-    if (client[field]) return client[field];
+    if (hasValue(client[field])) return client[field];
     
     // Try without 'client' prefix (e.g., 'clientName' -> 'name')
     const fieldWithoutPrefix = field.startsWith('client') ? 
       field.substring(6).charAt(0).toLowerCase() + field.substring(7) : field;
-    if (client[fieldWithoutPrefix]) return client[fieldWithoutPrefix];
+    if (hasValue(client[fieldWithoutPrefix])) return client[fieldWithoutPrefix];
     
     // Try with underscore format (e.g., 'clientName' -> 'client_name')
     const underscoreField = field.replace(/([A-Z])/g, '_$1').toLowerCase();
-    if (client[underscoreField]) return client[underscoreField];
+    if (hasValue(client[underscoreField])) return client[underscoreField];
     
     return 'N/A';
   };
@@ -347,17 +349,19 @@ export default function BookingDetail() {
   const getFurkidField = (furkid, field) => {
     if (!furkid) return 'N/A';
     
+    const hasValue = (v) => v !== undefined && v !== null && v !== '';
+
     // Try direct access with original field name
-    if (furkid[field]) return furkid[field];
+    if (hasValue(furkid[field])) return furkid[field];
     
     // Try without 'furkid' prefix (e.g., 'furkidName' -> 'name')
     const fieldWithoutPrefix = field.startsWith('furkid') ? 
       field.substring(6).charAt(0).toLowerCase() + field.substring(7) : field;
-    if (furkid[fieldWithoutPrefix]) return furkid[fieldWithoutPrefix];
+    if (hasValue(furkid[fieldWithoutPrefix])) return furkid[fieldWithoutPrefix];
     
     // Try with underscore format (e.g., 'furkidName' -> 'furkid_name')
     const underscoreField = field.replace(/([A-Z])/g, '_$1').toLowerCase();
-    if (furkid[underscoreField]) return furkid[underscoreField];
+    if (hasValue(furkid[underscoreField])) return furkid[underscoreField];
     
     return 'N/A';
   };
@@ -400,10 +404,8 @@ export default function BookingDetail() {
     let progressField;
     if (booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog') {
       progressField = 'kinder_puppy_progress';
-    } else if (booking.service_type === 'basic_manners_in_home') {
+    } else if (booking.service_type === 'basic_manners_in_home' || booking.service_type === 'basic_manners_fyog') {
       progressField = 'basic_manners_progress';
-    } else if (booking.service_type === 'basic_manners_fyog') {
-      progressField = 'basic_manners_fyog_progress';
     } else if (booking.service_type === 'group_class_basic_manners') {
       progressField = 'basic_manners_group_class_progress';
     } else if (booking.service_type === 'adore_hdb_approval') {
@@ -464,8 +466,8 @@ export default function BookingDetail() {
   
   // Check if this service has curriculum
   const hasKinderPuppyCurriculum = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
-  const hasBasicMannersCurriculum = booking.service_type === 'basic_manners_in_home';
-  const hasBasicMannersFYOGCurriculum = booking.service_type === 'basic_manners_fyog';
+  const hasBasicMannersCurriculum = booking.service_type === 'basic_manners_in_home' || booking.service_type === 'basic_manners_fyog';
+  const hasBasicMannersFYOGCurriculum = false; // replaced by 6-week Basic Manners curriculum below
   const hasBasicMannersGroupClassCurriculum = booking.service_type === 'group_class_basic_manners'; // New curriculum type
   const hasAdoreHDBCurriculum = booking.service_type === 'adore_hdb_approval';
 
@@ -542,7 +544,6 @@ export default function BookingDetail() {
       title: 'Session 3',
       items: [
         { key: 'pattern_game_2', label: 'Pattern Game 2' },
-        { key: 'sit_stay_distraction', label: 'Sit-Stay with Distraction' },
         { key: 'down_verbal', label: 'Down with Verbal Cue' },
         { key: 'anchor_cue_1', label: 'Anchor Cue Part 1' },
         { key: 'down_stay_duration', label: 'Down-Stay (Duration)' },
@@ -565,14 +566,13 @@ export default function BookingDetail() {
         { key: 'down_stay_distractions', label: 'Down-Stay with Distractions' },
         { key: 'double_recall_1', label: 'Double Recall Part 1' },
         { key: 'recall_sit', label: 'Recall to Sit' },
-        { key: 'leave_it_3', label: 'Leave It Part 3' }
+        { key: 'leave_it_3', label: 'Leave It Triangle of Success' }
       ]
     },
     week6: {
       title: 'Session 6',
       items: [
         { key: 'pattern_game_5', label: 'Pattern Game 5' },
-        { key: 'double_recall_2', label: 'Double Recall Part 2' },
         { key: 'recall_sit_distance', label: 'Recall to Sit (Distance)' },
         { key: 'down_stay_proof', label: 'Down-Stay Proofing' },
         { key: 'leave_it_proof', label: 'Leave It Proofing' }
@@ -619,8 +619,7 @@ export default function BookingDetail() {
         { key: 'lets_go_pace', label: "Let's Go Pace" },
         { key: 'down_stay_distance', label: 'Down-Stay (Distance)' },
         { key: 'anchor_proof', label: 'Anchor Proof' },
-        { key: 'leave_it_1', label: 'Leave It Part 1' },
-        { key: 'say_hello', label: 'Say Hello' }
+        { key: 'leave_it_1', label: 'Leave It Part 1' }
       ]
     },
     week5: {

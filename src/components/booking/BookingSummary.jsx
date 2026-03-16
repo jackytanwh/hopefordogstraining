@@ -241,7 +241,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             }
           </h3>
 
-          {(isFYOG || isGroupClass) ? (
+          {(isFYOG || isGroupClass) && formData.furkids && formData.furkids.length > 0 ? (
             <div className="space-y-3">
               {formData.furkids && formData.furkids.length > 0 ? (
                 formData.furkids.map((furkid, idx) => (

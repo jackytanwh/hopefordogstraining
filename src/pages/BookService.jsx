@@ -434,8 +434,9 @@ export default function BookService() {
       const kinderPuppyCount = formData.kinderPuppyCount || 1;
       const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
       const fyogCount = formData.basicMannersFYOGCount || 1;
+      const isFYOGMulti = isFYOG && fyogCount > 1;
 
-      if (isFYOG || isGroupClass || isKinderPuppyMulti) {
+      if (isFYOGMulti || isGroupClass || isKinderPuppyMulti) {
         console.log('Processing FYOG/Group/KinderPuppyMulti booking...');
         bookingData.number_of_furkids = isFYOG ? fyogCount : isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfFurkids || 0);
         bookingData.number_of_clients = isFYOG ? fyogCount : isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfClients || 0);
@@ -496,7 +497,8 @@ export default function BookService() {
       // Handle FYOG/Group Class/KinderPuppyMulti client creation
       const kinderPuppyCountForCreate = formData.kinderPuppyCount || 1;
       const isKinderPuppyMultiForCreate = isKinderPuppy && kinderPuppyCountForCreate > 1;
-      if (isFYOG || isGroupClass || isKinderPuppyMultiForCreate) {
+      const isFYOGMultiForCreate = isFYOG && (formData.basicMannersFYOGCount || 1) > 1;
+      if (isFYOGMultiForCreate || isGroupClass || isKinderPuppyMultiForCreate) {
         console.log('Creating client records...');
         try {
           for (let i = 0; i < (formData.furkids || []).length; i++) {
@@ -825,6 +827,7 @@ export default function BookService() {
           />
         );
       } else if (step === 4) {
+        const fyogCountStep = formData.basicMannersFYOGCount || 1;
         return (
           <FurkidInformation
             service={service}
@@ -832,7 +835,7 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={true}
+            isFYOG={fyogCountStep > 1}
           />
         );
       } else if (step === 5) {
@@ -845,6 +848,7 @@ export default function BookService() {
           />
         );
       } else if (step === 6) {
+        const fyogCountSummary = formData.basicMannersFYOGCount || 1;
         return (
           <BookingSummary
             service={service}
@@ -853,7 +857,7 @@ export default function BookService() {
             onBack={handleBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
-            isFYOG={true}
+            isFYOG={fyogCountSummary > 1}
           />
         );
       }
