@@ -566,7 +566,7 @@ export default function BookingDetail() {
         { key: 'down_stay_distractions', label: 'Down-Stay with Distractions' },
         { key: 'double_recall_1', label: 'Double Recall Part 1' },
         { key: 'recall_sit', label: 'Recall to Sit' },
-        { key: 'leave_it_3', label: 'Leave It Part 3' }
+        { key: 'leave_it_3', label: 'Leave It Triangle of Success' }
       ]
     },
     week6: {
