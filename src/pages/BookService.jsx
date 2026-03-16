@@ -434,8 +434,9 @@ export default function BookService() {
       const kinderPuppyCount = formData.kinderPuppyCount || 1;
       const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
       const fyogCount = formData.basicMannersFYOGCount || 1;
+      const isFYOGMulti = isFYOG && fyogCount > 1;
 
-      if (isFYOG || isGroupClass || isKinderPuppyMulti) {
+      if (isFYOGMulti || isGroupClass || isKinderPuppyMulti) {
         console.log('Processing FYOG/Group/KinderPuppyMulti booking...');
         bookingData.number_of_furkids = isFYOG ? fyogCount : isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfFurkids || 0);
         bookingData.number_of_clients = isFYOG ? fyogCount : isKinderPuppyMulti ? kinderPuppyCount : (formData.numberOfClients || 0);
