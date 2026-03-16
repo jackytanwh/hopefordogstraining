@@ -89,7 +89,7 @@ export default function PaymentSuccess() {
               <>
                 <div className="text-center mb-6">
                   <p className="text-lg text-slate-700">
-                    Thank you, <span className="font-semibold">{getClientName()}</span>!
+                    Thank you, <span className="font-semibold">{getClientName()}{getFurkidName() ? ` & ${getFurkidName()}` : ''}</span>!
                   </p>
                   {isConfirmed && (
                     <p className="text-slate-600 mt-1">
