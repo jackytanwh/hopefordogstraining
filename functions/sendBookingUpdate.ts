@@ -47,67 +47,87 @@ Deno.serve(async (req) => {
         let emailBody = '';
         let whatsappMessage = '';
 
+        const pawSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><path d="M12 18c-3.5 0-6-2.5-6-5 0-1.7 1-3.2 2.5-4C10 8.3 11 8 12 8s2 .3 3.5 1c1.5.8 2.5 2.3 2.5 4 0 2.5-2.5 5-6 5z"/></svg>`;
+        const footerHtml = `<div style="padding: 24px; text-align: center; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; background: #f8fafc;"><p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">🐾 Hope For Dogs Training</p><p style="margin: 0; font-size: 13px; color: #94a3b8;">Canine Training &amp; Behaviour Specialists</p><p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;"><a href="https://bookings.hopefordogs.sg" style="color: #2563eb; text-decoration: none;">bookings.hopefordogs.sg</a> &middot; +65 8222 8376</p></div>`;
+
         if (isReschedule) {
-            let sessionListHtml = '';
+            let sessionTableRows = '';
             let sessionListWa = '';
             if (booking.session_dates && booking.session_dates.length > 0) {
-                sessionListHtml = '<ul>';
                 booking.session_dates.forEach((s: any) => {
                     const d = new Date(s.date);
-                    const fmt = d.toLocaleDateString('en-SG', { weekday: 'long', month: 'short', day: 'numeric' });
-                    sessionListHtml += `<li>Session ${s.session_number}: ${fmt} at ${s.start_time}</li>`;
+                    const fmt = d.toLocaleDateString('en-SG', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                    sessionTableRows += `<tr><td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Session ${s.session_number}</td><td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px;">${fmt}</td><td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px;">${s.start_time}${s.end_time ? ' – ' + s.end_time : ''}</td></tr>`;
                     sessionListWa += `\nSession ${s.session_number}: ${fmt} at ${s.start_time}`;
                 });
-                sessionListHtml += '</ul>';
             }
             emailSubject = `Sessions Rescheduled: ${booking.service_name || 'Training Service'}`;
             emailBody = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <div style="background: #f59e0b; color: white; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-                    <h1 style="margin: 0; font-size: 24px;">Sessions Rescheduled</h1>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
+                <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">${pawSvg}</div>
+                    <h1 style="margin: 0 0 8px 0; font-size: 28px; color: white; font-weight: 700;">Sessions Rescheduled</h1>
+                    <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 16px;">Your training schedule has been updated</p>
                 </div>
-                <div style="padding: 24px; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
-                    <p>Hi ${clientName},</p>
-                    <p>Your training sessions for <strong>${furkidName}</strong> have been rescheduled.</p>
-                    <p><strong>Updated Schedule:</strong></p>
-                    ${sessionListHtml}
-                    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
-                    <p>If you have questions or need further changes, contact us at <strong>+65 8222 8376</strong>.</p>
-                    <p style="color: #6b7280; font-size: 14px;">— Hope For Dogs Training Team</p>
+                <div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">
+                    <p style="font-size: 16px; color: #334155;">Hi ${clientName},</p>
+                    <p style="font-size: 15px; color: #475569; line-height: 1.6;">Your training sessions for <strong>${furkidName}</strong> have been rescheduled. Here is your updated schedule:</p>
+                    <div style="margin: 24px 0;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;">
+                            <thead><tr style="background: #f8fafc;"><th style="padding: 10px 12px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Session</th><th style="padding: 10px 12px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Date</th><th style="padding: 10px 12px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Time</th></tr></thead>
+                            <tbody>${sessionTableRows}</tbody>
+                        </table>
+                    </div>
+                    <p style="font-size: 15px; color: #475569;">If you have questions or need further changes, contact us at <strong>+65 8222 8376</strong>.</p>
                 </div>
+                ${footerHtml}
             </div>`;
             whatsappMessage = `🔄 *Session Rescheduled*\n\nHi ${clientName},\n\nYour training sessions for ${furkidName} have been rescheduled.\n*Updated Schedule:*${sessionListWa}\n\nIf you have questions, contact our admin team at +65 8222 8376.\n\n_- Hopefordogs Training Team_ 🐕`;
         } else if (booking.booking_status === 'confirmed' && oldBooking?.booking_status === 'pending') {
             emailSubject = `Booking Confirmed: ${booking.service_name || 'Training Service'}`;
             emailBody = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <div style="background: #22c55e; color: white; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-                    <h1 style="margin: 0; font-size: 24px;">Booking Confirmed</h1>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
+                <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">${pawSvg}</div>
+                    <h1 style="margin: 0 0 8px 0; font-size: 28px; color: white; font-weight: 700;">Booking Confirmed</h1>
+                    <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 16px;">Your booking has been officially confirmed</p>
                 </div>
-                <div style="padding: 24px; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
-                    <p>Hi ${clientName},</p>
-                    <p>Your booking for <strong>${booking.service_name}</strong> with <strong>${furkidName}</strong> has been officially confirmed.</p>
-                    <p>We're all set and looking forward to your first session!</p>
-                    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
-                    <p>If you have questions, contact us at <strong>+65 8222 8376</strong>.</p>
-                    <p style="color: #6b7280; font-size: 14px;">— Hope For Dogs Training Team</p>
+                <div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">
+                    <p style="font-size: 16px; color: #334155;">Hi ${clientName},</p>
+                    <p style="font-size: 15px; color: #475569; line-height: 1.6;">Your booking for <strong>${booking.service_name}</strong> with <strong>${furkidName}</strong> has been officially confirmed by our team.</p>
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr><td style="padding: 6px 0; color: #64748b; font-size: 14px;">Service</td><td style="padding: 6px 0; text-align: right; color: #334155; font-size: 14px; font-weight: 600;">${booking.service_name}</td></tr>
+                            <tr><td style="padding: 6px 0; color: #64748b; font-size: 14px;">Booking ID</td><td style="padding: 6px 0; text-align: right; color: #334155; font-size: 14px;">${booking.id}</td></tr>
+                            ${booking.total_price ? `<tr><td style="padding: 6px 0; color: #64748b; font-size: 14px;">Amount</td><td style="padding: 6px 0; text-align: right; color: #16a34a; font-size: 20px; font-weight: 700;">$${Number(booking.total_price).toFixed(2)}</td></tr>` : ''}
+                        </table>
+                    </div>
+                    <p style="font-size: 15px; color: #475569;">We're all set and looking forward to your first session! If you have questions, contact us at <strong>+65 8222 8376</strong>.</p>
                 </div>
+                ${footerHtml}
             </div>`;
             whatsappMessage = `✅ *Booking Confirmed*\n\nHi ${clientName},\n\nGreat news! Your booking for *${booking.service_name}* with ${furkidName} has been officially confirmed.\n\nWe're looking forward to your first session!\n\n_- Hopefordogs Training Team_ 🐕`;
         } else {
             emailSubject = `Booking Updated: ${booking.service_name || 'Training Service'}`;
             emailBody = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <div style="background: #3b82f6; color: white; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-                    <h1 style="margin: 0; font-size: 24px;">Booking Updated</h1>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
+                <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">${pawSvg}</div>
+                    <h1 style="margin: 0 0 8px 0; font-size: 28px; color: white; font-weight: 700;">Booking Updated</h1>
+                    <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 16px;">Changes have been made to your booking</p>
                 </div>
-                <div style="padding: 24px; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
-                    <p>Hi ${clientName},</p>
-                    <p>Your booking for <strong>${booking.service_name}</strong> with <strong>${furkidName}</strong> has been updated.</p>
-                    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
-                    <p>For details or questions, contact our team at <strong>+65 8222 8376</strong>.</p>
-                    <p style="color: #6b7280; font-size: 14px;">— Hope For Dogs Training Team</p>
+                <div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">
+                    <p style="font-size: 16px; color: #334155;">Hi ${clientName},</p>
+                    <p style="font-size: 15px; color: #475569; line-height: 1.6;">Your booking for <strong>${booking.service_name}</strong> with <strong>${furkidName}</strong> has been updated.</p>
+                    <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr><td style="padding: 6px 0; color: #64748b; font-size: 14px;">Service</td><td style="padding: 6px 0; text-align: right; color: #334155; font-size: 14px; font-weight: 600;">${booking.service_name}</td></tr>
+                            <tr><td style="padding: 6px 0; color: #64748b; font-size: 14px;">Booking ID</td><td style="padding: 6px 0; text-align: right; color: #334155; font-size: 14px;">${booking.id}</td></tr>
+                        </table>
+                    </div>
+                    <p style="font-size: 15px; color: #475569;">For details or questions, contact our team at <strong>+65 8222 8376</strong>.</p>
                 </div>
+                ${footerHtml}
             </div>`;
             whatsappMessage = `📝 *Booking Updated*\n\nHi ${clientName},\n\nYour booking for *${booking.service_name}* with ${furkidName} has been updated.\n\nFor details or questions, contact our team at +65 8222 8376.\n\n_- Hopefordogs Training Team_ 🐕`;
         }
