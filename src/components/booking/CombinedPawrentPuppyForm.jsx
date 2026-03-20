@@ -156,52 +156,56 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
 
   const validateAndContinue = () => {
     const newErrors = {};
+    
+    // Get current client and furkid data
+    const currentClient = (formData.clients && formData.clients[currentIndex]) || {};
+    const currentFurkid = (formData.furkids && formData.furkids[currentIndex]) || {};
 
     // Client validation
-    if (!client.clientName?.trim()) {
+    if (!currentClient.clientName?.trim()) {
       newErrors.client_clientName = 'Name is required';
     }
-    if (!client.clientEmail?.trim()) {
+    if (!currentClient.clientEmail?.trim()) {
       newErrors.client_clientEmail = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(client.clientEmail)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentClient.clientEmail)) {
       newErrors.client_clientEmail = 'Invalid email format';
     }
-    if (!client.clientMobile?.trim()) {
+    if (!currentClient.clientMobile?.trim()) {
       newErrors.client_clientMobile = 'Mobile number is required';
     }
 
     // Furkid validation
-    if (!furkid.furkidName?.trim()) {
+    if (!currentFurkid.furkidName?.trim()) {
       newErrors.furkid_furkidName = 'Puppy name is required';
     }
-    if (!furkid.dobMonth || !furkid.dobDay || !furkid.dobYear) {
+    if (!currentFurkid.dobMonth || !currentFurkid.dobDay || !currentFurkid.dobYear) {
       newErrors.furkid_furkidDob = 'Date of birth is required';
     }
-    if (!furkid.furkidBreed?.trim()) {
+    if (!currentFurkid.furkidBreed?.trim()) {
       newErrors.furkid_furkidBreed = 'Breed is required';
     }
-    if (!furkid.furkidGender) {
+    if (!currentFurkid.furkidGender) {
       newErrors.furkid_furkidGender = 'Gender is required';
     }
-    if (furkid.furkidSterilised === undefined || furkid.furkidSterilised === null) {
+    if (currentFurkid.furkidSterilised === undefined || currentFurkid.furkidSterilised === null) {
       newErrors.furkid_furkidSterilised = 'Please select if puppy is sterilised';
     }
-    if (!furkid.furkidAcquiredFrom?.trim()) {
+    if (!currentFurkid.furkidAcquiredFrom?.trim()) {
       newErrors.furkid_furkidAcquiredFrom = 'Please specify where you acquired your puppy';
     }
-    if (!furkid.furkidJoinedFamily?.trim()) {
+    if (!currentFurkid.furkidJoinedFamily?.trim()) {
       newErrors.furkid_furkidJoinedFamily = 'Please specify when puppy joined the family';
     }
-    if (furkid.firstTimeOwner === undefined || furkid.firstTimeOwner === null) {
+    if (currentFurkid.firstTimeOwner === undefined || currentFurkid.firstTimeOwner === null) {
       newErrors.furkid_firstTimeOwner = 'Please specify if this is your first time having a furkid';
     }
-    if (!furkid.furkidDiet?.trim()) {
+    if (!currentFurkid.furkidDiet?.trim()) {
       newErrors.furkid_furkidDiet = 'Please specify puppy diet';
     }
-    if (!furkid.furkidSleepArea?.trim()) {
+    if (!currentFurkid.furkidSleepArea?.trim()) {
       newErrors.furkid_furkidSleepArea = 'Please specify where puppy sleeps';
     }
-    if (!furkid.walkingFrequency?.trim()) {
+    if (!currentFurkid.walkingFrequency?.trim()) {
       newErrors.furkid_walkingFrequency = 'Please specify walking frequency';
     }
 
