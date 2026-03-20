@@ -165,56 +165,58 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
         )}
 
         {isKinderPuppyMulti ? (
-          // For multi-puppy Kinder Puppy: Display Pawrent + Puppy pairs
-          <div className="space-y-6">
+          // For multi-puppy Kinder Puppy: Display Pawrent + Puppy pairs in combined cards
+          <div className="space-y-4">
             {formData.clients && formData.clients.map((client, idx) => (
-              <div key={idx} className="space-y-3">
-                {/* Pawrent Information */}
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                    <User className="w-5 h-5" />
-                    Pawrent {idx + 1}
-                  </h3>
-                  <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+              <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                {/* Combined Pawrent & Puppy Header */}
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-300">
+                  <User className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-slate-900">Pawrent {idx + 1}</span>
+                  <span className="text-slate-400 mx-2">•</span>
+                  <PawPrint className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-slate-900">Puppy {idx + 1}</span>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Pawrent Information */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pawrent Details</p>
                     <div className="space-y-1.5 text-sm">
                       <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Name:</span>
+                        <span className="font-medium text-slate-600 w-24">Name:</span>
                         <span className="text-slate-900">{getClientField(client, 'clientName')}</span>
                       </div>
                       <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Email:</span>
+                        <span className="font-medium text-slate-600 w-24">Email:</span>
                         <span className="text-slate-900">{getClientField(client, 'clientEmail')}</span>
                       </div>
                       <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Mobile:</span>
+                        <span className="font-medium text-slate-600 w-24">Mobile:</span>
                         <span className="text-slate-900">{getClientField(client, 'clientMobile')}</span>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Puppy Information */}
-                {formData.furkids && formData.furkids[idx] && (
-                  <div>
-                    <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                      <PawPrint className="w-5 h-5" />
-                      Puppy {idx + 1}
-                    </h3>
-                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                      <p className="font-semibold text-sm text-slate-900 mb-2">
-                        {getFurkidField(formData.furkids[idx], 'furkidName')}
-                      </p>
+                  {/* Puppy Information */}
+                  {formData.furkids && formData.furkids[idx] && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Puppy Details</p>
                       <div className="space-y-1.5 text-sm">
                         <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Age:</span>
+                          <span className="font-medium text-slate-600 w-24">Name:</span>
+                          <span className="text-slate-900 font-semibold">{getFurkidField(formData.furkids[idx], 'furkidName')}</span>
+                        </div>
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-24">Age:</span>
                           <span className="text-slate-900">{getFurkidField(formData.furkids[idx], 'furkidAge')}</span>
                         </div>
                         <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Breed:</span>
+                          <span className="font-medium text-slate-600 w-24">Breed:</span>
                           <span className="text-slate-900">{getFurkidField(formData.furkids[idx], 'furkidBreed')}</span>
                         </div>
                         <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Gender:</span>
+                          <span className="font-medium text-slate-600 w-24">Gender:</span>
                           <span className="text-slate-900 capitalize">{getFurkidField(formData.furkids[idx], 'furkidGender')}</span>
                         </div>
                         {formData.furkids[idx]?.isAdopted && (
@@ -226,8 +228,8 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                         )}
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             ))}
 
