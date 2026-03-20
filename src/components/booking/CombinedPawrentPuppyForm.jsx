@@ -47,6 +47,13 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
   const client = (formData.clients && formData.clients[currentIndex]) || {};
   const furkid = (formData.furkids && formData.furkids[currentIndex]) || {};
 
+  // Clear fields when currentIndex changes
+  useEffect(() => {
+    setErrors({});
+    setShowValidationMessage(false);
+    setShowCustomBreed(false);
+  }, [currentIndex]);
+
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
   const months = [
