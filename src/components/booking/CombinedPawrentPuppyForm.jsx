@@ -175,6 +175,9 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     }
 
     // Furkid validation
+    if (currentFurkid.isAdopted === undefined || currentFurkid.isAdopted === null) {
+      newErrors.furkid_isAdopted = 'Please specify if puppy is adopted';
+    }
     if (!currentFurkid.furkidName?.trim()) {
       newErrors.furkid_furkidName = 'Puppy name is required';
     }
@@ -293,6 +296,9 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
                 <Label htmlFor="adopted-no" className="font-normal cursor-pointer">No</Label>
               </div>
             </RadioGroup>
+            {errors.furkid_isAdopted && (
+              <p className="text-sm text-red-600">{errors.furkid_isAdopted}</p>
+            )}
           </div>
 
           {furkid.isAdopted && (
