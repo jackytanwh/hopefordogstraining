@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { format, parseISO, getDay } from "date-fns";
 import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
-export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false }) {
+export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount }) {
   const [leashAgreement, setLeashAgreement] = useState(false);
   const [refundAgreement, setRefundAgreement] = useState(false);
   const [behaviorAgreement, setBehaviorAgreement] = useState(false);
@@ -20,6 +20,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
+  const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
 
   const handleSubmit = () => {
     if (isBasicManners) {
@@ -163,7 +164,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {(isFYOG || isGroupClass) && formData.clients && formData.clients.length > 0 ? (
+        {((isFYOG || isGroupClass || isKinderPuppyMulti) && formData.clients && formData.clients.length > 0) ? (
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
               <Users className="w-5 h-5" />
@@ -241,7 +242,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             }
           </h3>
 
-          {(isFYOG || isGroupClass) && formData.furkids && formData.furkids.length > 0 ? (
+          {((isFYOG || isGroupClass || isKinderPuppyMulti) && formData.furkids && formData.furkids.length > 0) ? (
             <div className="space-y-3">
               {formData.furkids && formData.furkids.length > 0 ? (
                 formData.furkids.map((furkid, idx) => (
