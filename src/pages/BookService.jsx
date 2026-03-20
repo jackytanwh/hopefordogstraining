@@ -1012,7 +1012,8 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={isFYOG}
+            isFYOG={isFYOG || (formData.kinderPuppyCount || 1) > 1}
+            kinderPuppyCount={formData.kinderPuppyCount}
           />
         );
       } else if (step === 4) {
