@@ -175,7 +175,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     }
 
     // Furkid validation
-    if (currentFurkid.isAdopted === undefined || currentFurkid.isAdopted === null) {
+    if (currentFurkid.isAdopted === undefined || currentFurkid.isAdopted === null || currentFurkid.isAdopted === '') {
       newErrors.furkid_isAdopted = 'Please specify if puppy is adopted';
     }
     if (!currentFurkid.furkidName?.trim()) {
@@ -187,19 +187,19 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     if (!currentFurkid.furkidBreed?.trim()) {
       newErrors.furkid_furkidBreed = 'Breed is required';
     }
-    if (!currentFurkid.furkidGender) {
+    if (!currentFurkid.furkidGender?.trim()) {
       newErrors.furkid_furkidGender = 'Gender is required';
     }
-    if (currentFurkid.furkidSterilised === undefined || currentFurkid.furkidSterilised === null) {
+    if (currentFurkid.furkidSterilised === undefined || currentFurkid.furkidSterilised === null || currentFurkid.furkidSterilised === '') {
       newErrors.furkid_furkidSterilised = 'Please select if puppy is sterilised';
     }
     if (!currentFurkid.furkidAcquiredFrom?.trim()) {
       newErrors.furkid_furkidAcquiredFrom = 'Please specify where you acquired your puppy';
     }
-    if (!currentFurkid.furkidJoinedFamily?.trim()) {
+    if (!currentFurkid.joinedMonth || !currentFurkid.joinedYear) {
       newErrors.furkid_furkidJoinedFamily = 'Please specify when puppy joined the family';
     }
-    if (currentFurkid.firstTimeOwner === undefined || currentFurkid.firstTimeOwner === null) {
+    if (currentFurkid.firstTimeOwner === undefined || currentFurkid.firstTimeOwner === null || currentFurkid.firstTimeOwner === '') {
       newErrors.furkid_firstTimeOwner = 'Please specify if this is your first time having a furkid';
     }
     if (!currentFurkid.furkidDiet?.trim()) {
