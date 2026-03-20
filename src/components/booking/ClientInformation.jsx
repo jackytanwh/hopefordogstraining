@@ -8,13 +8,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertCircle, MessageCircle } from "lucide-react";
 
-export default function ClientInformation({ service, formData, setFormData, onNext, onBack, isFYOG, isFYOGMulti, fyogCount, isKinderPuppy, kinderPuppyCount }) {
+export default function ClientInformation({ service, formData, setFormData, onNext, onBack, isFYOG, isFYOGMulti, fyogCount, isKinderPuppy, kinderPuppyCount, isMultiEntryForm, multiEntryIndex }) {
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
-  const isMultiClient = isKinderPuppyMulti || isFYOGMulti;
-  const numberOfClients = isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : isFYOG ? (formData.numberOfClients || 1) : 1;
+  const isMultiClient = !isMultiEntryForm && (isKinderPuppyMulti || isFYOGMulti);
+  const numberOfClients = isMultiEntryForm ? 1 : (isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : isFYOG ? (formData.numberOfClients || 1) : 1);
   const isBehaviouralModification = service.id === 'behavioural_modification';
   const isGroupClass = service.id === 'basic_manners_group_class';
   const isFYOGProgram = service.id === 'basic_manners_fyog';
@@ -48,12 +48,14 @@ export default function ClientInformation({ service, formData, setFormData, onNe
   };
 
   const handleInputChange = (clientIndex, field, value) => {
-    if (isMultiClient) {
+    const actualIndex = isMultiEntryForm ? multiEntryIndex : clientIndex;
+    
+    if (isMultiClient || isMultiEntryForm) {
       const newClients = [...(formData.clients || [])];
-      if (!newClients[clientIndex]) {
-        newClients[clientIndex] = {};
+      if (!newClients[actualIndex]) {
+        newClients[actualIndex] = {};
       }
-      newClients[clientIndex][field] = value;
+      newClients[actualIndex][field] = value;
       setFormData({ ...formData, clients: newClients });
     } else {
       const updatedFormData = { ...formData, [field]: value };
@@ -81,8 +83,9 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     const newErrors = {};
 
     for (let i = 0; i < numberOfClients; i++) {
-      const client = isMultiClient ? formData.clients[i] || {} : formData;
-      const prefix = isMultiClient ? `${i}_` : '';
+      const actualIndex = isMultiEntryForm ? multiEntryIndex : i;
+      const client = (isMultiClient || isMultiEntryForm) ? formData.clients[actualIndex] || {} : formData;
+      const prefix = (isMultiClient || isMultiEntryForm) ? `${actualIndex}_` : '';
 
       if (!client.clientName?.trim()) {
         newErrors[`${prefix}clientName`] = 'Name is required';
@@ -141,7 +144,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
         <CardTitle>
-          {isMultiClient ? 'Pawrents Information' : 'Your Information'}
+          {isMultiEntryForm ? `Pawrent ${multiEntryIndex + 1} Information` : (isMultiClient ? 'Pawrents Information' : 'Your Information')}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
@@ -155,15 +158,19 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         )}
 
         {Array.from({ length: numberOfClients }, (_, index) => {
-          const client = isMultiClient ? formData.clients[index] || {} : formData;
-          const prefix = isMultiClient ? `${index}_` : '';
-          const isSentosaClient = !(isFYOGProgram && isFYOGMulti) && !isGroupClass && !isMultiClient && checkSentosaPostalCode(client.clientPostalCode);
+          const actualIndex = isMultiEntryForm ? multiEntryIndex : index;
+          const client = (isMultiClient || isMultiEntryForm) ? formData.clients[actualIndex] || {} : formData;
+          const prefix = (isMultiClient || isMultiEntryForm) ? `${actualIndex}_` : '';
+          const isSentosaClient = !(isFYOGProgram && isFYOGMulti) && !isGroupClass && !isMultiClient && !isMultiEntryForm && checkSentosaPostalCode(client.clientPostalCode);
 
           return (
-            <div key={index} className={`space-y-4 ${isMultiClient && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
-              {isMultiClient && (
+            <div key={index} className="space-y-4">
+              {isMultiClient && !isMultiEntryForm && index > 0 && (
+                <div className="pt-6 border-t border-slate-200" />
+              )}
+              {isMultiClient && !isMultiEntryForm && (
                 <h3 className="font-semibold text-slate-900 text-lg">
-                  Pawrent {index + 1}
+                  Pawrent {actualIndex + 1}
                 </h3>
               )}
 
@@ -212,7 +219,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
               </div>
 
               {/* Show address/postal per client for single-client flows AND single-dog FYOG */}
-              {!(isFYOGProgram && isFYOGMulti) && !isGroupClass && !isMultiClient && (
+              {!(isFYOGProgram && isFYOGMulti) && !isGroupClass && !isMultiClient && !isMultiEntryForm && (
                 <>
                   <div className="space-y-2">
                     <Label htmlFor={`${prefix}clientAddress`}>Address *</Label>
@@ -259,7 +266,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
         })}
 
         {/* Shared Training Location for multi-dog FYOG and other multi-client flows */}
-        {((isFYOGProgram && isFYOGMulti) || isMultiClient) && (
+        {((isFYOGProgram && isFYOGMulti) || (isMultiClient && !isMultiEntryForm)) && (
           <div className="pt-6 border-t border-slate-200 space-y-4">
             <h3 className="font-semibold text-slate-900 text-lg">Training Location</h3>
             <p className="text-sm text-slate-600">Please provide the address where the training sessions will take place.</p>

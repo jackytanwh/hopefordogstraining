@@ -37,14 +37,14 @@ const commonBreeds = [
   "Others"
 ];
 
-export default function FurkidInformation({ service, formData, setFormData, onNext, onBack, isFYOG, kinderPuppyCount }) {
+export default function FurkidInformation({ service, formData, setFormData, onNext, onBack, isFYOG, kinderPuppyCount, isMultiEntryForm, multiEntryIndex }) {
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [uploading, setUploading] = useState({});
   const [uploadingProof, setUploadingProof] = useState({});
   const [customBreeds, setCustomBreeds] = useState({});
 
-  const numberOfFurkids = isFYOG ? (kinderPuppyCount || formData.numberOfFurkids || formData.basicMannersFYOGCount || 1) : 1;
+  const numberOfFurkids = isMultiEntryForm ? 1 : (isFYOG ? (kinderPuppyCount || formData.numberOfFurkids || formData.basicMannersFYOGCount || 1) : 1);
 
   const showFoodAllergy = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
 
@@ -61,12 +61,14 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   const handleInputChange = (furkidIndex, field, value) => {
-    if (isFYOG) {
+    const actualIndex = isMultiEntryForm ? multiEntryIndex : furkidIndex;
+    
+    if (isFYOG || isMultiEntryForm) {
       const newFurkids = [...(formData.furkids || [])];
-      if (!newFurkids[furkidIndex]) {
-        newFurkids[furkidIndex] = {};
+      if (!newFurkids[actualIndex]) {
+        newFurkids[actualIndex] = {};
       }
-      newFurkids[furkidIndex][field] = value;
+      newFurkids[actualIndex][field] = value;
       setFormData({ ...formData, furkids: newFurkids });
     } else {
       setFormData({ ...formData, [field]: value });
@@ -85,18 +87,20 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
   };
 
   const handleBreedSelect = (furkidIndex, value) => {
+    const actualIndex = isMultiEntryForm ? multiEntryIndex : furkidIndex;
     if (value === 'Others') {
-      setCustomBreeds({ ...customBreeds, [furkidIndex]: true });
+      setCustomBreeds({ ...customBreeds, [actualIndex]: true });
       handleInputChange(furkidIndex, 'furkidBreed', '');
     } else {
-      setCustomBreeds({ ...customBreeds, [furkidIndex]: false });
+      setCustomBreeds({ ...customBreeds, [actualIndex]: false });
       handleInputChange(furkidIndex, 'furkidBreed', value);
     }
   };
 
   useEffect(() => {
     for (let i = 0; i < numberOfFurkids; i++) {
-      const furkid = isFYOG ? (formData.furkids && formData.furkids[i] ? formData.furkids[i] : {}) : formData;
+      const actualIndex = isMultiEntryForm ? multiEntryIndex : i;
+      const furkid = (isFYOG || isMultiEntryForm) ? (formData.furkids && formData.furkids[actualIndex] ? formData.furkids[actualIndex] : {}) : formData;
       
       if (furkid?.dobMonth && furkid?.dobDay && furkid?.dobYear) {
         try {
@@ -124,7 +128,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
         handleInputChange(i, 'furkidAge', '');
       }
     }
-  }, [numberOfFurkids, ...(isFYOG ? (formData.furkids || []).map(f => `${f?.dobMonth}-${f?.dobDay}-${f?.dobYear}`) : [`${formData.dobMonth}-${formData.dobDay}-${formData.dobYear}`])]);
+  }, [numberOfFurkids, ...((isFYOG || isMultiEntryForm) ? (formData.furkids || []).map(f => `${f?.dobMonth}-${f?.dobDay}-${f?.dobYear}`) : [`${formData.dobMonth}-${formData.dobDay}-${formData.dobYear}`])]);
 
   const handleFileUpload = async (furkidIndex, field, file) => {
     if (!file) return;
@@ -159,8 +163,9 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
     const newErrors = {};
 
     for (let i = 0; i < numberOfFurkids; i++) {
-      const furkid = isFYOG ? formData.furkids[i] || {} : formData;
-      const prefix = isFYOG ? `${i}_` : '';
+      const actualIndex = isMultiEntryForm ? multiEntryIndex : i;
+      const furkid = (isFYOG || isMultiEntryForm) ? formData.furkids[actualIndex] || {} : formData;
+      const prefix = (isFYOG || isMultiEntryForm) ? `${actualIndex}_` : '';
 
       if (!furkid.furkidName?.trim()) {
         newErrors[`${prefix}furkidName`] = 'Furkid name is required';
@@ -217,7 +222,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
 
     }
 
-    if (!isFYOG && !formData.howDidYouKnow) {
+    if (!isFYOG && !isMultiEntryForm && !formData.howDidYouKnow) {
       newErrors.howDidYouKnow = 'Please let us know how you heard about us';
     }
 
@@ -234,20 +239,24 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
         <CardTitle>
-          {isFYOG ? 'Furkids Information' : "Your Furkid's Information"}
+          {isMultiEntryForm ? `Puppy ${multiEntryIndex + 1} Information` : (isFYOG ? 'Furkids Information' : "Your Furkid's Information")}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
         {Array.from({ length: numberOfFurkids }, (_, index) => {
-          const furkid = isFYOG ? (formData.furkids && formData.furkids[index] ? formData.furkids[index] : {}) : formData;
-          const prefix = isFYOG ? `${index}_` : '';
-          const showCustomBreedInput = customBreeds[index] || (furkid.furkidBreed && !commonBreeds.includes(furkid.furkidBreed));
+          const actualIndex = isMultiEntryForm ? multiEntryIndex : index;
+          const furkid = (isFYOG || isMultiEntryForm) ? (formData.furkids && formData.furkids[actualIndex] ? formData.furkids[actualIndex] : {}) : formData;
+          const prefix = (isFYOG || isMultiEntryForm) ? `${actualIndex}_` : '';
+          const showCustomBreedInput = customBreeds[actualIndex] || (furkid.furkidBreed && !commonBreeds.includes(furkid.furkidBreed));
 
           return (
-            <div key={index} className={`space-y-4 ${isFYOG && index > 0 ? 'pt-6 border-t border-slate-200' : ''}`}>
-              {isFYOG && numberOfFurkids > 1 && (
+            <div key={index} className="space-y-4">
+              {isFYOG && !isMultiEntryForm && numberOfFurkids > 1 && index > 0 && (
+                <div className="pt-6 border-t border-slate-200" />
+              )}
+              {isFYOG && !isMultiEntryForm && numberOfFurkids > 1 && (
                 <h3 className="font-semibold text-slate-900 text-lg">
-                  {(service.id === 'kinder_puppy_fyog' || service.id === 'kinder_puppy_in_home' || kinderPuppyCount > 0) ? 'Puppy' : 'Dog'} {index + 1}
+                  {(service.id === 'kinder_puppy_fyog' || service.id === 'kinder_puppy_in_home' || kinderPuppyCount > 0) ? 'Puppy' : 'Dog'} {actualIndex + 1}
                 </h3>
               )}
 
@@ -612,7 +621,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
           );
         })}
 
-        {!isFYOG && (
+        {!isFYOG && !isMultiEntryForm && (
           <div className="space-y-2 pt-4 border-t border-slate-200">
             <Label>How did you know about us? *</Label>
             <RadioGroup
@@ -666,7 +675,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
             Back
           </Button>
           <Button onClick={validateAndContinue} className="flex-1">
-            Review Booking
+            {isMultiEntryForm ? 'Continue' : 'Review Booking'}
           </Button>
         </div>
       </CardContent>

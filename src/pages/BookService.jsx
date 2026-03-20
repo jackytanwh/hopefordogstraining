@@ -218,7 +218,23 @@ export default function BookService() {
   const isBehaviouralModification = serviceId === 'behavioural_modification';
   const isCanineAssessment = serviceId === 'canine_assessment';
 
-  const totalSteps = isOnDemand ? 6 : (isGroupClass ? 5 : isFYOG ? 6 : isKinderPuppy ? 6 : (isBehaviouralModification || isCanineAssessment) ? 5 : 5);
+  const getTotalSteps = () => {
+    if (isOnDemand) return 6;
+    if (isGroupClass) return 5;
+    if (isFYOG) return 6;
+    if (isKinderPuppy) {
+      const count = formData.kinderPuppyCount || 1;
+      // Step 1: KinderPuppyCountSelection
+      // Step 2: DateTimeSelection
+      // Steps 3+: count * 2 (client + furkid for each)
+      // Final steps: ProductSelection + BookingSummary
+      return 2 + (count * 2) + 2;
+    }
+    if (isBehaviouralModification || isCanineAssessment) return 5;
+    return 5;
+  };
+
+  const totalSteps = getTotalSteps();
 
   useEffect(() => {
     if (!serviceId || !services[serviceId]) {
@@ -862,6 +878,8 @@ export default function BookService() {
         );
       }
     } else if (isKinderPuppy) {
+      const kinderPuppyCount = formData.kinderPuppyCount || 1;
+      
       if (step === 1) {
         return (
           <KinderPuppyCountSelection
@@ -881,32 +899,53 @@ export default function BookService() {
             onBack={handleBack}
           />
         );
-      } else if (step === 3) {
-        return (
-          <ClientInformation
-            service={service}
-            formData={formData}
-            setFormData={setFormData}
-            onNext={handleNext}
-            onBack={handleBack}
-            isFYOG={false}
-            isKinderPuppy={true}
-            kinderPuppyCount={formData.kinderPuppyCount || 1}
-          />
-        );
-      } else if (step === 4) {
-        return (
-          <FurkidInformation
-            service={service}
-            formData={formData}
-            setFormData={setFormData}
-            onNext={handleNext}
-            onBack={handleBack}
-            isFYOG={(formData.kinderPuppyCount || 1) > 1}
-            kinderPuppyCount={formData.kinderPuppyCount || 1}
-          />
-        );
-      } else if (step === 5) {
+      }
+      
+      // Dynamic steps for each Pawrent + Puppy pair
+      const dynamicStepStart = 3;
+      const dynamicStepEnd = 2 + (kinderPuppyCount * 2);
+      
+      if (step >= dynamicStepStart && step <= dynamicStepEnd) {
+        const relativeStep = step - dynamicStepStart;
+        const currentIndex = Math.floor(relativeStep / 2);
+        const isClientStep = relativeStep % 2 === 0;
+        
+        if (isClientStep) {
+          return (
+            <ClientInformation
+              service={service}
+              formData={formData}
+              setFormData={setFormData}
+              onNext={handleNext}
+              onBack={handleBack}
+              isFYOG={false}
+              isKinderPuppy={true}
+              kinderPuppyCount={kinderPuppyCount}
+              isMultiEntryForm={true}
+              multiEntryIndex={currentIndex}
+            />
+          );
+        } else {
+          return (
+            <FurkidInformation
+              service={service}
+              formData={formData}
+              setFormData={setFormData}
+              onNext={handleNext}
+              onBack={handleBack}
+              isFYOG={true}
+              kinderPuppyCount={kinderPuppyCount}
+              isMultiEntryForm={true}
+              multiEntryIndex={currentIndex}
+            />
+          );
+        }
+      }
+      
+      const productStep = dynamicStepEnd + 1;
+      const summaryStep = dynamicStepEnd + 2;
+      
+      if (step === productStep) {
         return (
           <ProductSelection
             formData={formData}
@@ -915,7 +954,7 @@ export default function BookService() {
             onBack={handleBack}
           />
         );
-      } else if (step === 6) {
+      } else if (step === summaryStep) {
         return (
           <BookingSummary
             service={service}
@@ -925,6 +964,7 @@ export default function BookService() {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             isFYOG={false}
+            kinderPuppyCount={kinderPuppyCount}
           />
         );
       }
