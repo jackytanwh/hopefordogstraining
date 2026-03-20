@@ -1034,6 +1034,7 @@ export default function BookService() {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             isFYOG={isFYOG}
+            kinderPuppyCount={formData.kinderPuppyCount}
           />
         );
       }
