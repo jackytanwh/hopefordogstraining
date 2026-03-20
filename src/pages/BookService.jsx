@@ -16,6 +16,7 @@ import FurkidInformation from "../components/booking/FurkidInformation";
 import ProductSelection from "../components/booking/ProductSelection";
 import BookingSummary from "../components/booking/BookingSummary";
 import BehaviouralModificationForm from "../components/booking/BehaviouralModificationForm";
+import CombinedPawrentPuppyForm from "../components/booking/CombinedPawrentPuppyForm";
 
 const services = {
   kinder_puppy_in_home: {
@@ -226,9 +227,9 @@ export default function BookService() {
       const count = formData.kinderPuppyCount || 1;
       // Step 1: KinderPuppyCountSelection
       // Step 2: DateTimeSelection
-      // Steps 3+: count * 2 (client + furkid for each)
+      // Steps 3+: count (each step has both client + furkid)
       // Final steps: ProductSelection + BookingSummary
-      return 2 + (count * 2) + 2;
+      return 2 + count + 2;
     }
     if (isBehaviouralModification || isCanineAssessment) return 5;
     return 5;
@@ -901,45 +902,24 @@ export default function BookService() {
         );
       }
       
-      // Dynamic steps for each Pawrent + Puppy pair
+      // Dynamic steps for each Pawrent + Puppy pair (combined in single step)
       const dynamicStepStart = 3;
-      const dynamicStepEnd = 2 + (kinderPuppyCount * 2);
+      const dynamicStepEnd = 2 + kinderPuppyCount;
       
       if (step >= dynamicStepStart && step <= dynamicStepEnd) {
-        const relativeStep = step - dynamicStepStart;
-        const currentIndex = Math.floor(relativeStep / 2);
-        const isClientStep = relativeStep % 2 === 0;
+        const currentIndex = step - dynamicStepStart;
         
-        if (isClientStep) {
-          return (
-            <ClientInformation
-              service={service}
-              formData={formData}
-              setFormData={setFormData}
-              onNext={handleNext}
-              onBack={handleBack}
-              isFYOG={false}
-              isKinderPuppy={true}
-              kinderPuppyCount={kinderPuppyCount}
-              isMultiEntryForm={true}
-              multiEntryIndex={currentIndex}
-            />
-          );
-        } else {
-          return (
-            <FurkidInformation
-              service={service}
-              formData={formData}
-              setFormData={setFormData}
-              onNext={handleNext}
-              onBack={handleBack}
-              isFYOG={true}
-              kinderPuppyCount={kinderPuppyCount}
-              isMultiEntryForm={true}
-              multiEntryIndex={currentIndex}
-            />
-          );
-        }
+        return (
+          <CombinedPawrentPuppyForm
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+            kinderPuppyCount={kinderPuppyCount}
+            currentIndex={currentIndex}
+          />
+        );
       }
       
       const productStep = dynamicStepEnd + 1;
