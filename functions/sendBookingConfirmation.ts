@@ -59,9 +59,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
     if (serviceType.includes('kinder_puppy')) {
         return {
             greeting: 'Thank you for choosing Hopefordogs as your training partner!',
-            instructions: [
-                'Shop for Paws Botanic Pet Grooming Essentials (Promo Code: <strong>20OFFNEW</strong>)',
-            ],
+            instructions: [],
             pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/08/KPP-Overview-and-Handouts-2025-merged.pdf',
             pdfLabel: 'KPP Overview and Handouts 2025',
             promoBlock: pawsBotanicPromo,
@@ -168,9 +166,11 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
     const firstTime = firstSession?.start_time || '';
     const firstDay = firstSession ? getDayOfWeek(firstSession.date) : '';
 
-    // Build recurring schedule
+    const isCanineAssessment = serviceType === 'canine_assessment';
+
+    // Build recurring schedule (skip for canine assessment — single session only)
     let scheduleHtml = '';
-    if (booking.session_dates && booking.session_dates.length > 0) {
+    if (!isCanineAssessment && booking.session_dates && booking.session_dates.length > 0) {
         const rows = booking.session_dates.map((s: any) => `
             <tr>
                 <td style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Session ${s.session_number}</td>
@@ -338,7 +338,7 @@ Deno.serve(async (req) => {
             const address = isGroupClass ? '73 Redhill Road MSCP, Level 7' : (booking.client_address || '');
 
             let scheduleWa = '';
-            if (booking.session_dates && booking.session_dates.length > 1) {
+            if (serviceType !== 'canine_assessment' && booking.session_dates && booking.session_dates.length > 1) {
                 scheduleWa = '\n\n*Recurring schedule:*';
                 for (const s of booking.session_dates) {
                     scheduleWa += `\nSession ${s.session_number}: ${formatDateShort(s.date)} at ${s.start_time}`;
