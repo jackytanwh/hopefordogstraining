@@ -127,9 +127,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
     if (serviceType === 'canine_assessment') {
         return {
             greeting: 'Thank you for choosing Hopefordogs as your training partner!',
-            instructions: [
-                "Here's the 10% discount code if you decide to enrol for any program later: <strong>DISCOUNT10</strong>",
-            ],
+            instructions: [],
             pdfLink: '',
             pdfLabel: '',
             promoBlock: false,
