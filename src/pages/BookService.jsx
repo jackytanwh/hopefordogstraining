@@ -16,6 +16,7 @@ import FurkidInformation from "../components/booking/FurkidInformation";
 import ProductSelection from "../components/booking/ProductSelection";
 import BookingSummary from "../components/booking/BookingSummary";
 import BehaviouralModificationForm from "../components/booking/BehaviouralModificationForm";
+import CombinedPawrentPuppyForm from "../components/booking/CombinedPawrentPuppyForm";
 
 const services = {
   kinder_puppy_in_home: {
@@ -218,7 +219,23 @@ export default function BookService() {
   const isBehaviouralModification = serviceId === 'behavioural_modification';
   const isCanineAssessment = serviceId === 'canine_assessment';
 
-  const totalSteps = isOnDemand ? 6 : (isGroupClass ? 5 : isFYOG ? 6 : isKinderPuppy ? 6 : (isBehaviouralModification || isCanineAssessment) ? 5 : 5);
+  const getTotalSteps = () => {
+    if (isOnDemand) return 6;
+    if (isGroupClass) return 5;
+    if (isFYOG) return 6;
+    if (isKinderPuppy) {
+      const count = formData.kinderPuppyCount || 1;
+      // Step 1: KinderPuppyCountSelection
+      // Step 2: DateTimeSelection
+      // Steps 3+: count (each step has both client + furkid)
+      // Final steps: ProductSelection + BookingSummary
+      return 2 + count + 2;
+    }
+    if (isBehaviouralModification || isCanineAssessment) return 5;
+    return 5;
+  };
+
+  const totalSteps = getTotalSteps();
 
   useEffect(() => {
     if (!serviceId || !services[serviceId]) {
@@ -862,6 +879,8 @@ export default function BookService() {
         );
       }
     } else if (isKinderPuppy) {
+      const kinderPuppyCount = formData.kinderPuppyCount || 1;
+      
       if (step === 1) {
         return (
           <KinderPuppyCountSelection
@@ -881,32 +900,32 @@ export default function BookService() {
             onBack={handleBack}
           />
         );
-      } else if (step === 3) {
+      }
+      
+      // Dynamic steps for each Pawrent + Puppy pair (combined in single step)
+      const dynamicStepStart = 3;
+      const dynamicStepEnd = 2 + kinderPuppyCount;
+      
+      if (step >= dynamicStepStart && step <= dynamicStepEnd) {
+        const currentIndex = step - dynamicStepStart;
+        
         return (
-          <ClientInformation
+          <CombinedPawrentPuppyForm
             service={service}
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={false}
-            isKinderPuppy={true}
-            kinderPuppyCount={formData.kinderPuppyCount || 1}
+            kinderPuppyCount={kinderPuppyCount}
+            currentIndex={currentIndex}
           />
         );
-      } else if (step === 4) {
-        return (
-          <FurkidInformation
-            service={service}
-            formData={formData}
-            setFormData={setFormData}
-            onNext={handleNext}
-            onBack={handleBack}
-            isFYOG={(formData.kinderPuppyCount || 1) > 1}
-            kinderPuppyCount={formData.kinderPuppyCount || 1}
-          />
-        );
-      } else if (step === 5) {
+      }
+      
+      const productStep = dynamicStepEnd + 1;
+      const summaryStep = dynamicStepEnd + 2;
+      
+      if (step === productStep) {
         return (
           <ProductSelection
             formData={formData}
@@ -915,7 +934,7 @@ export default function BookService() {
             onBack={handleBack}
           />
         );
-      } else if (step === 6) {
+      } else if (step === summaryStep) {
         return (
           <BookingSummary
             service={service}
@@ -925,6 +944,7 @@ export default function BookService() {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             isFYOG={false}
+            kinderPuppyCount={kinderPuppyCount}
           />
         );
       }
@@ -1012,7 +1032,8 @@ export default function BookService() {
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={isFYOG}
+            isFYOG={isFYOG || (formData.kinderPuppyCount || 1) > 1}
+            kinderPuppyCount={formData.kinderPuppyCount}
           />
         );
       } else if (step === 4) {
@@ -1034,6 +1055,7 @@ export default function BookService() {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             isFYOG={isFYOG}
+            kinderPuppyCount={formData.kinderPuppyCount}
           />
         );
       }

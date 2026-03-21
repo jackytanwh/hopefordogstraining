@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { format, parseISO, getDay } from "date-fns";
 import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
-export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false }) {
+export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount }) {
   const [leashAgreement, setLeashAgreement] = useState(false);
   const [refundAgreement, setRefundAgreement] = useState(false);
   const [behaviorAgreement, setBehaviorAgreement] = useState(false);
@@ -20,6 +20,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
+  const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
 
   const handleSubmit = () => {
     if (isBasicManners) {
@@ -163,7 +164,98 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {(isFYOG || isGroupClass) && formData.clients && formData.clients.length > 0 ? (
+        {isKinderPuppyMulti ? (
+          // For multi-puppy Kinder Puppy: Display Pawrent + Puppy pairs in combined cards
+          <div className="space-y-4">
+            {formData.clients && formData.clients.map((client, idx) => (
+              <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                {/* Combined Pawrent & Puppy Header */}
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-300">
+                  <User className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-slate-900">Pawrent {idx + 1}</span>
+                  <span className="text-slate-400 mx-2">•</span>
+                  <PawPrint className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-slate-900">Puppy {idx + 1}</span>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Pawrent Information */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pawrent Details</p>
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-24">Name:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientName')}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-24">Email:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientEmail')}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-medium text-slate-600 w-24">Mobile:</span>
+                        <span className="text-slate-900">{getClientField(client, 'clientMobile')}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Puppy Information */}
+                  {formData.furkids && formData.furkids[idx] && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Puppy Details</p>
+                      <div className="space-y-1.5 text-sm">
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-24">Name:</span>
+                          <span className="text-slate-900 font-semibold">{getFurkidField(formData.furkids[idx], 'furkidName')}</span>
+                        </div>
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-24">Age:</span>
+                          <span className="text-slate-900">{getFurkidField(formData.furkids[idx], 'furkidAge')}</span>
+                        </div>
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-24">Breed:</span>
+                          <span className="text-slate-900">{getFurkidField(formData.furkids[idx], 'furkidBreed')}</span>
+                        </div>
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-24">Gender:</span>
+                          <span className="text-slate-900 capitalize">{getFurkidField(formData.furkids[idx], 'furkidGender')}</span>
+                        </div>
+                        {formData.furkids[idx]?.isAdopted && (
+                          <div className="mt-2">
+                            <Badge className="bg-green-100 text-green-800 border-green-300">
+                              Singapore Special / Adopted (10% discount)
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {/* Shared Training Location */}
+            {formData.sharedAddress && (
+              <div className="border-t border-slate-200 pt-6">
+                <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Training Location
+                </h3>
+                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="space-y-1.5 text-sm">
+                    <div className="flex">
+                      <span className="font-medium text-slate-600 w-28">Address:</span>
+                      <span className="text-slate-900">{formData.sharedAddress || 'N/A'}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-medium text-slate-600 w-28">Postal Code:</span>
+                      <span className="text-slate-900">{formData.sharedPostalCode || 'N/A'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (isFYOG || isGroupClass) && formData.clients && formData.clients.length > 0 ? (
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
               <Users className="w-5 h-5" />
@@ -232,83 +324,85 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        <div>
-          <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-            <PawPrint className="w-5 h-5" />
-            {isKinderPuppy 
-              ? ((isFYOG || isGroupClass) && formData.numberOfFurkids > 1 ? 'Puppies Information' : 'Puppy Information')
-              : ((isFYOG || isGroupClass) && formData.numberOfFurkids > 1 ? 'Furkids Information' : 'Furkid Information')
-            }
-          </h3>
+        {!isKinderPuppyMulti && (
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <PawPrint className="w-5 h-5" />
+              {isKinderPuppy 
+                ? ((isFYOG || isGroupClass) && formData.numberOfFurkids > 1 ? 'Puppies Information' : 'Puppy Information')
+                : ((isFYOG || isGroupClass) && formData.numberOfFurkids > 1 ? 'Furkids Information' : 'Furkid Information')
+              }
+            </h3>
 
-          {(isFYOG || isGroupClass) && formData.furkids && formData.furkids.length > 0 ? (
-            <div className="space-y-3">
-              {formData.furkids && formData.furkids.length > 0 ? (
-                formData.furkids.map((furkid, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                    <p className="font-semibold text-sm text-slate-900 mb-2">
-                      {isKinderPuppy ? 'Puppy' : 'Dog'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
-                    </p>
-                    <div className="space-y-1.5 text-sm">
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Age:</span>
-                        <span className="text-slate-900">{getFurkidField(furkid, 'furkidAge')}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Breed:</span>
-                        <span className="text-slate-900">{getFurkidField(furkid, 'furkidBreed')}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-medium text-slate-600 w-28">Gender:</span>
-                        <span className="text-slate-900 capitalize">{getFurkidField(furkid, 'furkidGender')}</span>
-                      </div>
-                      {furkid?.isAdopted && (
-                        <div className="mt-2">
-                          <Badge className="bg-green-100 text-green-800 border-green-300">
-                            Singapore Special / Adopted (10% discount)
-                          </Badge>
+            {((isFYOG || isGroupClass) && formData.furkids && formData.furkids.length > 0) ? (
+              <div className="space-y-3">
+                {formData.furkids && formData.furkids.length > 0 ? (
+                  formData.furkids.map((furkid, idx) => (
+                    <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                      <p className="font-semibold text-sm text-slate-900 mb-2">
+                        {isKinderPuppy ? 'Puppy' : 'Dog'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
+                      </p>
+                      <div className="space-y-1.5 text-sm">
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-28">Age:</span>
+                          <span className="text-slate-900">{getFurkidField(furkid, 'furkidAge')}</span>
                         </div>
-                      )}
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-28">Breed:</span>
+                          <span className="text-slate-900">{getFurkidField(furkid, 'furkidBreed')}</span>
+                        </div>
+                        <div className="flex">
+                          <span className="font-medium text-slate-600 w-28">Gender:</span>
+                          <span className="text-slate-900 capitalize">{getFurkidField(furkid, 'furkidGender')}</span>
+                        </div>
+                        {furkid?.isAdopted && (
+                          <div className="mt-2">
+                            <Badge className="bg-green-100 text-green-800 border-green-300">
+                              Singapore Special / Adopted (10% discount)
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800 font-semibold">⚠️ No furkid information available</p>
-                  <p className="text-xs text-red-600 mt-1">Expected {formData.numberOfFurkids} {isKinderPuppy ? (formData.numberOfFurkids > 1 ? 'puppies' : 'puppy') : (formData.numberOfFurkids > 1 ? 'dogs' : 'dog')}</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-              <div className="space-y-1.5 text-sm">
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Name:</span>
-                  <span className="text-slate-900">{formData.furkidName || 'N/A'}</span>
-                </div>
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Age:</span>
-                  <span className="text-slate-900">{formData.furkidAge || 'N/A'}</span>
-                </div>
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Breed:</span>
-                  <span className="text-slate-900">{formData.furkidBreed || 'N/A'}</span>
-                </div>
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Gender:</span>
-                  <span className="text-slate-900 capitalize">{formData.furkidGender || 'N/A'}</span>
-                </div>
-                {formData.isAdopted && (
-                  <div className="mt-2">
-                    <Badge className="bg-green-100 text-green-800 border-green-300">
-                      Singapore Special / Adopted (10% discount)
-                    </Badge>
+                  ))
+                ) : (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800 font-semibold">⚠️ No furkid information available</p>
+                    <p className="text-xs text-red-600 mt-1">Expected {formData.numberOfFurkids} {isKinderPuppy ? (formData.numberOfFurkids > 1 ? 'puppies' : 'puppy') : (formData.numberOfFurkids > 1 ? 'dogs' : 'dog')}</p>
                   </div>
                 )}
               </div>
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div className="space-y-1.5 text-sm">
+                  <div className="flex">
+                    <span className="font-medium text-slate-600 w-28">Name:</span>
+                    <span className="text-slate-900">{formData.furkidName || 'N/A'}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="font-medium text-slate-600 w-28">Age:</span>
+                    <span className="text-slate-900">{formData.furkidAge || 'N/A'}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="font-medium text-slate-600 w-28">Breed:</span>
+                    <span className="text-slate-900">{formData.furkidBreed || 'N/A'}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="font-medium text-slate-600 w-28">Gender:</span>
+                    <span className="text-slate-900 capitalize">{formData.furkidGender || 'N/A'}</span>
+                  </div>
+                  {formData.isAdopted && (
+                    <div className="mt-2">
+                      <Badge className="bg-green-100 text-green-800 border-green-300">
+                        Singapore Special / Adopted (10% discount)
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {(isFYOG || isGroupClass) && (
           <div className="border-t border-slate-200 pt-6">
