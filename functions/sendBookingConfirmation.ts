@@ -28,52 +28,215 @@ function extractClientInfo(booking: any) {
     };
 }
 
-function formatSessionDate(dateStr: string): string {
+function formatDate(dateStr: string): string {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-SG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatDateShort(dateStr: string): string {
     const d = new Date(dateStr);
     return d.toLocaleDateString('en-SG', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName: string, clientEmail: string): string {
-    const totalPrice = Number(booking.total_price || 0).toFixed(2);
+function getDayOfWeek(dateStr: string): string {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-SG', { weekday: 'long' });
+}
+
+interface ProgramConfig {
+    greeting: string;
+    instructions: string[];
+    pdfLink: string;
+    pdfLabel: string;
+    promoBlock: boolean;
+    addressLabel: string;
+    discountCode: string;
+}
+
+function getProgramConfig(serviceType: string): ProgramConfig {
+    const pawsBotanicPromo = true;
+
+    if (serviceType.includes('kinder_puppy')) {
+        return {
+            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            instructions: [
+                'Shop for Paws Botanic Pet Grooming Essentials (Promo Code: <strong>20OFFNEW</strong>)',
+            ],
+            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/08/KPP-Overview-and-Handouts-2025-merged.pdf',
+            pdfLabel: 'KPP Overview and Handouts 2025',
+            promoBlock: pawsBotanicPromo,
+            addressLabel: 'Address',
+            discountCode: '',
+        };
+    }
+
+    if (serviceType === 'basic_manners_in_home') {
+        return {
+            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            instructions: [
+                'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
+            ],
+            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-6-weeks-Handouts-2025.pdf',
+            pdfLabel: 'Basic Manners 6-Weeks Handouts 2025',
+            promoBlock: pawsBotanicPromo,
+            addressLabel: 'Address',
+            discountCode: '',
+        };
+    }
+
+    if (serviceType === 'basic_manners_fyog') {
+        return {
+            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            instructions: [
+                'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
+                'Water for <strong>[furkid_name]</strong>',
+            ],
+            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-7-weeks-Handouts-2025.pdf',
+            pdfLabel: 'Basic Manners 7-Weeks Handouts 2025',
+            promoBlock: pawsBotanicPromo,
+            addressLabel: 'Location',
+            discountCode: '',
+        };
+    }
+
+    if (serviceType === 'basic_manners_group_class') {
+        return {
+            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            instructions: [
+                'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
+                'Water for <strong>[furkid_name]</strong>',
+            ],
+            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-7-weeks-Handouts-2025.pdf',
+            pdfLabel: 'Basic Manners 7-Weeks Handouts 2025',
+            promoBlock: pawsBotanicPromo,
+            addressLabel: 'Address',
+            discountCode: '',
+        };
+    }
+
+    if (serviceType === 'behavioural_modification') {
+        return {
+            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            instructions: [],
+            pdfLink: '',
+            pdfLabel: '',
+            promoBlock: false,
+            addressLabel: 'Address',
+            discountCode: '',
+        };
+    }
+
+    if (serviceType === 'canine_assessment') {
+        return {
+            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            instructions: [
+                "Here's the 10% discount code if you decide to enrol for any program later: <strong>DISCOUNT10</strong>",
+            ],
+            pdfLink: '',
+            pdfLabel: '',
+            promoBlock: false,
+            addressLabel: 'Address',
+            discountCode: 'DISCOUNT10',
+        };
+    }
+
+    return {
+        greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+        instructions: [],
+        pdfLink: '',
+        pdfLabel: '',
+        promoBlock: false,
+        addressLabel: 'Address',
+        discountCode: '',
+    };
+}
+
+function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName: string): string {
+    const serviceType = booking.service_type || '';
     const serviceName = booking.service_name || 'Training Service';
+    const config = getProgramConfig(serviceType);
+    const totalPrice = Number(booking.total_price || 0).toFixed(2);
 
-    const pawSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><path d="M12 18c-3.5 0-6-2.5-6-5 0-1.7 1-3.2 2.5-4C10 8.3 11 8 12 8s2 .3 3.5 1c1.5.8 2.5 2.3 2.5 4 0 2.5-2.5 5-6 5z"/></svg>`;
+    const isGroupClass = serviceType === 'basic_manners_group_class';
+    const address = isGroupClass
+        ? '73 Redhill Road MSCP, Level 7'
+        : (booking.client_address || booking.clients?.[0]?.client_address || booking.clients?.[0]?.clientAddress || '');
+    const postalCode = booking.client_postal_code || booking.clients?.[0]?.client_postal_code || '';
 
-    // Build sessions table rows
-    let sessionsHtml = '';
+    const firstSession = booking.session_dates?.[0];
+    const firstDate = firstSession ? formatDate(firstSession.date) : '';
+    const firstTime = firstSession?.start_time || '';
+    const firstDay = firstSession ? getDayOfWeek(firstSession.date) : '';
+
+    // Build recurring schedule
+    let scheduleHtml = '';
     if (booking.session_dates && booking.session_dates.length > 0) {
-        const sessionRows = booking.session_dates.map((s: any) => `
+        const rows = booking.session_dates.map((s: any) => `
             <tr>
-                <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">
-                    Session ${s.session_number}
-                </td>
-                <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px;">
-                    ${formatSessionDate(s.date)}
-                </td>
-                <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px;">
-                    ${s.start_time}${s.end_time ? ' – ' + s.end_time : ''}
-                </td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Session ${s.session_number}</td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-size: 14px; font-weight: 500;">${formatDateShort(s.date)}</td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-size: 14px;">${s.start_time}${s.end_time ? ' – ' + s.end_time : ''}</td>
             </tr>`).join('');
 
-        sessionsHtml = `
-        <div style="margin: 24px 0;">
-            <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1e293b;">📅 Your Sessions</h3>
-            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;">
+        scheduleHtml = `
+        <div style="margin: 20px 0;">
+            <p style="font-size: 14px; font-weight: 600; color: #1e293b; margin: 0 0 8px 0;">Recurring schedule:</p>
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
                 <thead>
                     <tr style="background: #f8fafc;">
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Session</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Date</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Time</th>
+                        <th style="padding: 10px 14px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Session</th>
+                        <th style="padding: 10px 14px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Date</th>
+                        <th style="padding: 10px 14px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;">Time</th>
                     </tr>
                 </thead>
-                <tbody>
-                    ${sessionRows}
-                </tbody>
+                <tbody>${rows}</tbody>
             </table>
         </div>`;
     }
 
-    // Build pricing breakdown
+    // Build instructions
+    const processedInstructions = config.instructions.map(i =>
+        i.replace('[furkid_name]', furkidName)
+    );
+    let instructionsHtml = '';
+    if (processedInstructions.length > 0) {
+        instructionsHtml = processedInstructions.map(i => `<p style="font-size: 14px; color: #334155; line-height: 1.6; margin: 8px 0;">${i}</p>`).join('');
+    }
+
+    // Paws Botanic promo block
+    let promoHtml = '';
+    if (config.promoBlock) {
+        promoHtml = `
+        <div style="background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <p style="font-size: 14px; color: #92400e; margin: 0;">
+                🛍️ Shop for <a href="https://www.pawsbotanic.co/" style="color: #b45309; font-weight: 600;">Paws Botanic Pet Grooming Essentials</a><br/>
+                Promo Code: <strong>20OFFNEW</strong>
+            </p>
+        </div>`;
+    }
+
+    // PDF attachment link
+    let pdfHtml = '';
+    if (config.pdfLink) {
+        pdfHtml = `
+        <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <p style="font-size: 14px; color: #0c4a6e; margin: 0;">
+                📎 <a href="${config.pdfLink}" style="color: #0369a1; font-weight: 600; text-decoration: underline;">${config.pdfLabel}</a>
+            </p>
+        </div>`;
+    }
+
+    // Discount code block (canine assessment)
+    let discountHtml = '';
+    if (config.discountCode) {
+        discountHtml = `
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0; text-align: center;">
+            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">10% discount for any future program</p>
+            <p style="font-size: 24px; font-weight: 700; color: #15803d; margin: 0; letter-spacing: 2px;">${config.discountCode}</p>
+        </div>`;
+    }
+
+    // Pricing breakdown
     let pricingRows = '';
     if (booking.adoption_discount > 0) {
         pricingRows += `<tr><td style="padding: 6px 0; color: #16a34a; font-size: 14px;">Adoption Discount</td><td style="padding: 6px 0; text-align: right; color: #16a34a; font-size: 14px;">-$${Number(booking.adoption_discount).toFixed(2)}</td></tr>`;
@@ -85,55 +248,58 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         pricingRows += `<tr><td style="padding: 6px 0; color: #475569; font-size: 14px;">Sentosa Surcharge</td><td style="padding: 6px 0; text-align: right; color: #475569; font-size: 14px;">+$${Number(booking.total_sentosa_surcharge).toFixed(2)}</td></tr>`;
     }
 
+    const pawSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><path d="M12 18c-3.5 0-6-2.5-6-5 0-1.7 1-3.2 2.5-4C10 8.3 11 8 12 8s2 .3 3.5 1c1.5.8 2.5 2.3 2.5 4 0 2.5-2.5 5-6 5z"/></svg>`;
+
     return `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
-        <!-- Header with paw logo -->
+        <!-- Header -->
         <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
             <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">
                 ${pawSvg}
             </div>
-            <h1 style="margin: 0 0 8px 0; font-size: 28px; color: white; font-weight: 700;">Payment Successful!</h1>
-            <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 16px;">Your booking has been confirmed</p>
+            <h1 style="margin: 0 0 8px 0; font-size: 26px; color: white; font-weight: 700;">Booking Confirmed!</h1>
+            <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 15px;">${serviceName}</p>
         </div>
 
         <!-- Body -->
         <div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">
-            <!-- Thank you message -->
-            <div style="text-align: center; margin-bottom: 24px;">
-                <p style="font-size: 18px; color: #334155; margin: 0 0 4px 0;">
-                    Thank you, <strong>${clientName}${furkidName !== 'your furkid' ? ' & ' + furkidName : ''}</strong>!
-                </p>
-                ${clientEmail ? `<p style="font-size: 14px; color: #64748b; margin: 0;">A confirmation email has been sent to ${clientEmail}</p>` : ''}
+            <p style="font-size: 16px; color: #1e293b; margin: 0 0 16px 0;">Hello <strong>${clientName}</strong> and <strong>${furkidName}</strong>,</p>
+
+            <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">
+                ${config.greeting} You have enrolled for <strong>${serviceName}</strong>
+                ${firstDate ? ` starting <strong>${firstDate}</strong>, ${firstTime}${firstDay ? ', ' + firstDay : ''}.` : '.'}
+            </p>
+
+            ${address ? `<p style="font-size: 14px; color: #334155; margin: 0 0 4px 0;"><strong>${config.addressLabel}:</strong> ${address}${postalCode ? ', ' + postalCode : ''}</p>` : ''}
+
+            ${scheduleHtml}
+
+            ${instructionsHtml}
+
+            ${promoHtml}
+
+            ${pdfHtml}
+
+            ${discountHtml}
+
+            <!-- Pricing -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
+                ${pricingRows ? `<table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">${pricingRows}</table>` : ''}
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 4px 0; font-size: 15px; color: #475569; font-weight: 600;">Total Paid</td>
+                        <td style="padding: 4px 0; text-align: right; font-size: 26px; color: #16a34a; font-weight: 700;">$${totalPrice}</td>
+                    </tr>
+                </table>
             </div>
 
-            <!-- Service card -->
-            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0;">
-                <h2 style="margin: 0 0 4px 0; font-size: 20px; color: #0f172a; font-weight: 700;">${serviceName}</h2>
-                <p style="margin: 0; font-size: 13px; color: #94a3b8;">Booking ID: ${booking.id}</p>
+            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 16px 0 0 0;">Feel free to reach out if you have any questions.</p>
 
-                ${sessionsHtml}
-
-                <!-- Pricing -->
-                <div style="border-top: 2px solid #e2e8f0; margin-top: 20px; padding-top: 16px;">
-                    ${pricingRows ? `<table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">${pricingRows}</table>` : ''}
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 8px 0; font-size: 16px; color: #475569; font-weight: 600;">Total Paid</td>
-                            <td style="padding: 8px 0; text-align: right; font-size: 28px; color: #16a34a; font-weight: 700;">$${totalPrice}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <!-- What's Next -->
-            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px; margin-top: 24px;">
-                <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1e40af; font-weight: 700;">What's Next?</h3>
-                <ul style="margin: 0; padding: 0 0 0 20px; color: #1e40af; font-size: 14px; line-height: 1.8;">
-                    <li>Our team will contact you within 24 hours</li>
-                    <li>Please have treats ready for training</li>
-                    <li>If you need to reschedule, contact us at <strong>+65 8222 8376</strong></li>
-                </ul>
-            </div>
+            <p style="font-size: 15px; color: #1e293b; margin: 20px 0 0 0;">
+                Kind regards,<br/>
+                <strong>Jacky</strong><br/>
+                Hopefordogs
+            </p>
         </div>
 
         <!-- Footer -->
@@ -142,7 +308,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
             <p style="margin: 0; font-size: 13px; color: #94a3b8;">Canine Training &amp; Behaviour Specialists</p>
             <p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;">
                 <a href="https://bookings.hopefordogs.sg" style="color: #2563eb; text-decoration: none;">bookings.hopefordogs.sg</a>
-                &nbsp;·&nbsp; +65 8222 8376
+                &nbsp;&middot;&nbsp; +65 8222 8376
             </p>
         </div>
     </div>`;
@@ -162,24 +328,37 @@ Deno.serve(async (req) => {
 
         // --- WhatsApp ---
         if (booking.whatsapp_consent && clientMobile && clientMobile.startsWith('+') && clientMobile.length >= 8) {
-            let sessionDetails = '';
-            if (booking.session_dates && booking.session_dates.length > 0) {
-                const first = booking.session_dates[0];
-                const d = new Date(first.date);
-                const formatted = d.toLocaleDateString('en-SG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                sessionDetails = `\n📅 *First Session:* ${formatted} at ${first.start_time}`;
-                if (booking.session_dates.length > 1) sessionDetails += `\n📋 *Total Sessions:* ${booking.session_dates.length}`;
+            const serviceType = booking.service_type || '';
+            const config = getProgramConfig(serviceType);
+            const firstSession = booking.session_dates?.[0];
+            const firstDate = firstSession ? formatDate(firstSession.date) : '';
+            const firstTime = firstSession?.start_time || '';
+            const firstDay = firstSession ? getDayOfWeek(firstSession.date) : '';
+            const isGroupClass = serviceType === 'basic_manners_group_class';
+            const address = isGroupClass ? '73 Redhill Road MSCP, Level 7' : (booking.client_address || '');
+
+            let scheduleWa = '';
+            if (booking.session_dates && booking.session_dates.length > 1) {
+                scheduleWa = '\n\n*Recurring schedule:*';
+                for (const s of booking.session_dates) {
+                    scheduleWa += `\nSession ${s.session_number}: ${formatDateShort(s.date)} at ${s.start_time}`;
+                }
             }
 
-            let pricingDetails = '';
-            if (booking.total_price) {
-                pricingDetails = `\n💰 *Total Amount:* $${booking.total_price.toFixed(2)}`;
-                if (booking.adoption_discount > 0) pricingDetails += `\n   - Adoption Discount: -$${booking.adoption_discount.toFixed(2)}`;
-                if (booking.weekend_surcharge > 0) pricingDetails += `\n   - Weekend Surcharge: +$${booking.weekend_surcharge.toFixed(2)}`;
-                if (booking.total_sentosa_surcharge > 0) pricingDetails += `\n   - Sentosa Surcharge: +$${booking.total_sentosa_surcharge.toFixed(2)}`;
+            let instructionsWa = '';
+            if (serviceType === 'basic_manners_in_home' || serviceType === 'basic_manners_fyog' || serviceType === 'basic_manners_group_class') {
+                instructionsWa += '\n\nYou will also need a regular collar/harness and leash (NO retractable leash) and lots of bite-sized treats.';
+            }
+            if (serviceType === 'basic_manners_fyog' || serviceType === 'basic_manners_group_class') {
+                instructionsWa += `\nWater for ${furkidName}`;
+            }
+            if (serviceType === 'canine_assessment') {
+                instructionsWa += "\n\nHere's the 10% discount code if you decide to enrol for any program later: *DISCOUNT10*";
             }
 
-            const message = `🎉 *Booking Confirmed!*\n\nHi ${clientName}!\n\nGreat news! Your booking for *${booking.service_name}* with ${furkidName} has been confirmed! 🐾${sessionDetails}${pricingDetails}\n\nOur team will contact you within 24 hours with further instructions.\n\nIf you need to reschedule, please contact our admin team at +65 8222 8376.\n\n_- Hopefordogs Training Team_ 🐕`;
+            const promoWa = config.promoBlock ? '\n\nShop for Paws Botanic Pet Grooming Essentials (Promo Code: 20OFFNEW)\nhttps://www.pawsbotanic.co/' : '';
+
+            const message = `Hello ${clientName} and ${furkidName},\n\n${config.greeting} You have enrolled for *${booking.service_name}*${firstDate ? ` starting ${firstDate}, ${firstTime}, ${firstDay}` : ''}.${address ? `\n${config.addressLabel}: ${address}` : ''}${scheduleWa}${instructionsWa}${promoWa}\n\nFeel free to reach out if you have any questions.\n\nKind regards,\nJacky\nHopefordogs`;
 
             try {
                 const conversation = await base44.asServiceRole.agents.createConversation({
@@ -209,7 +388,7 @@ Deno.serve(async (req) => {
                     from: fromAddress,
                     to: [clientEmail],
                     subject: `Booking Confirmed: ${booking.service_name || 'Training Service'}`,
-                    html: buildConfirmationEmailHtml(booking, clientName, furkidName, clientEmail),
+                    html: buildConfirmationEmailHtml(booking, clientName, furkidName),
                 });
                 results.email = 'sent';
                 console.log(`✅ Confirmation email sent to ${clientEmail}`);

@@ -1,40 +1,25 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
-function getPreparationTips(serviceType: string): { wa: string; html: string } {
-    const tips: Record<string, string[]> = {
-        kinder_puppy: [
-            "Have your puppy's favorite treats ready",
-            "Ensure they're well-rested before the session",
-            "Have toys and training equipment handy",
-            "Keep the training area clear and distraction-free",
-        ],
-        basic_manners: [
-            "Have high-value treats ready",
-            "Ensure your dog has had some exercise beforehand",
-            "Have a 6ft leash (non-retractable)",
-            "Keep the training area clear",
-        ],
-        behavioural_modification: [
-            "Review notes from previous session",
-            "Prepare any questions you have",
-            "Have treats and training equipment ready",
-            "Ensure a calm environment",
-        ],
-        canine_assessment: [
-            "List any behavioral concerns you've noticed",
-            "Note your dog's daily routine",
-            "Have your dog well-exercised but not exhausted",
-            "Prepare any questions you have",
-        ],
-    };
+function formatDateShort(dateStr: string): string {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-SG', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
 
-    const matchedKey = Object.keys(tips).find((k) => serviceType?.includes(k));
-    if (!matchedKey) return { wa: '', html: '' };
+function formatDateLong(dateStr: string): string {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-SG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
 
-    const items = tips[matchedKey];
-    const wa = `\n*Preparation Tips:*\n${items.map((t) => `• ${t}`).join('\n')}`;
-    const html = `<p><strong>Preparation Tips:</strong></p><ul>${items.map((t) => `<li>${t}</li>`).join('')}</ul>`;
-    return { wa, html };
+function getDayOfWeek(dateStr: string): string {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-SG', { weekday: 'long' });
+}
+
+function hasPawsBotanicPromo(serviceType: string): boolean {
+    return serviceType.includes('kinder_puppy') ||
+        serviceType === 'basic_manners_in_home' ||
+        serviceType === 'basic_manners_fyog' ||
+        serviceType === 'basic_manners_group_class';
 }
 
 Deno.serve(async (req) => {
@@ -80,16 +65,26 @@ Deno.serve(async (req) => {
                 const furkidName = booking.furkid_name ||
                     (booking.furkids?.[0]?.furkid_name || 'your furkid');
 
-                const formattedDate = sessionDate.toLocaleDateString('en-SG', {
-                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-                });
+                const serviceType = booking.service_type || '';
+                const formattedDate = formatDateLong(session.date);
+                const dayOfWeek = getDayOfWeek(session.date);
+                const showPromo = hasPawsBotanicPromo(serviceType);
 
-                const prepTips = getPreparationTips(booking.service_type || '');
-                const result: any = { booking_id: booking.id, session_number: session.session_number, client_name: clientName, whatsapp: 'skipped', email: 'skipped' };
+                const result: any = {
+                    booking_id: booking.id,
+                    session_number: session.session_number,
+                    client_name: clientName,
+                    whatsapp: 'skipped',
+                    email: 'skipped',
+                };
 
-                // --- WhatsApp ---
+                // --- WhatsApp (matches client's template) ---
                 if (booking.whatsapp_consent && clientMobile && clientMobile.startsWith('+') && clientMobile.length >= 8) {
-                    const waMessage = `⏰ *Session Reminder*\n\nHi ${clientName}!\n\nThis is a friendly reminder that your training session with ${furkidName} is coming up in 48 hours!\n\n📅 *Session ${session.session_number}*\n🗓️ *Date:* ${formattedDate}\n🕐 *Time:* ${session.start_time} - ${session.end_time}\n🏠 *Service:* ${booking.service_name}${prepTips.wa}\n\nWe're looking forward to seeing you and ${furkidName}! 🐾\n\nIf you need to reschedule, please contact us at +65 8222 8376.\n\n_- Hopefordogs Training Team_ 🐕`;
+                    let waMessage = `Woof!\n\nGentle reminder: you have a session scheduled at ${formattedDate}, ${session.start_time}, ${dayOfWeek}.`;
+                    if (showPromo) {
+                        waMessage += `\n\nShop for Paws Botanic Pet Grooming Essentials (Promo Code: 20OFFNEW)\nhttps://www.pawsbotanic.co/`;
+                    }
+                    waMessage += `\n\nKind regards,\nHopefordogs`;
 
                     try {
                         const conversation = await base44.asServiceRole.agents.createConversation({
@@ -101,7 +96,6 @@ Deno.serve(async (req) => {
                         remindersSent++;
                     } catch (waErr) {
                         result.whatsapp = 'failed';
-                        result.whatsapp_error = waErr.message;
                     }
                 }
 
@@ -109,28 +103,77 @@ Deno.serve(async (req) => {
                 if (resendClient && clientEmail) {
                     try {
                         const fromAddress = RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
+                        let promoHtml = '';
+                        if (showPromo) {
+                            promoHtml = `
+                            <div style="background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin: 20px 0;">
+                                <p style="font-size: 14px; color: #92400e; margin: 0;">
+                                    🛍️ Shop for <a href="https://www.pawsbotanic.co/" style="color: #b45309; font-weight: 600;">Paws Botanic Pet Grooming Essentials</a><br/>
+                                    Promo Code: <strong>20OFFNEW</strong>
+                                </p>
+                            </div>`;
+                        }
+
+                        const pawSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><path d="M12 18c-3.5 0-6-2.5-6-5 0-1.7 1-3.2 2.5-4C10 8.3 11 8 12 8s2 .3 3.5 1c1.5.8 2.5 2.3 2.5 4 0 2.5-2.5 5-6 5z"/></svg>`;
+
                         await resendClient.emails.send({
                             from: fromAddress,
                             to: [clientEmail],
-                            subject: `Session Reminder: ${booking.service_name || 'Training'} — ${formattedDate}`,
+                            subject: `Session Reminder: ${booking.service_name || 'Training'} — ${formatDateShort(session.date)}`,
                             html: `
-                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                                <div style="background: #8b5cf6; color: white; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-                                    <h1 style="margin: 0; font-size: 24px;">Session Reminder</h1>
+                            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
+                                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
+                                    <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">
+                                        ${pawSvg}
+                                    </div>
+                                    <h1 style="margin: 0 0 8px 0; font-size: 26px; color: white; font-weight: 700;">Session Reminder</h1>
+                                    <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 15px;">${booking.service_name || 'Training Session'}</p>
                                 </div>
-                                <div style="padding: 24px; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
-                                    <p>Hi ${clientName},</p>
-                                    <p>This is a friendly reminder that your training session with <strong>${furkidName}</strong> is coming up in 48 hours!</p>
-                                    <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
-                                        <tr><td style="padding: 8px 0; font-weight: bold;">Session</td><td style="padding: 8px 0;">${session.session_number}</td></tr>
-                                        <tr><td style="padding: 8px 0; font-weight: bold;">Date</td><td style="padding: 8px 0;">${formattedDate}</td></tr>
-                                        <tr><td style="padding: 8px 0; font-weight: bold;">Time</td><td style="padding: 8px 0;">${session.start_time} – ${session.end_time}</td></tr>
-                                        <tr><td style="padding: 8px 0; font-weight: bold;">Service</td><td style="padding: 8px 0;">${booking.service_name}</td></tr>
-                                    </table>
-                                    ${prepTips.html}
-                                    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
-                                    <p>If you need to reschedule, please contact us at <strong>+65 8222 8376</strong> as soon as possible.</p>
-                                    <p style="color: #6b7280; font-size: 14px;">— Hope For Dogs Training Team</p>
+
+                                <div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">
+                                    <p style="font-size: 18px; color: #1e293b; margin: 0 0 16px 0;">Woof! 🐾</p>
+
+                                    <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 20px 0;">
+                                        Gentle reminder: you have a session scheduled:
+                                    </p>
+
+                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                                        <table style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #64748b; font-weight: 500;">Session</td>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #1e293b; font-weight: 600; text-align: right;">${session.session_number}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #64748b; font-weight: 500;">Date</td>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #1e293b; font-weight: 600; text-align: right;">${formattedDate}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #64748b; font-weight: 500;">Time</td>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #1e293b; font-weight: 600; text-align: right;">${session.start_time}${session.end_time ? ' – ' + session.end_time : ''}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #64748b; font-weight: 500;">Day</td>
+                                                <td style="padding: 8px 0; font-size: 14px; color: #1e293b; font-weight: 600; text-align: right;">${dayOfWeek}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    ${promoHtml}
+
+                                    <p style="font-size: 15px; color: #1e293b; margin: 24px 0 0 0;">
+                                        Kind regards,<br/>
+                                        Hopefordogs
+                                    </p>
+                                </div>
+
+                                <div style="padding: 24px; text-align: center; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; background: #f8fafc;">
+                                    <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">🐾 Hope For Dogs Training</p>
+                                    <p style="margin: 0; font-size: 13px; color: #94a3b8;">Canine Training &amp; Behaviour Specialists</p>
+                                    <p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;">
+                                        <a href="https://bookings.hopefordogs.sg" style="color: #2563eb; text-decoration: none;">bookings.hopefordogs.sg</a>
+                                        &nbsp;&middot;&nbsp; +65 8222 8376
+                                    </p>
                                 </div>
                             </div>`,
                         });
@@ -138,7 +181,6 @@ Deno.serve(async (req) => {
                         if (result.whatsapp !== 'sent') remindersSent++;
                     } catch (emailErr) {
                         result.email = 'failed';
-                        result.email_error = emailErr.message;
                     }
                 }
 
