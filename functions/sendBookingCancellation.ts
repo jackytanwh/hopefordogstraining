@@ -3,15 +3,18 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 function extractClientInfo(booking: any) {
     let clientMobile = booking.client_mobile || '';
     let clientName = booking.client_name || '';
-    let clientEmail = booking.client_email || '';
     let furkidName = booking.furkid_name || '';
+
+    const allEmails: string[] = [];
+    if (booking.client_email) allEmails.push(booking.client_email);
 
     if (booking.clients && booking.clients.length > 0) {
         for (const c of booking.clients) {
             if (!c) continue;
             if (!clientMobile) clientMobile = c.client_mobile || c.clientMobile || '';
             if (!clientName) clientName = c.client_name || c.clientName || '';
-            if (!clientEmail) clientEmail = c.client_email || c.clientEmail || '';
+            const email = c.client_email || c.clientEmail || '';
+            if (email && !allEmails.includes(email)) allEmails.push(email);
         }
     }
 
@@ -23,7 +26,8 @@ function extractClientInfo(booking: any) {
     return {
         clientMobile,
         clientName: clientName || 'Valued Client',
-        clientEmail,
+        clientEmail: allEmails[0] || '',
+        allClientEmails: allEmails,
         furkidName: furkidName || 'your furkid',
     };
 }
@@ -37,7 +41,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'No booking data provided' }, { status: 400 });
         }
 
-        const { clientMobile, clientName, clientEmail, furkidName } = extractClientInfo(booking);
+        const { clientMobile, clientName, allClientEmails, furkidName } = extractClientInfo(booking);
         const results: { whatsapp: string; email: string } = { whatsapp: 'skipped', email: 'skipped' };
 
         // --- WhatsApp ---
@@ -62,17 +66,12 @@ Deno.serve(async (req) => {
         const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
         const RESEND_FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL");
 
-        if (RESEND_API_KEY && clientEmail) {
+        if (RESEND_API_KEY && allClientEmails.length > 0) {
             try {
                 const { Resend } = await import('npm:resend');
                 const resend = new Resend(RESEND_API_KEY);
                 const fromAddress = RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-
-                await resend.emails.send({
-                    from: fromAddress,
-                    to: [clientEmail],
-                    subject: `Booking Cancelled: ${booking.service_name || 'Training Service'}`,
-                    html: `
+                const cancelHtml = `
                     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
                         <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
                             <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">
@@ -99,10 +98,22 @@ Deno.serve(async (req) => {
                             <p style="margin: 0; font-size: 13px; color: #94a3b8;">Canine Training &amp; Behaviour Specialists</p>
                             <p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;"><a href="https://bookings.hopefordogs.sg" style="color: #2563eb; text-decoration: none;">bookings.hopefordogs.sg</a> &middot; +65 8222 8376</p>
                         </div>
-                    </div>`,
-                });
+                    </div>`;
+
+                for (const recipientEmail of allClientEmails) {
+                    try {
+                        await resend.emails.send({
+                            from: fromAddress,
+                            to: [recipientEmail],
+                            subject: `Booking Cancelled: ${booking.service_name || 'Training Service'}`,
+                            html: cancelHtml,
+                        });
+                        console.log(`✅ Cancellation email sent to ${recipientEmail}`);
+                    } catch (singleErr) {
+                        console.error(`⚠️ Email to ${recipientEmail} failed:`, singleErr);
+                    }
+                }
                 results.email = 'sent';
-                console.log(`✅ Cancellation email sent to ${clientEmail}`);
             } catch (emailError) {
                 console.error('⚠️ Email failed:', emailError);
                 results.email = 'failed';

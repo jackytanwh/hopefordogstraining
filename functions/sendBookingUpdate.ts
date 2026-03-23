@@ -3,15 +3,18 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 function extractClientInfo(booking: any) {
     let clientMobile = booking.client_mobile || '';
     let clientName = booking.client_name || '';
-    let clientEmail = booking.client_email || '';
     let furkidName = booking.furkid_name || '';
+
+    const allEmails: string[] = [];
+    if (booking.client_email) allEmails.push(booking.client_email);
 
     if (booking.clients && booking.clients.length > 0) {
         for (const c of booking.clients) {
             if (!c) continue;
             if (!clientMobile) clientMobile = c.client_mobile || c.clientMobile || '';
             if (!clientName) clientName = c.client_name || c.clientName || '';
-            if (!clientEmail) clientEmail = c.client_email || c.clientEmail || '';
+            const email = c.client_email || c.clientEmail || '';
+            if (email && !allEmails.includes(email)) allEmails.push(email);
         }
     }
 
@@ -23,7 +26,8 @@ function extractClientInfo(booking: any) {
     return {
         clientMobile,
         clientName: clientName || 'Valued Client',
-        clientEmail,
+        clientEmail: allEmails[0] || '',
+        allClientEmails: allEmails,
         furkidName: furkidName || 'your furkid',
     };
 }
@@ -37,7 +41,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'No booking data provided' }, { status: 400 });
         }
 
-        const { clientMobile, clientName, clientEmail, furkidName } = extractClientInfo(booking);
+        const { clientMobile, clientName, allClientEmails, furkidName } = extractClientInfo(booking);
         const results: { whatsapp: string; email: string } = { whatsapp: 'skipped', email: 'skipped' };
 
         const isReschedule = oldBooking &&
@@ -152,20 +156,26 @@ Deno.serve(async (req) => {
         const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
         const RESEND_FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL");
 
-        if (RESEND_API_KEY && clientEmail) {
+        if (RESEND_API_KEY && allClientEmails.length > 0) {
             try {
                 const { Resend } = await import('npm:resend');
                 const resend = new Resend(RESEND_API_KEY);
                 const fromAddress = RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
-                await resend.emails.send({
-                    from: fromAddress,
-                    to: [clientEmail],
-                    subject: emailSubject,
-                    html: emailBody,
-                });
+                for (const recipientEmail of allClientEmails) {
+                    try {
+                        await resend.emails.send({
+                            from: fromAddress,
+                            to: [recipientEmail],
+                            subject: emailSubject,
+                            html: emailBody,
+                        });
+                        console.log(`✅ Update email sent to ${recipientEmail}`);
+                    } catch (singleErr) {
+                        console.error(`⚠️ Email to ${recipientEmail} failed:`, singleErr);
+                    }
+                }
                 results.email = 'sent';
-                console.log(`✅ Update email sent to ${clientEmail}`);
             } catch (emailError) {
                 console.error('⚠️ Email failed:', emailError);
                 results.email = 'failed';

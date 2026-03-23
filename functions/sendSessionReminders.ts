@@ -60,8 +60,14 @@ Deno.serve(async (req) => {
                     (booking.clients?.[0]?.client_mobile || booking.clients?.[0]?.clientMobile || '');
                 const clientName = booking.client_name ||
                     (booking.clients?.[0]?.client_name || booking.clients?.[0]?.clientName || 'Valued Client');
-                const clientEmail = booking.client_email ||
-                    (booking.clients?.[0]?.client_email || booking.clients?.[0]?.clientEmail || '');
+                const allClientEmails: string[] = [];
+                if (booking.client_email) allClientEmails.push(booking.client_email);
+                if (booking.clients && booking.clients.length > 0) {
+                    for (const c of booking.clients) {
+                        const em = c?.client_email || c?.clientEmail || '';
+                        if (em && !allClientEmails.includes(em)) allClientEmails.push(em);
+                    }
+                }
                 const furkidName = booking.furkid_name ||
                     (booking.furkids?.[0]?.furkid_name || 'your furkid');
 
@@ -100,7 +106,7 @@ Deno.serve(async (req) => {
                 }
 
                 // --- Email ---
-                if (resendClient && clientEmail) {
+                if (resendClient && allClientEmails.length > 0) {
                     try {
                         const fromAddress = RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
@@ -117,11 +123,8 @@ Deno.serve(async (req) => {
 
                         const pawSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><path d="M12 18c-3.5 0-6-2.5-6-5 0-1.7 1-3.2 2.5-4C10 8.3 11 8 12 8s2 .3 3.5 1c1.5.8 2.5 2.3 2.5 4 0 2.5-2.5 5-6 5z"/></svg>`;
 
-                        await resendClient.emails.send({
-                            from: fromAddress,
-                            to: [clientEmail],
-                            subject: `Session Reminder: ${booking.service_name || 'Training'} — ${formatDateShort(session.date)}`,
-                            html: `
+                        const reminderSubject = `Session Reminder: ${booking.service_name || 'Training'} — ${formatDateShort(session.date)}`;
+                        const reminderHtml = `
                             <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
                                 <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
                                     <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">
@@ -175,8 +178,21 @@ Deno.serve(async (req) => {
                                         &nbsp;&middot;&nbsp; +65 8222 8376
                                     </p>
                                 </div>
-                            </div>`,
-                        });
+                            </div>`;
+
+                        for (const recipientEmail of allClientEmails) {
+                            try {
+                                await resendClient.emails.send({
+                                    from: fromAddress,
+                                    to: [recipientEmail],
+                                    subject: reminderSubject,
+                                    html: reminderHtml,
+                                });
+                                console.log(`✅ Reminder email sent to ${recipientEmail}`);
+                            } catch (singleErr) {
+                                console.error(`⚠️ Reminder to ${recipientEmail} failed:`, singleErr);
+                            }
+                        }
                         result.email = 'sent';
                         if (result.whatsapp !== 'sent') remindersSent++;
                     } catch (emailErr) {
