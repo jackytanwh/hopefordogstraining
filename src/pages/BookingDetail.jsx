@@ -453,11 +453,13 @@ export default function BookingDetail() {
     );
   }
 
-  // Check if this is a FYOG or Group Class booking
+  // Check if this booking uses multi-client/furkid arrays
   const isFYOG = booking.service_type === 'kinder_puppy_fyog' || 
                  booking.service_type === 'basic_manners_fyog' || 
-                 booking.service_type === 'basic_manners_group_class' || // Changed to match data type from base44
-                 booking.service_type === 'group_class_basic_manners'; // Added for the new curriculum type
+                 booking.service_type === 'basic_manners_group_class' ||
+                 booking.service_type === 'group_class_basic_manners' ||
+                 (booking.clients && booking.clients.length > 0) ||
+                 (booking.furkids && booking.furkids.length > 0);
 
   // Check if this service has items to give
   const hasKinderPuppyItems = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
