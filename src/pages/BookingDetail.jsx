@@ -453,11 +453,13 @@ export default function BookingDetail() {
     );
   }
 
-  // Check if this is a FYOG or Group Class booking
+  // Check if this booking uses multi-client/furkid arrays
   const isFYOG = booking.service_type === 'kinder_puppy_fyog' || 
                  booking.service_type === 'basic_manners_fyog' || 
-                 booking.service_type === 'basic_manners_group_class' || // Changed to match data type from base44
-                 booking.service_type === 'group_class_basic_manners'; // Added for the new curriculum type
+                 booking.service_type === 'basic_manners_group_class' ||
+                 booking.service_type === 'group_class_basic_manners' ||
+                 (booking.clients && booking.clients.length > 0) ||
+                 (booking.furkids && booking.furkids.length > 0);
 
   // Check if this service has items to give
   const hasKinderPuppyItems = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
@@ -852,7 +854,7 @@ export default function BookingDetail() {
                   <div className="space-y-4">
                     {booking.clients.map((client, idx) => (
                       <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
-                        <h4 className="font-semibold text-slate-900 mb-3">Client {idx + 1}</h4>
+                        <h4 className="font-semibold text-slate-900 mb-3">Pawrent {idx + 1}</h4>
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           <div>
                             <p className="text-slate-600">Name</p>
@@ -919,7 +921,7 @@ export default function BookingDetail() {
                     {booking.furkids.map((furkid, idx) => (
                       <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
                         <h4 className="font-semibold text-slate-900 mb-3">
-                          {booking.service_type === 'kinder_puppy_fyog' ? 'Puppy' : 'Dog'} {idx + 1}
+                          {booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'kinder_puppy_in_home' ? 'Puppy' : 'Dog'} {idx + 1}
                         </h4>
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           <div>

@@ -20,7 +20,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
-  const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
+  const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
 
   const handleSubmit = () => {
     if (isBasicManners) {
