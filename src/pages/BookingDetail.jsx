@@ -854,7 +854,7 @@ export default function BookingDetail() {
                   <div className="space-y-4">
                     {booking.clients.map((client, idx) => (
                       <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
-                        <h4 className="font-semibold text-slate-900 mb-3">Client {idx + 1}</h4>
+                        <h4 className="font-semibold text-slate-900 mb-3">Pawrent {idx + 1}</h4>
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           <div>
                             <p className="text-slate-600">Name</p>
@@ -921,7 +921,7 @@ export default function BookingDetail() {
                     {booking.furkids.map((furkid, idx) => (
                       <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
                         <h4 className="font-semibold text-slate-900 mb-3">
-                          {booking.service_type === 'kinder_puppy_fyog' ? 'Puppy' : 'Dog'} {idx + 1}
+                          {booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'kinder_puppy_in_home' ? 'Puppy' : 'Dog'} {idx + 1}
                         </h4>
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           <div>
