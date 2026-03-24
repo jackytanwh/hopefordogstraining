@@ -37,7 +37,7 @@ const commonBreeds = [
   "Others"
 ];
 
-export default function CombinedPawrentPuppyForm({ service, formData, setFormData, onNext, onBack, kinderPuppyCount, currentIndex }) {
+export default function CombinedPawrentPuppyForm({ service, formData, setFormData, onNext, onBack, kinderPuppyCount, currentIndex, dogLabel = 'Puppy' }) {
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -276,7 +276,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
   return (
     <Card key={currentIndex} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
-        <CardTitle>Pawrent {currentIndex + 1} & Puppy {currentIndex + 1}</CardTitle>
+        <CardTitle>Pawrent {currentIndex + 1} & {dogLabel} {currentIndex + 1}</CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-8">
         {/* Pawrent Information Section */}
@@ -370,12 +370,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           )}
         </div>
 
-        {/* Puppy Information Section */}
+        {/* Dog Information Section */}
         <div className="space-y-4 pt-6 border-t border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 border-b pb-2">Puppy Information</h3>
+          <h3 className="text-lg font-semibold text-slate-900 border-b pb-2">{dogLabel} Information</h3>
 
           <div className="space-y-2">
-            <Label>Is your puppy a Singapore Special or adopted from a shelter? *</Label>
+            <Label>Is your {dogLabel.toLowerCase()} a Singapore Special or adopted from a shelter? *</Label>
             <RadioGroup
               value={furkid.isAdopted?.toString()}
               onValueChange={(value) => handleFurkidChange('isAdopted', value === 'true')}
@@ -414,12 +414,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="furkidName">Puppy's Name *</Label>
+            <Label htmlFor="furkidName">{dogLabel}'s Name *</Label>
             <Input
               id="furkidName"
               value={furkid.furkidName || ''}
               onChange={(e) => handleFurkidChange('furkidName', e.target.value)}
-              placeholder="Enter your puppy's name"
+              placeholder={`Enter your ${dogLabel.toLowerCase()}'s name`}
               className={errors.furkid_furkidName ? 'border-red-500' : ''}
             />
             {errors.furkid_furkidName && (
@@ -616,7 +616,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidDiet">What is your puppy's diet? *</Label>
+            <Label htmlFor="furkidDiet">What is your {dogLabel.toLowerCase()}'s diet? *</Label>
             <Input
               id="furkidDiet"
               value={furkid.furkidDiet || ''}
@@ -630,7 +630,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidSleepArea">Where does your puppy sleep at night? *</Label>
+            <Label htmlFor="furkidSleepArea">Where does your {dogLabel.toLowerCase()} sleep at night? *</Label>
             <Input
               id="furkidSleepArea"
               value={furkid.furkidSleepArea || ''}
@@ -644,7 +644,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="walkingFrequency">How frequently do you walk the puppy? *</Label>
+            <Label htmlFor="walkingFrequency">How frequently do you walk the {dogLabel.toLowerCase()}? *</Label>
             <Input
               id="walkingFrequency"
               value={furkid.walkingFrequency || ''}
@@ -658,7 +658,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidPhoto">Front Photo of Puppy (Max 10MB)</Label>
+            <Label htmlFor="furkidPhoto">Front Photo of {dogLabel} (Max 10MB)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="furkidPhoto"
@@ -675,7 +675,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidInstagram">Puppy's IG Account (if any)</Label>
+            <Label htmlFor="furkidInstagram">{dogLabel}'s IG Account (if any)</Label>
             <Input
               id="furkidInstagram"
               value={furkid.furkidInstagram || ''}
@@ -690,7 +690,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               id="enrolmentReason"
               value={furkid.enrolmentReason || ''}
               onChange={(e) => handleFurkidChange('enrolmentReason', e.target.value)}
-              placeholder="Tell us why you're enrolling your puppy"
+              placeholder={`Tell us why you're enrolling your ${dogLabel.toLowerCase()}`}
               rows={3}
             />
           </div>
