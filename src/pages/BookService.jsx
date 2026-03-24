@@ -222,13 +222,12 @@ export default function BookService() {
   const getTotalSteps = () => {
     if (isOnDemand) return 6;
     if (isGroupClass) return 5;
-    if (isFYOG) return 6;
+    if (isFYOG) {
+      const count = formData.basicMannersFYOGCount || 1;
+      return 2 + count + 2;
+    }
     if (isKinderPuppy) {
       const count = formData.kinderPuppyCount || 1;
-      // Step 1: KinderPuppyCountSelection
-      // Step 2: DateTimeSelection
-      // Steps 3+: count (each step has both client + furkid)
-      // Final steps: ProductSelection + BookingSummary
       return 2 + count + 2;
     }
     if (isBehaviouralModification || isCanineAssessment) return 5;
@@ -451,7 +450,7 @@ export default function BookService() {
       const kinderPuppyCount = formData.kinderPuppyCount || 1;
       const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
       const fyogCount = formData.basicMannersFYOGCount || 1;
-      const isFYOGMulti = isFYOG && fyogCount > 1;
+      const isFYOGMulti = isFYOG;
 
       if (isFYOGMulti || isGroupClass || isKinderPuppyMulti) {
         console.log('Processing FYOG/Group/KinderPuppyMulti booking...');
@@ -514,7 +513,7 @@ export default function BookService() {
       // Handle FYOG/Group Class/KinderPuppyMulti client creation
       const kinderPuppyCountForCreate = formData.kinderPuppyCount || 1;
       const isKinderPuppyMultiForCreate = isKinderPuppy && kinderPuppyCountForCreate >= 1;
-      const isFYOGMultiForCreate = isFYOG && (formData.basicMannersFYOGCount || 1) > 1;
+      const isFYOGMultiForCreate = isFYOG;
       if (isFYOGMultiForCreate || isGroupClass || isKinderPuppyMultiForCreate) {
         console.log('Creating client records...');
         try {
@@ -811,6 +810,8 @@ export default function BookService() {
         );
       }
     } else if (isFYOG) {
+      const fyogCount = formData.basicMannersFYOGCount || 1;
+
       if (step === 1) {
         return (
           <BasicMannersFYOGCountSelection
@@ -830,32 +831,31 @@ export default function BookService() {
             onBack={handleBack}
           />
         );
-      } else if (step === 3) {
+      }
+
+      const dynamicStepStart = 3;
+      const dynamicStepEnd = 2 + fyogCount;
+
+      if (step >= dynamicStepStart && step <= dynamicStepEnd) {
+        const currentIndex = step - dynamicStepStart;
         return (
-          <ClientInformation
+          <CombinedPawrentPuppyForm
             service={service}
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
             onBack={handleBack}
-            isFYOG={true}
-            isFYOGMulti={(formData.basicMannersFYOGCount || 1) > 1}
-            fyogCount={formData.basicMannersFYOGCount || 1}
+            kinderPuppyCount={fyogCount}
+            currentIndex={currentIndex}
+            dogLabel="Dog"
           />
         );
-      } else if (step === 4) {
-        const fyogCountStep = formData.basicMannersFYOGCount || 1;
-        return (
-          <FurkidInformation
-            service={service}
-            formData={formData}
-            setFormData={setFormData}
-            onNext={handleNext}
-            onBack={handleBack}
-            isFYOG={fyogCountStep > 1}
-          />
-        );
-      } else if (step === 5) {
+      }
+
+      const productStep = dynamicStepEnd + 1;
+      const summaryStep = dynamicStepEnd + 2;
+
+      if (step === productStep) {
         return (
           <ProductSelection
             formData={formData}
@@ -864,8 +864,7 @@ export default function BookService() {
             onBack={handleBack}
           />
         );
-      } else if (step === 6) {
-        const fyogCountSummary = formData.basicMannersFYOGCount || 1;
+      } else if (step === summaryStep) {
         return (
           <BookingSummary
             service={service}
@@ -874,7 +873,7 @@ export default function BookService() {
             onBack={handleBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
-            isFYOG={fyogCountSummary > 1}
+            isFYOG={fyogCount > 1}
           />
         );
       }
