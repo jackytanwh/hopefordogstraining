@@ -44,7 +44,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
   const [uploadingProof, setUploadingProof] = useState(false);
   const [showCustomBreed, setShowCustomBreed] = useState(false);
 
-  const formDataRef = React.useRef(formData);
+  const formDataRef = useRef(formData);
   useEffect(() => { formDataRef.current = formData; });
 
   const client = (formData.clients && formData.clients[currentIndex]) || {};
