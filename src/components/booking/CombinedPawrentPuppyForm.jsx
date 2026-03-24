@@ -274,7 +274,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
   const showCustomBreedInput = showCustomBreed || (furkid.furkidBreed && !commonBreeds.includes(furkid.furkidBreed));
 
   return (
-    <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+    <Card key={currentIndex} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
         <CardTitle>Pawrent {currentIndex + 1} & Puppy {currentIndex + 1}</CardTitle>
       </CardHeader>
