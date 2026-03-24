@@ -449,7 +449,7 @@ export default function BookService() {
       }
 
       const kinderPuppyCount = formData.kinderPuppyCount || 1;
-      const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
+      const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
       const fyogCount = formData.basicMannersFYOGCount || 1;
       const isFYOGMulti = isFYOG && fyogCount > 1;
 
@@ -513,7 +513,7 @@ export default function BookService() {
       
       // Handle FYOG/Group Class/KinderPuppyMulti client creation
       const kinderPuppyCountForCreate = formData.kinderPuppyCount || 1;
-      const isKinderPuppyMultiForCreate = isKinderPuppy && kinderPuppyCountForCreate > 1;
+      const isKinderPuppyMultiForCreate = isKinderPuppy && kinderPuppyCountForCreate >= 1;
       const isFYOGMultiForCreate = isFYOG && (formData.basicMannersFYOGCount || 1) > 1;
       if (isFYOGMultiForCreate || isGroupClass || isKinderPuppyMultiForCreate) {
         console.log('Creating client records...');
