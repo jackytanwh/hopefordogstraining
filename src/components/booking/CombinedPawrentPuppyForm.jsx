@@ -66,6 +66,26 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
   ];
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
+  const checkSentosaPostalCode = (postalCode) => {
+    if (!postalCode) return false;
+    const code = parseInt(postalCode);
+    return code >= 90000 && code <= 99999;
+  };
+
+  const handleSharedLocationChange = (field, value) => {
+    const updated = { ...formData, [field]: value };
+    if (field === 'sharedPostalCode') {
+      updated.isSentosa = checkSentosaPostalCode(value);
+    }
+    setFormData(updated);
+    if (errors[field]) {
+      const newErrors = { ...errors };
+      delete newErrors[field];
+      setErrors(newErrors);
+    }
+    if (showValidationMessage) setShowValidationMessage(false);
+  };
+
   const handleClientChange = (field, value) => {
     const newClients = [...(formData.clients || [])];
     if (!newClients[currentIndex]) {
@@ -181,6 +201,18 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
       newErrors.client_clientMobile = 'Mobile number is required';
     }
 
+    // Address/postal only required for first Pawrent
+    if (currentIndex === 0) {
+      if (!formData.sharedAddress?.trim()) {
+        newErrors.sharedAddress = 'Address is required';
+      }
+      if (!formData.sharedPostalCode?.trim()) {
+        newErrors.sharedPostalCode = 'Postal code is required';
+      } else if (!/^\d{6}$/.test(formData.sharedPostalCode)) {
+        newErrors.sharedPostalCode = 'Invalid postal code (6 digits required)';
+      }
+    }
+
     // Furkid validation
     if (currentFurkid.isAdopted === undefined || currentFurkid.isAdopted === null || currentFurkid.isAdopted === '') {
       newErrors.furkid_isAdopted = 'Please specify if puppy is adopted';
@@ -282,6 +314,49 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               <p className="text-sm text-red-600">{errors.client_clientMobile}</p>
             )}
           </div>
+
+          {/* Address & Postal Code - only for Pawrent 1 */}
+          {currentIndex === 0 && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="sharedAddress">Training Address *</Label>
+                <Input
+                  id="sharedAddress"
+                  value={formData.sharedAddress || ''}
+                  onChange={(e) => handleSharedLocationChange('sharedAddress', e.target.value)}
+                  placeholder="Enter full address"
+                  className={errors.sharedAddress ? 'border-red-500' : ''}
+                />
+                {errors.sharedAddress && (
+                  <p className="text-sm text-red-600">{errors.sharedAddress}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="sharedPostalCode">Postal Code *</Label>
+                <Input
+                  id="sharedPostalCode"
+                  value={formData.sharedPostalCode || ''}
+                  onChange={(e) => handleSharedLocationChange('sharedPostalCode', e.target.value)}
+                  placeholder="123456"
+                  maxLength={6}
+                  className={errors.sharedPostalCode ? 'border-red-500' : ''}
+                />
+                {errors.sharedPostalCode && (
+                  <p className="text-sm text-red-600">{errors.sharedPostalCode}</p>
+                )}
+                {formData.isSentosa && (
+                  <div className="flex items-start gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-orange-800">
+                      <p className="font-semibold">Sentosa Island Surcharge</p>
+                      <p>An additional $10 per session surcharge will apply to your booking.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Puppy Information Section */}
