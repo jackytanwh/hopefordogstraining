@@ -52,6 +52,13 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     setErrors({});
     setShowValidationMessage(false);
     setShowCustomBreed(false);
+
+    // Clear the current entry's data so fields start fresh
+    const newClients = [...(formData.clients || [])];
+    const newFurkids = [...(formData.furkids || [])];
+    newClients[currentIndex] = {};
+    newFurkids[currentIndex] = {};
+    setFormData({ ...formData, clients: newClients, furkids: newFurkids });
   }, [currentIndex]);
 
   const currentYear = new Date().getFullYear();
