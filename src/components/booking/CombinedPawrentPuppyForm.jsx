@@ -226,10 +226,10 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
 
     // Furkid validation
     if (currentFurkid.isAdopted === undefined || currentFurkid.isAdopted === null || currentFurkid.isAdopted === '') {
-      newErrors.furkid_isAdopted = 'Please specify if puppy is adopted';
+      newErrors.furkid_isAdopted = `Please specify if ${dogLabel.toLowerCase()} is adopted`;
     }
     if (!currentFurkid.furkidName?.trim()) {
-      newErrors.furkid_furkidName = 'Puppy name is required';
+      newErrors.furkid_furkidName = `${dogLabel} name is required`;
     }
     if (!currentFurkid.dobMonth || !currentFurkid.dobDay || !currentFurkid.dobYear) {
       newErrors.furkid_furkidDob = 'Date of birth is required';
