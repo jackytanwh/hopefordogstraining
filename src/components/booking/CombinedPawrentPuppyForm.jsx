@@ -44,6 +44,9 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
   const [uploadingProof, setUploadingProof] = useState(false);
   const [showCustomBreed, setShowCustomBreed] = useState(false);
 
+  const formDataRef = React.useRef(formData);
+  useEffect(() => { formDataRef.current = formData; });
+
   const client = (formData.clients && formData.clients[currentIndex]) || {};
   const furkid = (formData.furkids && formData.furkids[currentIndex]) || {};
 
@@ -53,12 +56,13 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     setShowValidationMessage(false);
     setShowCustomBreed(false);
 
-    // Clear the current entry's data so fields start fresh
-    const newClients = [...(formData.clients || [])];
-    const newFurkids = [...(formData.furkids || [])];
+    // Use ref to get latest formData and clear the current entry's data
+    const latest = formDataRef.current;
+    const newClients = [...(latest.clients || [])];
+    const newFurkids = [...(latest.furkids || [])];
     newClients[currentIndex] = {};
     newFurkids[currentIndex] = {};
-    setFormData({ ...formData, clients: newClients, furkids: newFurkids });
+    setFormData({ ...latest, clients: newClients, furkids: newFurkids });
   }, [currentIndex]);
 
   const currentYear = new Date().getFullYear();
