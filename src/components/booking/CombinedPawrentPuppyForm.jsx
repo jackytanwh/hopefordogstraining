@@ -591,12 +591,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               onValueChange={(value) => handleFurkidChange('firstTimeOwner', value === 'true')}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="true" id="firsttime-yes" />
-                <Label htmlFor="firsttime-yes" className="font-normal cursor-pointer">Yup</Label>
+                <RadioGroupItem value="true" id={`firsttime-yes-${currentIndex}`} />
+                <Label htmlFor={`firsttime-yes-${currentIndex}`} className="font-normal cursor-pointer">Yup</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="false" id="firsttime-no" />
-                <Label htmlFor="firsttime-no" className="font-normal cursor-pointer">Nope</Label>
+                <RadioGroupItem value="false" id={`firsttime-no-${currentIndex}`} />
+                <Label htmlFor={`firsttime-no-${currentIndex}`} className="font-normal cursor-pointer">Nope</Label>
               </div>
             </RadioGroup>
             {errors.furkid_firstTimeOwner && (
