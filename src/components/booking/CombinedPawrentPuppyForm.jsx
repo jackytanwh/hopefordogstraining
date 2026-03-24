@@ -494,12 +494,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               onValueChange={(value) => handleFurkidChange('furkidGender', value)}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="boy" id="gender-boy" />
-                <Label htmlFor="gender-boy" className="font-normal cursor-pointer">Boy</Label>
+                <RadioGroupItem value="boy" id={`gender-boy-${currentIndex}`} />
+                <Label htmlFor={`gender-boy-${currentIndex}`} className="font-normal cursor-pointer">Boy</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="girl" id="gender-girl" />
-                <Label htmlFor="gender-girl" className="font-normal cursor-pointer">Girl</Label>
+                <RadioGroupItem value="girl" id={`gender-girl-${currentIndex}`} />
+                <Label htmlFor={`gender-girl-${currentIndex}`} className="font-normal cursor-pointer">Girl</Label>
               </div>
             </RadioGroup>
             {errors.furkid_furkidGender && (
