@@ -514,12 +514,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               onValueChange={(value) => handleFurkidChange('furkidSterilised', value === 'true')}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="true" id="sterilised-yes" />
-                <Label htmlFor="sterilised-yes" className="font-normal cursor-pointer">Yes</Label>
+                <RadioGroupItem value="true" id={`sterilised-yes-${currentIndex}`} />
+                <Label htmlFor={`sterilised-yes-${currentIndex}`} className="font-normal cursor-pointer">Yes</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="false" id="sterilised-no" />
-                <Label htmlFor="sterilised-no" className="font-normal cursor-pointer">Nope</Label>
+                <RadioGroupItem value="false" id={`sterilised-no-${currentIndex}`} />
+                <Label htmlFor={`sterilised-no-${currentIndex}`} className="font-normal cursor-pointer">Nope</Label>
               </div>
             </RadioGroup>
             {errors.furkid_furkidSterilised && (
