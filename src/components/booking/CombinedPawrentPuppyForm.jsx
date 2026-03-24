@@ -370,12 +370,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               onValueChange={(value) => handleFurkidChange('isAdopted', value === 'true')}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="true" id="adopted-yes" />
-                <Label htmlFor="adopted-yes" className="font-normal cursor-pointer">Yes</Label>
+                <RadioGroupItem value="true" id={`adopted-yes-${currentIndex}`} />
+                <Label htmlFor={`adopted-yes-${currentIndex}`} className="font-normal cursor-pointer">Yes</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="false" id="adopted-no" />
-                <Label htmlFor="adopted-no" className="font-normal cursor-pointer">No</Label>
+                <RadioGroupItem value="false" id={`adopted-no-${currentIndex}`} />
+                <Label htmlFor={`adopted-no-${currentIndex}`} className="font-normal cursor-pointer">No</Label>
               </div>
             </RadioGroup>
             {errors.furkid_isAdopted && (
