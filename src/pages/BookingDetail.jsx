@@ -869,13 +869,13 @@ export default function BookingDetail() {
                             <p className="font-medium">{getClientField(client, 'clientMobile')}</p>
                           </div>
                           <div>
-                            <p className="text-slate-600">Address</p>
-                            <p className="font-medium">{getClientField(client, 'clientAddress')}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-600">Postal Code</p>
-                            <p className="font-medium">{getClientField(client, 'clientPostalCode')}</p>
-                          </div>
+                             <p className="text-slate-600">Address</p>
+                             <p className="font-medium">{getClientField(client, 'clientAddress') !== 'N/A' ? getClientField(client, 'clientAddress') : (idx === 0 ? (booking.client_address || booking.sharedAddress || 'N/A') : 'N/A')}</p>
+                           </div>
+                           <div>
+                             <p className="text-slate-600">Postal Code</p>
+                             <p className="font-medium">{getClientField(client, 'clientPostalCode') !== 'N/A' ? getClientField(client, 'clientPostalCode') : (idx === 0 ? (booking.client_postal_code || booking.sharedPostalCode || 'N/A') : 'N/A')}</p>
+                           </div>
                         </div>
                       </div>
                     ))}
