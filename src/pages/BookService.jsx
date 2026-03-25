@@ -439,6 +439,40 @@ export default function BookService() {
         } else {
           bookingData.agreement_behavioral_modification_understanding = Boolean(agreements?.behavioralModificationUnderstanding);
         }
+
+        // Behavioural history form fields
+        const behaviouralFields = [
+          'furkid_sterilisation_age', 'furkid_sterilisation_method',
+          'furkid_acquired_from', 'furkid_joined_family_age',
+          'has_previous_guardian', 'previous_guardian_reason',
+          'behaviour_first_noticed', 'is_aggression_issue', 'has_bitten',
+          'bite_count', 'bite_triggers', 'bite_severity',
+          'behaviour_symptoms', 'past_trauma', 'immediate_reaction',
+          'methods_tried', 'methods_effectiveness', 'reaction_to_strangers',
+          'behaviour_severity_change', 'behaviour_seriousness_scale',
+          'program_goals', 'daily_training_time', 'main_caregivers',
+          'purpose_of_getting_furkid', 'why_chose_furkid',
+          'other_pets', 'other_pets_list', 'previous_furkids_owned', 'previous_furkids',
+          'hangout_location', 'sleep_location', 'alone_duration', 'anxiety_when_alone',
+          'walk_frequency', 'walk_duration', 'potty_training',
+          'walking_equipment', 'enrichment_tools',
+          'previous_training', 'previous_training_type', 'previous_training_school',
+          'known_cues_reliable', 'known_cues_list',
+          'feeding_frequency', 'diet_type', 'feeding_method', 'eating_speed',
+          'chews_frequency', 'chews_type', 'loves_treats', 'treats_type',
+          'food_allergies', 'food_allergies_details',
+          'handling_reaction', 'equipment_resistance',
+          'touch_discomfort', 'touch_discomfort_details',
+          'last_health_check', 'medical_conditions', 'medical_conditions_details',
+          'pain_history', 'pain_history_details',
+          'discomfort_signs', 'discomfort_signs_details',
+          'on_medication', 'medication_details',
+        ];
+        behaviouralFields.forEach(field => {
+          if (formData[field] !== undefined && formData[field] !== null && formData[field] !== '') {
+            bookingData[field] = formData[field];
+          }
+        });
       }
 
       if (isKinderPuppy) {
