@@ -1341,17 +1341,15 @@ export default function BookingDetail() {
                     <Calendar className="w-5 h-5" />
                     Session Schedule
                   </CardTitle>
-                  {booking.service_type !== 'basic_manners_group_class' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={handleOpenReschedule}
-                      className="flex items-center gap-2"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                      Reschedule
-                    </Button>
-                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleOpenReschedule}
+                    className="flex items-center gap-2"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Reschedule
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent className="p-6">
