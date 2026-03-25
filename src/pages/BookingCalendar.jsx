@@ -143,18 +143,27 @@ export default function BookingCalendar() {
 
     bookings.forEach(booking => {
       if (booking.service_type === 'basic_manners_group_class') {
-        // Group class uses fixed schedule — check if this date is one of the session dates
-        const sessionIndex = groupSessionDates.indexOf(dateString);
-        if (sessionIndex !== -1) {
-          dayBookings.push({
-            ...booking,
-            session: {
-              date: dateString,
-              session_number: sessionIndex + 1,
-              start_time: groupSchedule?.start_time || '',
-              end_time: groupSchedule?.end_time || ''
+        if (booking.session_dates && booking.session_dates.length > 0) {
+          // Use booking's own session_dates (individually rescheduled)
+          booking.session_dates.forEach(session => {
+            if (session.date === dateString) {
+              dayBookings.push({ ...booking, session });
             }
           });
+        } else {
+          // Fall back to global schedule
+          const sessionIndex = groupSessionDates.indexOf(dateString);
+          if (sessionIndex !== -1) {
+            dayBookings.push({
+              ...booking,
+              session: {
+                date: dateString,
+                session_number: sessionIndex + 1,
+                start_time: groupSchedule?.start_time || '',
+                end_time: groupSchedule?.end_time || ''
+              }
+            });
+          }
         }
       } else {
         booking.session_dates?.forEach(session => {
