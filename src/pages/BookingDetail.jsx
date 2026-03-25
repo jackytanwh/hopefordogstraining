@@ -193,19 +193,26 @@ export default function BookingDetail() {
   };
 
   const handleOpenReschedule = () => {
-    if (booking.service_type === 'basic_manners_group_class' && groupSchedule?.start_date) {
-      const sessions = Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
-        const startDate = new Date(groupSchedule.start_date);
-        const sessionDate = new Date(startDate);
-        sessionDate.setDate(startDate.getDate() + i * 7);
-        return {
-          session_number: i + 1,
-          date: format(sessionDate, 'yyyy-MM-dd'),
-          start_time: groupSchedule.start_time || '',
-          end_time: groupSchedule.end_time || ''
-        };
-      });
-      setEditingSessions(sessions);
+    if (booking.service_type === 'basic_manners_group_class') {
+      // Use booking's own session_dates if available, otherwise derive from global schedule
+      if (booking.session_dates && booking.session_dates.length > 0) {
+        setEditingSessions(booking.session_dates.map(session => ({ ...session })));
+      } else if (groupSchedule?.start_date) {
+        const sessions = Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
+          const startDate = new Date(groupSchedule.start_date);
+          const sessionDate = new Date(startDate);
+          sessionDate.setDate(startDate.getDate() + i * 7);
+          return {
+            session_number: i + 1,
+            date: format(sessionDate, 'yyyy-MM-dd'),
+            start_time: groupSchedule.start_time || '',
+            end_time: groupSchedule.end_time || ''
+          };
+        });
+        setEditingSessions(sessions);
+      } else {
+        setEditingSessions([]);
+      }
     } else {
       setEditingSessions((booking.session_dates || []).map(session => ({ ...session })));
     }
