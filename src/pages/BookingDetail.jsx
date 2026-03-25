@@ -1377,7 +1377,31 @@ export default function BookingDetail() {
               <CardContent className="p-6">
                 {booking.service_type === 'basic_manners_group_class' ? (
                   <div className="space-y-3">
-                    {groupSchedule?.start_date ? (
+                    {booking.session_dates && booking.session_dates.length > 0 ? (
+                      // Use booking's own rescheduled session dates
+                      booking.session_dates.map((session, idx) => (
+                        <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-medium text-sm">Session {session.session_number || idx + 1}</p>
+                              <p className="text-sm text-slate-600 mt-1">
+                                {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
+                              </p>
+                              <p className="text-sm text-blue-600 font-medium mt-1">
+                                {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
+                              </p>
+                            </div>
+                            {session.was_rescheduled && (
+                              <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
+                                <RefreshCw className="w-3 h-3" />
+                                Rescheduled
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : groupSchedule?.start_date ? (
+                      // Fall back to global schedule for bookings not yet individually rescheduled
                       Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
                         const startDate = new Date(groupSchedule.start_date);
                         const sessionDate = new Date(startDate);
