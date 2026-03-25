@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -81,6 +80,7 @@ export default function GroupClassScheduleSettings() {
       toast({
         title: "Success",
         description: "Schedule settings saved successfully",
+        duration: 5000,
       });
     } catch (error) {
       console.error("Error saving schedule:", error);
