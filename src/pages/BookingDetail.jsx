@@ -56,6 +56,7 @@ export default function BookingDetail() {
   const [editingSessions, setEditingSessions] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
+  const [groupSchedule, setGroupSchedule] = useState(null);
 
   const loadBooking = useCallback(async () => {
     if (!bookingId) {
@@ -77,6 +78,14 @@ export default function BookingDetail() {
       setBooking(foundBooking);
       setAdminNotes(foundBooking?.admin_notes || '');
       setBookings(bookingsData.filter(b => b.booking_status !== 'cancelled' && b.id !== bookingId));
+      
+      // Load group schedule if needed
+      if (foundBooking?.service_type === 'basic_manners_group_class') {
+        try {
+          const scheduleSettings = await base44.entities.Settings.filter({ setting_key: 'basic_manners_group_schedule' });
+          if (scheduleSettings?.length > 0) setGroupSchedule(scheduleSettings[0].setting_value);
+        } catch (e) { /* ignore */ }
+      }
       
       // Try to load blocked slots (may fail for non-admin users)
       try {
@@ -184,7 +193,29 @@ export default function BookingDetail() {
   };
 
   const handleOpenReschedule = () => {
-    setEditingSessions(booking.session_dates.map(session => ({ ...session })));
+    if (booking.service_type === 'basic_manners_group_class') {
+      // Use booking's own session_dates if available, otherwise derive from global schedule
+      if (booking.session_dates && booking.session_dates.length > 0) {
+        setEditingSessions(booking.session_dates.map(session => ({ ...session })));
+      } else if (groupSchedule?.start_date) {
+        const sessions = Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
+          const startDate = new Date(groupSchedule.start_date);
+          const sessionDate = new Date(startDate);
+          sessionDate.setDate(startDate.getDate() + i * 7);
+          return {
+            session_number: i + 1,
+            date: format(sessionDate, 'yyyy-MM-dd'),
+            start_time: groupSchedule.start_time || '',
+            end_time: groupSchedule.end_time || ''
+          };
+        });
+        setEditingSessions(sessions);
+      } else {
+        setEditingSessions([]);
+      }
+    } else {
+      setEditingSessions((booking.session_dates || []).map(session => ({ ...session })));
+    }
     setShowRescheduleDialog(true);
   };
 
@@ -287,10 +318,11 @@ export default function BookingDetail() {
   const handleSaveReschedule = async () => {
     setSaving(true);
     try {
-      // Mark original sessions as was_rescheduled if their date/time has changed
+      // For ALL bookings (including group class), save session_dates directly on the booking
+      const originalSessions = booking.session_dates || [];
       const updatedEditingSessions = editingSessions.map((editedSession, index) => {
-        const originalSession = booking.session_dates[index];
-        if (editedSession.date !== originalSession.date || editedSession.start_time !== originalSession.start_time) {
+        const originalSession = originalSessions[index];
+        if (!originalSession || editedSession.date !== originalSession.date || editedSession.start_time !== originalSession.start_time) {
           return { ...editedSession, was_rescheduled: true };
         }
         return editedSession;
@@ -306,9 +338,8 @@ export default function BookingDetail() {
       // Send WhatsApp notification if consent was given
       if (booking.whatsapp_consent) {
         try {
-          const { sendBookingUpdate } = await import("@/functions/sendBookingUpdate");
           const updatedBooking = { ...booking, session_dates: updatedEditingSessions };
-          await sendBookingUpdate({ 
+          await base44.functions.invoke('sendBookingUpdate', { 
             booking: updatedBooking, 
             oldBooking: booking 
           });
@@ -869,13 +900,13 @@ export default function BookingDetail() {
                             <p className="font-medium">{getClientField(client, 'clientMobile')}</p>
                           </div>
                           <div>
-                            <p className="text-slate-600">Address</p>
-                            <p className="font-medium">{getClientField(client, 'clientAddress')}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-600">Postal Code</p>
-                            <p className="font-medium">{getClientField(client, 'clientPostalCode')}</p>
-                          </div>
+                             <p className="text-slate-600">Address</p>
+                             <p className="font-medium">{getClientField(client, 'clientAddress') !== 'N/A' ? getClientField(client, 'clientAddress') : (idx === 0 ? (booking.client_address || booking.sharedAddress || 'N/A') : 'N/A')}</p>
+                           </div>
+                           <div>
+                             <p className="text-slate-600">Postal Code</p>
+                             <p className="font-medium">{getClientField(client, 'clientPostalCode') !== 'N/A' ? getClientField(client, 'clientPostalCode') : (idx === 0 ? (booking.client_postal_code || booking.sharedPostalCode || 'N/A') : 'N/A')}</p>
+                           </div>
                         </div>
                       </div>
                     ))}
@@ -1344,24 +1375,62 @@ export default function BookingDetail() {
                 </div>
               </CardHeader>
               <CardContent className="p-6">
+                {booking.service_type === 'basic_manners_group_class' ? (
+                  <div className="space-y-3">
+                    {booking.session_dates && booking.session_dates.length > 0 ? (
+                      // Use booking's own rescheduled session dates
+                      booking.session_dates.map((session, idx) => (
+                        <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-medium text-sm">Session {session.session_number || idx + 1}</p>
+                              <p className="text-sm text-slate-600 mt-1">
+                                {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
+                              </p>
+                              <p className="text-sm text-blue-600 font-medium mt-1">
+                                {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
+                              </p>
+                            </div>
+                            {session.was_rescheduled && (
+                              <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
+                                <RefreshCw className="w-3 h-3" />
+                                Rescheduled
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : groupSchedule?.start_date ? (
+                      // Fall back to global schedule for bookings not yet individually rescheduled
+                      Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
+                        const startDate = new Date(groupSchedule.start_date);
+                        const sessionDate = new Date(startDate);
+                        sessionDate.setDate(startDate.getDate() + i * 7);
+                        return (
+                          <div key={i} className="p-3 bg-slate-50 rounded-lg">
+                            <p className="font-medium text-sm">Session {i + 1}</p>
+                            <p className="text-sm text-slate-600 mt-1">
+                              {format(sessionDate, 'EEEE, MMM d, yyyy')}
+                            </p>
+                            <p className="text-sm text-blue-600 font-medium mt-1">
+                              {groupSchedule.start_time}{groupSchedule.end_time ? ` - ${groupSchedule.end_time}` : ''}
+                            </p>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-sm text-slate-500">Schedule not yet configured. Please set it up in Group Class Schedule settings.</p>
+                    )}
+                  </div>
+                ) : (
                 <div className="space-y-3">
                   {booking.session_dates?.map((session, idx) => {
-                    // Check multiple possible property names for was_rescheduled
                     const wasRescheduled = Boolean(
                       session.was_rescheduled || 
                       session.wasRescheduled || 
                       session.rescheduled ||
                       session.auto_adjusted
                     );
-                    
-                    console.log(`Session ${idx + 1} rescheduled check:`, {
-                      was_rescheduled: session.was_rescheduled,
-                      wasRescheduled: session.wasRescheduled,
-                      rescheduled: session.rescheduled,
-                      auto_adjusted: session.auto_adjusted,
-                      result: wasRescheduled,
-                      fullSession: session
-                    });
                     
                     return (
                       <div key={idx} className="p-3 bg-slate-50 rounded-lg">
@@ -1389,6 +1458,7 @@ export default function BookingDetail() {
                     );
                   })}
                 </div>
+                )}
               </CardContent>
             </Card>
 

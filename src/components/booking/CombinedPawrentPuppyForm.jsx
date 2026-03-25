@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,12 +37,15 @@ const commonBreeds = [
   "Others"
 ];
 
-export default function CombinedPawrentPuppyForm({ service, formData, setFormData, onNext, onBack, kinderPuppyCount, currentIndex }) {
+export default function CombinedPawrentPuppyForm({ service, formData, setFormData, onNext, onBack, kinderPuppyCount, currentIndex, dogLabel = 'Puppy' }) {
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingProof, setUploadingProof] = useState(false);
   const [showCustomBreed, setShowCustomBreed] = useState(false);
+
+  const formDataRef = useRef(formData);
+  useEffect(() => { formDataRef.current = formData; });
 
   const client = (formData.clients && formData.clients[currentIndex]) || {};
   const furkid = (formData.furkids && formData.furkids[currentIndex]) || {};
@@ -52,6 +55,14 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     setErrors({});
     setShowValidationMessage(false);
     setShowCustomBreed(false);
+
+    // Use ref to get latest formData and clear the current entry's data
+    const latest = formDataRef.current;
+    const newClients = [...(latest.clients || [])];
+    const newFurkids = [...(latest.furkids || [])];
+    newClients[currentIndex] = {};
+    newFurkids[currentIndex] = {};
+    setFormData({ ...latest, clients: newClients, furkids: newFurkids });
   }, [currentIndex]);
 
   const currentYear = new Date().getFullYear();
@@ -65,6 +76,26 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     { value: '11', label: 'November' }, { value: '12', label: 'December' }
   ];
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  const checkSentosaPostalCode = (postalCode) => {
+    if (!postalCode) return false;
+    const code = parseInt(postalCode);
+    return code >= 90000 && code <= 99999;
+  };
+
+  const handleSharedLocationChange = (field, value) => {
+    const updated = { ...formData, [field]: value };
+    if (field === 'sharedPostalCode') {
+      updated.isSentosa = checkSentosaPostalCode(value);
+    }
+    setFormData(updated);
+    if (errors[field]) {
+      const newErrors = { ...errors };
+      delete newErrors[field];
+      setErrors(newErrors);
+    }
+    if (showValidationMessage) setShowValidationMessage(false);
+  };
 
   const handleClientChange = (field, value) => {
     const newClients = [...(formData.clients || [])];
@@ -181,12 +212,24 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
       newErrors.client_clientMobile = 'Mobile number is required';
     }
 
+    // Address/postal only required for first Pawrent
+    if (currentIndex === 0) {
+      if (!formData.sharedAddress?.trim()) {
+        newErrors.sharedAddress = 'Address is required';
+      }
+      if (!formData.sharedPostalCode?.trim()) {
+        newErrors.sharedPostalCode = 'Postal code is required';
+      } else if (!/^\d{6}$/.test(formData.sharedPostalCode)) {
+        newErrors.sharedPostalCode = 'Invalid postal code (6 digits required)';
+      }
+    }
+
     // Furkid validation
     if (currentFurkid.isAdopted === undefined || currentFurkid.isAdopted === null || currentFurkid.isAdopted === '') {
-      newErrors.furkid_isAdopted = 'Please specify if puppy is adopted';
+      newErrors.furkid_isAdopted = `Please specify if ${dogLabel.toLowerCase()} is adopted`;
     }
     if (!currentFurkid.furkidName?.trim()) {
-      newErrors.furkid_furkidName = 'Puppy name is required';
+      newErrors.furkid_furkidName = `${dogLabel} name is required`;
     }
     if (!currentFurkid.dobMonth || !currentFurkid.dobDay || !currentFurkid.dobYear) {
       newErrors.furkid_furkidDob = 'Date of birth is required';
@@ -231,9 +274,9 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
   const showCustomBreedInput = showCustomBreed || (furkid.furkidBreed && !commonBreeds.includes(furkid.furkidBreed));
 
   return (
-    <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+    <Card key={currentIndex} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
-        <CardTitle>Pawrent {currentIndex + 1} & Puppy {currentIndex + 1}</CardTitle>
+        <CardTitle>Pawrent {currentIndex + 1} & {dogLabel} {currentIndex + 1}</CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-8">
         {/* Pawrent Information Section */}
@@ -282,25 +325,68 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               <p className="text-sm text-red-600">{errors.client_clientMobile}</p>
             )}
           </div>
+
+          {/* Address & Postal Code - only for Pawrent 1 */}
+          {currentIndex === 0 && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="sharedAddress">Training Address *</Label>
+                <Input
+                  id="sharedAddress"
+                  value={formData.sharedAddress || ''}
+                  onChange={(e) => handleSharedLocationChange('sharedAddress', e.target.value)}
+                  placeholder="Enter full address"
+                  className={errors.sharedAddress ? 'border-red-500' : ''}
+                />
+                {errors.sharedAddress && (
+                  <p className="text-sm text-red-600">{errors.sharedAddress}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="sharedPostalCode">Postal Code *</Label>
+                <Input
+                  id="sharedPostalCode"
+                  value={formData.sharedPostalCode || ''}
+                  onChange={(e) => handleSharedLocationChange('sharedPostalCode', e.target.value)}
+                  placeholder="123456"
+                  maxLength={6}
+                  className={errors.sharedPostalCode ? 'border-red-500' : ''}
+                />
+                {errors.sharedPostalCode && (
+                  <p className="text-sm text-red-600">{errors.sharedPostalCode}</p>
+                )}
+                {formData.isSentosa && (
+                  <div className="flex items-start gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-orange-800">
+                      <p className="font-semibold">Sentosa Island Surcharge</p>
+                      <p>An additional $10 per session surcharge will apply to your booking.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Puppy Information Section */}
+        {/* Dog Information Section */}
         <div className="space-y-4 pt-6 border-t border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 border-b pb-2">Puppy Information</h3>
+          <h3 className="text-lg font-semibold text-slate-900 border-b pb-2">{dogLabel} Information</h3>
 
           <div className="space-y-2">
-            <Label>Is your puppy a Singapore Special or adopted from a shelter? *</Label>
+            <Label>Is your {dogLabel.toLowerCase()} a Singapore Special or adopted from a shelter? *</Label>
             <RadioGroup
               value={furkid.isAdopted?.toString()}
               onValueChange={(value) => handleFurkidChange('isAdopted', value === 'true')}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="true" id="adopted-yes" />
-                <Label htmlFor="adopted-yes" className="font-normal cursor-pointer">Yes</Label>
+                <RadioGroupItem value="true" id={`adopted-yes-${currentIndex}`} />
+                <Label htmlFor={`adopted-yes-${currentIndex}`} className="font-normal cursor-pointer">Yes</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="false" id="adopted-no" />
-                <Label htmlFor="adopted-no" className="font-normal cursor-pointer">No</Label>
+                <RadioGroupItem value="false" id={`adopted-no-${currentIndex}`} />
+                <Label htmlFor={`adopted-no-${currentIndex}`} className="font-normal cursor-pointer">No</Label>
               </div>
             </RadioGroup>
             {errors.furkid_isAdopted && (
@@ -328,12 +414,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="furkidName">Puppy's Name *</Label>
+            <Label htmlFor="furkidName">{dogLabel}'s Name *</Label>
             <Input
               id="furkidName"
               value={furkid.furkidName || ''}
               onChange={(e) => handleFurkidChange('furkidName', e.target.value)}
-              placeholder="Enter your puppy's name"
+              placeholder={`Enter your ${dogLabel.toLowerCase()}'s name`}
               className={errors.furkid_furkidName ? 'border-red-500' : ''}
             />
             {errors.furkid_furkidName && (
@@ -419,12 +505,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               onValueChange={(value) => handleFurkidChange('furkidGender', value)}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="boy" id="gender-boy" />
-                <Label htmlFor="gender-boy" className="font-normal cursor-pointer">Boy</Label>
+                <RadioGroupItem value="boy" id={`gender-boy-${currentIndex}`} />
+                <Label htmlFor={`gender-boy-${currentIndex}`} className="font-normal cursor-pointer">Boy</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="girl" id="gender-girl" />
-                <Label htmlFor="gender-girl" className="font-normal cursor-pointer">Girl</Label>
+                <RadioGroupItem value="girl" id={`gender-girl-${currentIndex}`} />
+                <Label htmlFor={`gender-girl-${currentIndex}`} className="font-normal cursor-pointer">Girl</Label>
               </div>
             </RadioGroup>
             {errors.furkid_furkidGender && (
@@ -439,12 +525,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               onValueChange={(value) => handleFurkidChange('furkidSterilised', value === 'true')}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="true" id="sterilised-yes" />
-                <Label htmlFor="sterilised-yes" className="font-normal cursor-pointer">Yes</Label>
+                <RadioGroupItem value="true" id={`sterilised-yes-${currentIndex}`} />
+                <Label htmlFor={`sterilised-yes-${currentIndex}`} className="font-normal cursor-pointer">Yes</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="false" id="sterilised-no" />
-                <Label htmlFor="sterilised-no" className="font-normal cursor-pointer">Nope</Label>
+                <RadioGroupItem value="false" id={`sterilised-no-${currentIndex}`} />
+                <Label htmlFor={`sterilised-no-${currentIndex}`} className="font-normal cursor-pointer">Nope</Label>
               </div>
             </RadioGroup>
             {errors.furkid_furkidSterilised && (
@@ -516,12 +602,12 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               onValueChange={(value) => handleFurkidChange('firstTimeOwner', value === 'true')}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="true" id="firsttime-yes" />
-                <Label htmlFor="firsttime-yes" className="font-normal cursor-pointer">Yup</Label>
+                <RadioGroupItem value="true" id={`firsttime-yes-${currentIndex}`} />
+                <Label htmlFor={`firsttime-yes-${currentIndex}`} className="font-normal cursor-pointer">Yup</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="false" id="firsttime-no" />
-                <Label htmlFor="firsttime-no" className="font-normal cursor-pointer">Nope</Label>
+                <RadioGroupItem value="false" id={`firsttime-no-${currentIndex}`} />
+                <Label htmlFor={`firsttime-no-${currentIndex}`} className="font-normal cursor-pointer">Nope</Label>
               </div>
             </RadioGroup>
             {errors.furkid_firstTimeOwner && (
@@ -530,7 +616,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidDiet">What is your puppy's diet? *</Label>
+            <Label htmlFor="furkidDiet">What is your {dogLabel.toLowerCase()}'s diet? *</Label>
             <Input
               id="furkidDiet"
               value={furkid.furkidDiet || ''}
@@ -544,7 +630,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidSleepArea">Where does your puppy sleep at night? *</Label>
+            <Label htmlFor="furkidSleepArea">Where does your {dogLabel.toLowerCase()} sleep at night? *</Label>
             <Input
               id="furkidSleepArea"
               value={furkid.furkidSleepArea || ''}
@@ -558,7 +644,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="walkingFrequency">How frequently do you walk the puppy? *</Label>
+            <Label htmlFor="walkingFrequency">How frequently do you walk the {dogLabel.toLowerCase()}? *</Label>
             <Input
               id="walkingFrequency"
               value={furkid.walkingFrequency || ''}
@@ -572,7 +658,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidPhoto">Front Photo of Puppy (Max 10MB)</Label>
+            <Label htmlFor="furkidPhoto">Front Photo of {dogLabel} (Max 10MB)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="furkidPhoto"
@@ -589,7 +675,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidInstagram">Puppy's IG Account (if any)</Label>
+            <Label htmlFor="furkidInstagram">{dogLabel}'s IG Account (if any)</Label>
             <Input
               id="furkidInstagram"
               value={furkid.furkidInstagram || ''}
@@ -604,7 +690,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               id="enrolmentReason"
               value={furkid.enrolmentReason || ''}
               onChange={(e) => handleFurkidChange('enrolmentReason', e.target.value)}
-              placeholder="Tell us why you're enrolling your puppy"
+              placeholder={`Tell us why you're enrolling your ${dogLabel.toLowerCase()}`}
               rows={3}
             />
           </div>

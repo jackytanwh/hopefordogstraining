@@ -61,6 +61,7 @@ const sundayTimeSlots = [
 export default function BookingCalendar() {
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
+  const [groupSchedule, setGroupSchedule] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDateBookings, setSelectedDateBookings] = useState([]);
@@ -82,11 +83,29 @@ export default function BookingCalendar() {
     loadData();
   }, []);
 
+  const getGroupSessionDates = (schedule) => {
+    if (!schedule?.start_date) return [];
+    const dates = [];
+    const startDate = new Date(schedule.start_date);
+    for (let i = 0; i < (schedule.weeks || 7); i++) {
+      const d = new Date(startDate);
+      d.setDate(startDate.getDate() + i * 7);
+      dates.push(format(d, 'yyyy-MM-dd'));
+    }
+    return dates;
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
-      const bookingsData = await base44.entities.Booking.list();
+      const [bookingsData, scheduleSettings] = await Promise.all([
+        base44.entities.Booking.list(),
+        base44.entities.Settings.filter({ setting_key: 'basic_manners_group_schedule' }).catch(() => [])
+      ]);
       setBookings(bookingsData.filter(b => b.booking_status !== 'cancelled'));
+      if (scheduleSettings?.length > 0) {
+        setGroupSchedule(scheduleSettings[0].setting_value);
+      }
       
       // Try to load blocked slots (may fail for non-admin users)
       try {
@@ -120,16 +139,42 @@ export default function BookingCalendar() {
   const getBookingsForDate = (date) => {
     const dateString = format(date, 'yyyy-MM-dd');
     const dayBookings = [];
+    const groupSessionDates = getGroupSessionDates(groupSchedule);
 
     bookings.forEach(booking => {
-      booking.session_dates?.forEach(session => {
-        if (session.date === dateString) {
-          dayBookings.push({
-            ...booking,
-            session: session
+      if (booking.service_type === 'basic_manners_group_class') {
+        if (booking.session_dates && booking.session_dates.length > 0) {
+          // Use booking's own session_dates (individually rescheduled)
+          booking.session_dates.forEach(session => {
+            if (session.date === dateString) {
+              dayBookings.push({ ...booking, session });
+            }
           });
+        } else {
+          // Fall back to global schedule
+          const sessionIndex = groupSessionDates.indexOf(dateString);
+          if (sessionIndex !== -1) {
+            dayBookings.push({
+              ...booking,
+              session: {
+                date: dateString,
+                session_number: sessionIndex + 1,
+                start_time: groupSchedule?.start_time || '',
+                end_time: groupSchedule?.end_time || ''
+              }
+            });
+          }
         }
-      });
+      } else {
+        booking.session_dates?.forEach(session => {
+          if (session.date === dateString) {
+            dayBookings.push({
+              ...booking,
+              session: session
+            });
+          }
+        });
+      }
     });
 
     return dayBookings;

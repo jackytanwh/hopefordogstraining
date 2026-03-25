@@ -21,6 +21,10 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
+  // FYOG multi-dog uses CombinedPawrentPuppyForm just like KinderPuppy multi — shared address layout
+  const isFYOGMulti = isFYOG && formData.clients && formData.clients.length > 0;
+  const useSharedLayout = isKinderPuppyMulti || isFYOGMulti;
+  const dogLabel = isKinderPuppy ? 'Puppy' : 'Dog';
 
   const handleSubmit = () => {
     if (isBasicManners) {
@@ -164,8 +168,8 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {isKinderPuppyMulti ? (
-          // For multi-puppy Kinder Puppy: Display Pawrent + Puppy pairs in combined cards
+        {useSharedLayout ? (
+          // For multi-dog KinderPuppy/FYOG: Display Pawrent + Dog pairs in combined cards
           <div className="space-y-4">
             {formData.clients && formData.clients.map((client, idx) => (
               <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
@@ -175,7 +179,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                   <span className="font-semibold text-slate-900">Pawrent {idx + 1}</span>
                   <span className="text-slate-400 mx-2">•</span>
                   <PawPrint className="w-5 h-5 text-blue-600" />
-                  <span className="font-semibold text-slate-900">Puppy {idx + 1}</span>
+                  <span className="font-semibold text-slate-900">{dogLabel} {idx + 1}</span>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -201,7 +205,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                   {/* Puppy Information */}
                   {formData.furkids && formData.furkids[idx] && (
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Puppy Details</p>
+                      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{dogLabel} Details</p>
                       <div className="space-y-1.5 text-sm">
                         <div className="flex">
                           <span className="font-medium text-slate-600 w-24">Name:</span>
@@ -255,7 +259,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               </div>
             )}
           </div>
-        ) : (isFYOG || isGroupClass) && formData.clients && formData.clients.length > 0 ? (
+        ) : isGroupClass && formData.clients && formData.clients.length > 0 ? (
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
               <Users className="w-5 h-5" />
@@ -324,7 +328,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {!isKinderPuppyMulti && (
+        {!useSharedLayout && (
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
               <PawPrint className="w-5 h-5" />
