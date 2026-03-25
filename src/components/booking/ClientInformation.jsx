@@ -14,7 +14,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
 
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
   const isMultiClient = !isMultiEntryForm && (isKinderPuppyMulti || isFYOGMulti || isGroupClass);
-  const numberOfClients = isMultiEntryForm ? 1 : (isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : isFYOG ? (formData.numberOfClients || 1) : 1);
+  const numberOfClients = isMultiEntryForm ? 1 : (isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : (isFYOG || isGroupClass) ? (formData.numberOfClients || 1) : 1);
   const isBehaviouralModification = service.id === 'behavioural_modification';
   const isGroupClass = service.id === 'basic_manners_group_class';
   const isFYOGProgram = service.id === 'basic_manners_fyog';
@@ -265,8 +265,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
           );
         })}
 
-        {/* Shared Training Location for multi-dog FYOG and other multi-client flows */}
-        {((isFYOGProgram && isFYOGMulti) || (isMultiClient && !isMultiEntryForm)) && (
+        {/* Shared Training Location for multi-dog FYOG (not group class, which has fixed location) */}
+        {((isFYOGProgram && isFYOGMulti) || (isMultiClient && !isMultiEntryForm && !isGroupClass)) && (
           <div className="pt-6 border-t border-slate-200 space-y-4">
             <h3 className="font-semibold text-slate-900 text-lg">Training Location</h3>
             <p className="text-sm text-slate-600">Please provide the address where the training sessions will take place.</p>
