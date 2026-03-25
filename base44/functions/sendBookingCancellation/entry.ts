@@ -71,7 +71,10 @@ Deno.serve(async (req) => {
                 const { Resend } = await import('npm:resend');
                 const resend = new Resend(RESEND_API_KEY);
                 const fromAddress = RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-                const cancelHtml = `
+                const cancelSubject = `Booking Cancelled: ${booking.service_name || 'Training Service'}`;
+                const sentTo: string[] = [];
+
+                const buildCancelHtml = (name: string, dog: string) => `
                     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
                         <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
                             <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">
@@ -81,8 +84,8 @@ Deno.serve(async (req) => {
                             <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 16px;">We're sorry to see this booking go</p>
                         </div>
                         <div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">
-                            <p style="font-size: 16px; color: #334155;">Hi ${clientName},</p>
-                            <p style="font-size: 15px; color: #475569; line-height: 1.6;">Your booking for <strong>${booking.service_name || 'Training Service'}</strong> with <strong>${furkidName}</strong> has been cancelled.</p>
+                            <p style="font-size: 16px; color: #334155;">Hi ${name},</p>
+                            <p style="font-size: 15px; color: #475569; line-height: 1.6;">Your booking for <strong>${booking.service_name || 'Training Service'}</strong> with <strong>${dog}</strong> has been cancelled.</p>
                             <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px; margin: 20px 0;">
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <tr><td style="padding: 6px 0; color: #64748b; font-size: 14px;">Service</td><td style="padding: 6px 0; text-align: right; color: #334155; font-size: 14px; font-weight: 600;">${booking.service_name || 'Training Service'}</td></tr>
@@ -91,7 +94,7 @@ Deno.serve(async (req) => {
                                 </table>
                             </div>
                             <p style="font-size: 15px; color: #475569; line-height: 1.6;">If this was done in error or if you'd like to reschedule, please contact our admin team at <strong>+65 8222 8376</strong>.</p>
-                            <p style="font-size: 15px; color: #475569;">We hope to see you and ${furkidName} again soon! 🐾</p>
+                            <p style="font-size: 15px; color: #475569;">We hope to see you and ${dog} again soon! 🐾</p>
                         </div>
                         <div style="padding: 24px; text-align: center; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; background: #f8fafc;">
                             <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">🐾 Hope For Dogs Training</p>
@@ -100,20 +103,47 @@ Deno.serve(async (req) => {
                         </div>
                     </div>`;
 
-                for (const recipientEmail of allClientEmails) {
+                const hasMultipleClients = booking.clients && booking.clients.length > 1;
+
+                if (hasMultipleClients) {
+                    for (let i = 0; i < booking.clients.length; i++) {
+                        const c = booking.clients[i];
+                        if (!c) continue;
+                        const cEmail = c.client_email || c.clientEmail || '';
+                        if (!cEmail) continue;
+                        const cName = c.client_name || c.clientName || 'Valued Client';
+                        const cFurkid = booking.furkids?.[i]?.furkid_name || furkidName;
+                        try {
+                            await resend.emails.send({
+                                from: fromAddress,
+                                to: [cEmail],
+                                subject: cancelSubject,
+                                html: buildCancelHtml(cName, cFurkid),
+                            });
+                            sentTo.push(cEmail);
+                            console.log(`✅ Personalized cancellation email sent to ${cEmail} (${cName} & ${cFurkid})`);
+                        } catch (singleErr) {
+                            console.error(`⚠️ Email to ${cEmail} failed:`, singleErr);
+                        }
+                    }
+                } else {
+                    const recipientEmail = allClientEmails[0];
                     try {
                         await resend.emails.send({
                             from: fromAddress,
                             to: [recipientEmail],
-                            subject: `Booking Cancelled: ${booking.service_name || 'Training Service'}`,
-                            html: cancelHtml,
+                            subject: cancelSubject,
+                            html: buildCancelHtml(clientName, furkidName),
                         });
+                        sentTo.push(recipientEmail);
                         console.log(`✅ Cancellation email sent to ${recipientEmail}`);
                     } catch (singleErr) {
                         console.error(`⚠️ Email to ${recipientEmail} failed:`, singleErr);
                     }
                 }
-                results.email = 'sent';
+
+                results.email = sentTo.length > 0 ? 'sent' : 'failed';
+                console.log(`✅ Cancellation emails sent to ${sentTo.length} recipient(s)`);
             } catch (emailError) {
                 console.error('⚠️ Email failed:', emailError);
                 results.email = 'failed';
