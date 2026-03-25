@@ -331,10 +331,25 @@ export default function BookingDetail() {
 
       // Mark original sessions as was_rescheduled if their date/time has changed
       const updatedEditingSessions = editingSessions.map((editedSession, index) => {
+        const originalSession = booking.session_dates[index];
+        if (editedSession.date !== originalSession.date || editedSession.start_time !== originalSession.start_time) {
+          return { ...editedSession, was_rescheduled: true };
+        }
+        return editedSession;
+      });
+
+      await base44.entities.Booking.update(bookingId, {
+        session_dates: updatedEditingSessions
+      });
+      
+      await loadBooking();
+      setShowRescheduleDialog(false);
+      
+      // Send WhatsApp notification if consent was given
+      if (booking.whatsapp_consent) {
         try {
-          const { sendBookingUpdate } = await import("@/functions/sendBookingUpdate");
           const updatedBooking = { ...booking, session_dates: updatedEditingSessions };
-          await sendBookingUpdate({ 
+          await base44.functions.invoke('sendBookingUpdate', { 
             booking: updatedBooking, 
             oldBooking: booking 
           });
