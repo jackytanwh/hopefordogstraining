@@ -385,25 +385,56 @@ Deno.serve(async (req) => {
                 const { Resend } = await import('npm:resend');
                 const resend = new Resend(RESEND_API_KEY);
                 const fromAddress = RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-                const emailHtml = buildConfirmationEmailHtml(booking, clientName, furkidName);
                 const emailSubject = `Booking Confirmed: ${booking.service_name || 'Training Service'}`;
+                const sentTo: string[] = [];
 
-                for (const recipientEmail of allClientEmails) {
+                const hasMultipleClients = booking.clients && booking.clients.length > 1;
+
+                if (hasMultipleClients) {
+                    // Send personalized email per client-dog pair
+                    for (let i = 0; i < booking.clients.length; i++) {
+                        const c = booking.clients[i];
+                        if (!c) continue;
+                        const cEmail = c.client_email || c.clientEmail || '';
+                        if (!cEmail) continue;
+
+                        const cName = c.client_name || c.clientName || 'Valued Client';
+                        const pairedFurkid = booking.furkids?.[i];
+                        const cFurkidName = pairedFurkid?.furkid_name || furkidName;
+
+                        try {
+                            await resend.emails.send({
+                                from: fromAddress,
+                                to: [cEmail],
+                                subject: emailSubject,
+                                html: buildConfirmationEmailHtml(booking, cName, cFurkidName),
+                            });
+                            sentTo.push(cEmail);
+                            console.log(`✅ Personalized email sent to ${cEmail} (${cName} & ${cFurkidName})`);
+                        } catch (singleErr) {
+                            console.error(`⚠️ Email to ${cEmail} failed:`, singleErr);
+                        }
+                    }
+                } else {
+                    // Single client — send one email
+                    const recipientEmail = allClientEmails[0];
                     try {
                         await resend.emails.send({
                             from: fromAddress,
                             to: [recipientEmail],
                             subject: emailSubject,
-                            html: emailHtml,
+                            html: buildConfirmationEmailHtml(booking, clientName, furkidName),
                         });
+                        sentTo.push(recipientEmail);
                         console.log(`✅ Confirmation email sent to ${recipientEmail}`);
                     } catch (singleErr) {
                         console.error(`⚠️ Email to ${recipientEmail} failed:`, singleErr);
                     }
                 }
-                results.email = 'sent';
-                results.email_recipients = allClientEmails;
-                console.log(`✅ Confirmation emails sent to ${allClientEmails.length} recipient(s)`);
+
+                results.email = sentTo.length > 0 ? 'sent' : 'failed';
+                results.email_recipients = sentTo;
+                console.log(`✅ Confirmation emails sent to ${sentTo.length} recipient(s)`);
             } catch (emailError) {
                 console.error('⚠️ Email failed:', emailError);
                 results.email = 'failed';
