@@ -56,6 +56,7 @@ export default function BookingDetail() {
   const [editingSessions, setEditingSessions] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
+  const [groupSchedule, setGroupSchedule] = useState(null);
 
   const loadBooking = useCallback(async () => {
     if (!bookingId) {
@@ -77,6 +78,14 @@ export default function BookingDetail() {
       setBooking(foundBooking);
       setAdminNotes(foundBooking?.admin_notes || '');
       setBookings(bookingsData.filter(b => b.booking_status !== 'cancelled' && b.id !== bookingId));
+      
+      // Load group schedule if needed
+      if (foundBooking?.service_type === 'basic_manners_group_class') {
+        try {
+          const scheduleSettings = await base44.entities.Settings.filter({ setting_key: 'basic_manners_group_schedule' });
+          if (scheduleSettings?.length > 0) setGroupSchedule(scheduleSettings[0].setting_value);
+        } catch (e) { /* ignore */ }
+      }
       
       // Try to load blocked slots (may fail for non-admin users)
       try {
@@ -1332,36 +1341,52 @@ export default function BookingDetail() {
                     <Calendar className="w-5 h-5" />
                     Session Schedule
                   </CardTitle>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleOpenReschedule}
-                    className="flex items-center gap-2"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                    Reschedule
-                  </Button>
+                  {booking.service_type !== 'basic_manners_group_class' && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleOpenReschedule}
+                      className="flex items-center gap-2"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Reschedule
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="p-6">
+                {booking.service_type === 'basic_manners_group_class' ? (
+                  <div className="space-y-3">
+                    {groupSchedule?.start_date ? (
+                      Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
+                        const startDate = new Date(groupSchedule.start_date);
+                        const sessionDate = new Date(startDate);
+                        sessionDate.setDate(startDate.getDate() + i * 7);
+                        return (
+                          <div key={i} className="p-3 bg-slate-50 rounded-lg">
+                            <p className="font-medium text-sm">Session {i + 1}</p>
+                            <p className="text-sm text-slate-600 mt-1">
+                              {format(sessionDate, 'EEEE, MMM d, yyyy')}
+                            </p>
+                            <p className="text-sm text-blue-600 font-medium mt-1">
+                              {groupSchedule.start_time}{groupSchedule.end_time ? ` - ${groupSchedule.end_time}` : ''}
+                            </p>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-sm text-slate-500">Schedule not yet configured. Please set it up in Group Class Schedule settings.</p>
+                    )}
+                  </div>
+                ) : (
                 <div className="space-y-3">
                   {booking.session_dates?.map((session, idx) => {
-                    // Check multiple possible property names for was_rescheduled
                     const wasRescheduled = Boolean(
                       session.was_rescheduled || 
                       session.wasRescheduled || 
                       session.rescheduled ||
                       session.auto_adjusted
                     );
-                    
-                    console.log(`Session ${idx + 1} rescheduled check:`, {
-                      was_rescheduled: session.was_rescheduled,
-                      wasRescheduled: session.wasRescheduled,
-                      rescheduled: session.rescheduled,
-                      auto_adjusted: session.auto_adjusted,
-                      result: wasRescheduled,
-                      fullSession: session
-                    });
                     
                     return (
                       <div key={idx} className="p-3 bg-slate-50 rounded-lg">
@@ -1389,6 +1414,7 @@ export default function BookingDetail() {
                     );
                   })}
                 </div>
+                )}
               </CardContent>
             </Card>
 
