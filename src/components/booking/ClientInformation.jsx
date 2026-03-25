@@ -102,7 +102,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
 
       // For non-multi, non-Group Class, non-FYOG-multi: validate address per client
-      if (!(isFYOGProgram && isFYOGMulti) && !isGroupClass && !isMultiClient) {
+      if (!(isFYOGProgram && isFYOGMulti) && !isGroupClass && !(isMultiClient && !isGroupClass)) {
         if (!client.clientAddress?.trim()) {
           newErrors[`${prefix}clientAddress`] = 'Address is required';
         }
@@ -115,8 +115,8 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
     }
 
-    // For multi-dog FYOG programs and other multi-client flows, validate shared address/postal code
-    if ((isFYOGProgram && isFYOGMulti) || isMultiClient) {
+    // For multi-dog FYOG programs (but not group class which has fixed location), validate shared address/postal code
+    if ((isFYOGProgram && isFYOGMulti) || (isMultiClient && !isGroupClass)) {
       if (!formData.sharedAddress?.trim()) {
         newErrors.sharedAddress = 'Training location address is required';
       }
