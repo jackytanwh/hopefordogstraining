@@ -93,7 +93,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
                 'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
                 'Water for <strong>[furkid_name]</strong>',
             ],
-            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-7-weeks-Handouts-2025.pdf',
+            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-6-weeks-Handouts-2025.pdf',
             pdfLabel: 'Basic Manners 7-Weeks Handouts 2025',
             promoBlock: pawsBotanicPromo,
             addressLabel: 'Location',
