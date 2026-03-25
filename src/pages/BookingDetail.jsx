@@ -193,7 +193,22 @@ export default function BookingDetail() {
   };
 
   const handleOpenReschedule = () => {
-    setEditingSessions(booking.session_dates.map(session => ({ ...session })));
+    if (booking.service_type === 'basic_manners_group_class' && groupSchedule?.start_date) {
+      const sessions = Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
+        const startDate = new Date(groupSchedule.start_date);
+        const sessionDate = new Date(startDate);
+        sessionDate.setDate(startDate.getDate() + i * 7);
+        return {
+          session_number: i + 1,
+          date: format(sessionDate, 'yyyy-MM-dd'),
+          start_time: groupSchedule.start_time || '',
+          end_time: groupSchedule.end_time || ''
+        };
+      });
+      setEditingSessions(sessions);
+    } else {
+      setEditingSessions((booking.session_dates || []).map(session => ({ ...session })));
+    }
     setShowRescheduleDialog(true);
   };
 
