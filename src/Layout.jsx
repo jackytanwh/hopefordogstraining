@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -162,7 +161,7 @@ export default function Layout({ children, currentPageName }) {
   }, [program]);
 
   // Check if current page is a public booking portal page - AFTER all hooks
-  const isPublicBookingPage = ['BookingSystem', 'BookService', 'BookingConfirmation'].includes(currentPageName);
+  const isPublicBookingPage = ['BookingSystem', 'BookService', 'BookingConfirmation', 'PaymentSuccess'].includes(currentPageName);
 
   // If it's a public booking page, render without sidebar
   if (isPublicBookingPage) {
