@@ -318,28 +318,11 @@ export default function BookingDetail() {
   const handleSaveReschedule = async () => {
     setSaving(true);
     try {
-      if (booking.service_type === 'basic_manners_group_class' && groupSchedule) {
-        // For group class, update the shared schedule settings
-        const firstSession = editingSessions[0];
-        const updatedSchedule = {
-          ...groupSchedule,
-          start_date: firstSession.date,
-          start_time: firstSession.start_time,
-          end_time: firstSession.end_time
-        };
-        const scheduleSettings = await base44.entities.Settings.filter({ setting_key: 'basic_manners_group_schedule' });
-        if (scheduleSettings?.length > 0) {
-          await base44.entities.Settings.update(scheduleSettings[0].id, { setting_value: updatedSchedule });
-        }
-        setGroupSchedule(updatedSchedule);
-        setShowRescheduleDialog(false);
-        return;
-      }
-
-      // Mark original sessions as was_rescheduled if their date/time has changed
+      // For ALL bookings (including group class), save session_dates directly on the booking
+      const originalSessions = booking.session_dates || [];
       const updatedEditingSessions = editingSessions.map((editedSession, index) => {
-        const originalSession = booking.session_dates[index];
-        if (editedSession.date !== originalSession.date || editedSession.start_time !== originalSession.start_time) {
+        const originalSession = originalSessions[index];
+        if (!originalSession || editedSession.date !== originalSession.date || editedSession.start_time !== originalSession.start_time) {
           return { ...editedSession, was_rescheduled: true };
         }
         return editedSession;
