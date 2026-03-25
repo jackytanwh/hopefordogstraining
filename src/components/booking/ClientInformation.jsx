@@ -12,12 +12,12 @@ export default function ClientInformation({ service, formData, setFormData, onNe
   const [errors, setErrors] = useState({});
   const [showValidationMessage, setShowValidationMessage] = useState(false);
 
-  const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
-  const isMultiClient = !isMultiEntryForm && (isKinderPuppyMulti || isFYOGMulti || isGroupClass);
-  const numberOfClients = isMultiEntryForm ? 1 : (isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : (isFYOG || isGroupClass) ? (formData.numberOfClients || 1) : 1);
   const isBehaviouralModification = service.id === 'behavioural_modification';
   const isGroupClass = service.id === 'basic_manners_group_class';
   const isFYOGProgram = service.id === 'basic_manners_fyog';
+  const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
+  const isMultiClient = !isMultiEntryForm && (isKinderPuppyMulti || isFYOGMulti || isGroupClass);
+  const numberOfClients = isMultiEntryForm ? 1 : (isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : (isFYOG || isGroupClass) ? (formData.numberOfClients || 1) : 1);
   const isHowDidYouKnowRequired = isBehaviouralModification;
 
   const checkSentosaPostalCode = (postalCode) => {
