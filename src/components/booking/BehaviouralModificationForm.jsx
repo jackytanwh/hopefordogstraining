@@ -789,13 +789,13 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>How long is the dog left alone daily? *</Label>
+            <Label>How often, and for how long, is the dog typically left alone? *</Label>
             <Input value={formData.alone_duration || ''} onChange={(e) => handleInputChange('alone_duration', e.target.value)} />
             {errors.alone_duration && <p className="text-sm text-red-600">{errors.alone_duration}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label>Anxiety behaviours when left alone? *</Label>
+            <Label>Does the dog exhibit any anxious behaviours when alone? *</Label>
             <Textarea value={formData.anxiety_when_alone || ''} onChange={(e) => handleInputChange('anxiety_when_alone', e.target.value)} rows={2} />
             {errors.anxiety_when_alone && <p className="text-sm text-red-600">{errors.anxiety_when_alone}</p>}
           </div>
