@@ -815,8 +815,23 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>Indoor or outdoor potty trained? *</Label>
-            <Input value={formData.potty_training || ''} onChange={(e) => handleInputChange('potty_training', e.target.value)} />
+            <Label>Is the dog indoor or outdoors potty trained? *</Label>
+            <RadioGroup value={formData.potty_training} onValueChange={(v) => handleInputChange('potty_training', v)}>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Indoors" id="potty-indoor" />
+                  <Label htmlFor="potty-indoor" className="cursor-pointer">Indoors</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Outdoors" id="potty-outdoor" />
+                  <Label htmlFor="potty-outdoor" className="cursor-pointer">Outdoors</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Both indoors and outdoors" id="potty-both" />
+                  <Label htmlFor="potty-both" className="cursor-pointer">Both indoors and outdoors</Label>
+                </div>
+              </div>
+            </RadioGroup>
             {errors.potty_training && <p className="text-sm text-red-600">{errors.potty_training}</p>}
           </div>
 
