@@ -1121,7 +1121,32 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>When was the dog's last health check? *</Label>
-            <Input value={formData.last_health_check || ''} onChange={(e) => handleInputChange('last_health_check', e.target.value)} />
+            <div className="grid grid-cols-2 gap-2">
+              <Select value={formData.last_health_check_month || ''} onValueChange={(v) => {
+                handleInputChange('last_health_check_month', v);
+                const yr = formData.last_health_check_year || '';
+                handleInputChange('last_health_check', yr ? `${v} ${yr}` : v);
+              }}>
+                <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map(m => <SelectItem key={m.value} value={m.label}>{m.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={formData.last_health_check_year || ''} onValueChange={(v) => {
+                handleInputChange('last_health_check_year', v);
+                const mo = formData.last_health_check_month || '';
+                handleInputChange('last_health_check', mo ? `${mo} ${v}` : v);
+              }}>
+                <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map(y => <SelectItem key={y} value={y.toString()}>{y}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             {errors.last_health_check && <p className="text-sm text-red-600">{errors.last_health_check}</p>}
           </div>
 
