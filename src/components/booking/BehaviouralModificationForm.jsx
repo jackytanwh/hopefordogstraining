@@ -971,7 +971,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>How many times a day do you feed? *</Label>
+              <Label>How many meals does the dog get each day? *</Label>
               <Input value={formData.feeding_frequency || ''} onChange={(e) => handleInputChange('feeding_frequency', e.target.value)} />
               {errors.feeding_frequency && <p className="text-sm text-red-600">{errors.feeding_frequency}</p>}
             </div>
@@ -1014,8 +1014,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>How often gets chews (bully sticks, bones)? *</Label>
-            <Input value={formData.chews_frequency || ''} onChange={(e) => handleInputChange('chews_frequency', e.target.value)} />
+            <Label>How often does the furkid get short or long-duration chews? *</Label>
+            <Input value={formData.chews_frequency || ''} onChange={(e) => handleInputChange('chews_frequency', e.target.value)} placeholder="e.g. bully sticks/yak chews/meaty bones" />
             {errors.chews_frequency && <p className="text-sm text-red-600">{errors.chews_frequency}</p>}
           </div>
 
@@ -1071,7 +1071,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           {formData.food_allergies && (
             <div className="space-y-2">
-              <Label>If yes, what allergies? *</Label>
+              <Label>What substances or foods is the dog allergic to? *</Label>
               <Textarea value={formData.food_allergies_details || ''} onChange={(e) => handleInputChange('food_allergies_details', e.target.value)} rows={2} />
               {errors.food_allergies_details && <p className="text-sm text-red-600">{errors.food_allergies_details}</p>}
             </div>
