@@ -381,7 +381,32 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             <>
               <div className="space-y-2">
                 <Label>If yes, at what age? *</Label>
-                <Input value={formData.furkid_sterilisation_age || ''} onChange={(e) => handleInputChange('furkid_sterilisation_age', e.target.value)} placeholder="e.g., 6 months" />
+                <div className="grid grid-cols-2 gap-2">
+                  <Select value={formData.sterilisation_age_year ?? ''} onValueChange={(v) => {
+                    handleInputChange('sterilisation_age_year', v);
+                    const m = formData.sterilisation_age_month ?? '0';
+                    handleInputChange('furkid_sterilisation_age', `${v}y ${m}m`);
+                  }}>
+                    <SelectTrigger className={errors.furkid_sterilisation_age ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({length: 26}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} yr</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select value={formData.sterilisation_age_month ?? ''} onValueChange={(v) => {
+                    handleInputChange('sterilisation_age_month', v);
+                    const y = formData.sterilisation_age_year ?? '0';
+                    handleInputChange('furkid_sterilisation_age', `${y}y ${v}m`);
+                  }}>
+                    <SelectTrigger className={errors.furkid_sterilisation_age ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({length: 13}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} mo</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
                 {errors.furkid_sterilisation_age && <p className="text-sm text-red-600">{errors.furkid_sterilisation_age}</p>}
               </div>
               <div className="space-y-2">
@@ -433,7 +458,32 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>How old was the furkid when he/she joined your household? *</Label>
-            <Input value={formData.furkid_joined_family_age || ''} onChange={(e) => handleInputChange('furkid_joined_family_age', e.target.value)} />
+            <div className="grid grid-cols-2 gap-2">
+              <Select value={formData.joined_family_age_year ?? ''} onValueChange={(v) => {
+                handleInputChange('joined_family_age_year', v);
+                const m = formData.joined_family_age_month ?? '0';
+                handleInputChange('furkid_joined_family_age', `${v}y ${m}m`);
+              }}>
+                <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({length: 26}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} yr</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={formData.joined_family_age_month ?? ''} onValueChange={(v) => {
+                handleInputChange('joined_family_age_month', v);
+                const y = formData.joined_family_age_year ?? '0';
+                handleInputChange('furkid_joined_family_age', `${y}y ${v}m`);
+              }}>
+                <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({length: 13}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} mo</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             {errors.furkid_joined_family_age && <p className="text-sm text-red-600">{errors.furkid_joined_family_age}</p>}
           </div>
 
