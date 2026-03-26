@@ -1226,7 +1226,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           )}
 
           <div className="space-y-2">
-            <Label>Is he/she on any medication? *</Label>
+            <Label>Is the dog currently on any medication? *</Label>
             <RadioGroup value={formData.on_medication?.toString()} onValueChange={(v) => handleInputChange('on_medication', v === 'true')}>
               <div className="flex gap-4">
                 <div className="flex items-center space-x-2">
@@ -1247,6 +1247,29 @@ export default function BehaviouralModificationForm({ service, formData, setForm
               <Label>If yes, what medications and any possible side effects: *</Label>
               <Textarea value={formData.medication_details || ''} onChange={(e) => handleInputChange('medication_details', e.target.value)} rows={2} placeholder="Medication name and dosage, possible side effects" />
               {errors.medication_details && <p className="text-sm text-red-600">{errors.medication_details}</p>}
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label>Is the dog on flea/tick treatment? *</Label>
+            <RadioGroup value={formData.flea_tick_treatment?.toString()} onValueChange={(v) => handleInputChange('flea_tick_treatment', v === 'true')}>
+              <div className="flex gap-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="true" id="flea-yes" />
+                  <Label htmlFor="flea-yes" className="cursor-pointer">Yes</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="false" id="flea-no" />
+                  <Label htmlFor="flea-no" className="cursor-pointer">No</Label>
+                </div>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {formData.flea_tick_treatment && (
+            <div className="space-y-2">
+              <Label>What type of treatment and the frequency? *</Label>
+              <Input value={formData.flea_tick_treatment_details || ''} onChange={(e) => handleInputChange('flea_tick_treatment_details', e.target.value)} />
             </div>
           )}
         </div>
