@@ -676,7 +676,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           
           <div className="space-y-2">
             <Label>What do you wish to achieve with the program? *</Label>
-            <Textarea value={formData.program_goals || ''} onChange={(e) => handleInputChange('program_goals', e.target.value)} rows={3} />
+            <Textarea value={formData.program_goals || ''} onChange={(e) => handleInputChange('program_goals', e.target.value)} rows={2} />
             {errors.program_goals && <p className="text-sm text-red-600">{errors.program_goals}</p>}
           </div>
 
