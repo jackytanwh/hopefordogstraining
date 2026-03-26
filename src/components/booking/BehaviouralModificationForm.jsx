@@ -926,9 +926,15 @@ export default function BehaviouralModificationForm({ service, formData, setForm
               </div>
 
               <div className="space-y-2">
-                <Label>What school? *</Label>
+                <Label>What school/trainer? *</Label>
                 <Input value={formData.previous_training_school || ''} onChange={(e) => handleInputChange('previous_training_school', e.target.value)} />
                 {errors.previous_training_school && <p className="text-sm text-red-600">{errors.previous_training_school}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label>What training methods have been used? *</Label>
+                <Input value={formData.previous_training_methods || ''} onChange={(e) => handleInputChange('previous_training_methods', e.target.value)} />
+                {errors.previous_training_methods && <p className="text-sm text-red-600">{errors.previous_training_methods}</p>}
               </div>
             </>
           )}
