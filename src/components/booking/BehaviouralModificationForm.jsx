@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -558,13 +557,13 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>Any known past trauma or mistreatment? *</Label>
-            <Textarea value={formData.past_trauma || ''} onChange={(e) => handleInputChange('past_trauma', e.target.value)} rows={3} />
+            <Textarea value={formData.past_trauma || ''} onChange={(e) => handleInputChange('past_trauma', e.target.value)} rows={2} />
             {errors.past_trauma && <p className="text-sm text-red-600">{errors.past_trauma}</p>}
           </div>
 
           <div className="space-y-2">
             <Label>Your immediate reaction(s) to mediate the behaviour *</Label>
-            <Textarea value={formData.immediate_reaction || ''} onChange={(e) => handleInputChange('immediate_reaction', e.target.value)} rows={3} />
+            <Textarea value={formData.immediate_reaction || ''} onChange={(e) => handleInputChange('immediate_reaction', e.target.value)} rows={2} />
             {errors.immediate_reaction && <p className="text-sm text-red-600">{errors.immediate_reaction}</p>}
           </div>
 
@@ -582,7 +581,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>How does the dog react to strangers/visitors? *</Label>
-            <Textarea value={formData.reaction_to_strangers || ''} onChange={(e) => handleInputChange('reaction_to_strangers', e.target.value)} rows={3} />
+            <Textarea value={formData.reaction_to_strangers || ''} onChange={(e) => handleInputChange('reaction_to_strangers', e.target.value)} rows={2} />
             {errors.reaction_to_strangers && <p className="text-sm text-red-600">{errors.reaction_to_strangers}</p>}
           </div>
 
