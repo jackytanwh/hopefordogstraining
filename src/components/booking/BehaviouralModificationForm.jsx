@@ -853,7 +853,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>Enrichment tools available? *</Label>
+            <Label>Do you have any of the following food puzzles? *</Label>
             <div className="flex gap-4 mb-2">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -870,6 +870,20 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                   onCheckedChange={() => handleEnrichmentToggle('Lick mat')}
                 />
                 <Label htmlFor="enrich-lick" className="cursor-pointer text-sm">Lick mat</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-none"
+                  checked={formData.enrichment_tools === 'None'}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      handleInputChange('enrichment_tools', 'None');
+                    } else {
+                      handleInputChange('enrichment_tools', '');
+                    }
+                  }}
+                />
+                <Label htmlFor="enrich-none" className="cursor-pointer text-sm">None</Label>
               </div>
             </div>
             <Textarea 
