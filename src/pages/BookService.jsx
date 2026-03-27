@@ -920,7 +920,7 @@ export default function BookService() {
             onBack={handleBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
-            isFYOG={fyogCount > 1}
+            isFYOG={true}
           />
         );
       }
