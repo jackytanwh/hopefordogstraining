@@ -1007,14 +1007,14 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>How often does the furkid get short or long-duration chews? *</Label>
-            <Input value={formData.chews_frequency || ''} onChange={(e) => handleInputChange('chews_frequency', e.target.value)} placeholder="e.g. bully sticks/yak chews/meaty bones" />
+            <Input value={formData.chews_frequency || ''} onChange={(e) => handleInputChange('chews_frequency', e.target.value)} />
             {errors.chews_frequency && <p className="text-sm text-red-600">{errors.chews_frequency}</p>}
           </div>
 
           {formData.chews_frequency?.trim() && (
             <div className="space-y-2">
               <Label>What kind of chews? *</Label>
-              <Input value={formData.chews_type || ''} onChange={(e) => handleInputChange('chews_type', e.target.value)} />
+              <Input value={formData.chews_type || ''} onChange={(e) => handleInputChange('chews_type', e.target.value)} placeholder="e.g. bully sticks, yak chews, meaty bones" />
               {errors.chews_type && <p className="text-sm text-red-600">{errors.chews_type}</p>}
             </div>
           )}
