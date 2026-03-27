@@ -1286,6 +1286,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
         ) : (
           <div className="space-y-3 p-4 bg-slate-100 rounded-lg border-2 border-slate-300">
+            <h3 className="font-semibold text-slate-900 text-lg mb-3">Agreement</h3>
             <div className="flex items-start space-x-2">
               <Checkbox 
                 id="understanding" 
