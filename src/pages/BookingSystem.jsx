@@ -40,16 +40,6 @@ const services = [
     description: "Suitable for dogs that require ADORE training or HDB approval but do not need the full comprehensive training programme."
   },
   {
-    id: "basic_manners_group_class",
-    name: "Basic Manners Program (Group)",
-    price: 520,
-    duration: 1,
-    sessions: 7,
-    minParticipants: 1,
-    maxParticipants: 4,
-    description: "Group class training. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly with fixed schedule"
-  },
-  {
     id: "canine_assessment",
     name: "Canine Assessment",
     price: 158,
@@ -78,6 +68,16 @@ const services = [
     minParticipants: 1,
     maxParticipants: 1,
     description: "Flexible training sessions tailored to your needs - choose 1, 2, or 3 sessions"
+  },
+  {
+    id: "basic_manners_group_class",
+    name: "Basic Manners Program (Group)",
+    price: 520,
+    duration: 1,
+    sessions: 7,
+    minParticipants: 1,
+    maxParticipants: 4,
+    description: "Group class training. Sessions 1-4 weekly, 1-week break, then sessions 5-7 weekly with fixed schedule"
   }
 ];
 
