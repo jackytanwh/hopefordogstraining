@@ -267,6 +267,15 @@ export default function BookService() {
           adoptionDiscount += (idx === 0 ? fyogBasePrice : fyogExtraPrice) * 0.1;
         }
       });
+    } else if (isKinderPuppy) {
+      const kinderFurkids = formData.furkids || [];
+      const kinderCount = formData.kinderPuppyCount || 1;
+      const pricePerPuppy = basePrice / kinderCount;
+      kinderFurkids.forEach((furkid) => {
+        if (furkid && furkid.isAdopted) {
+          adoptionDiscount += pricePerPuppy * 0.1;
+        }
+      });
     } else {
       adoptionDiscount = formData.isAdopted ? basePrice * 0.1 : 0;
     }
