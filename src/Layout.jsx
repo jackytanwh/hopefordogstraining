@@ -9,6 +9,7 @@ import {
   AlignJustify,
   ChevronDown,
   FolderHeart,
+  Tag,
   GraduationCap,
   HeartPulse,
   Calendar,
@@ -293,6 +294,19 @@ export default function Layout({ children, currentPageName }) {
                 <Link to={createPageUrl("GroupClassScheduleSettings")} className="flex items-center gap-3 px-4 py-2.5">
                   <Clock className="w-4 h-4" />
                   <span className="text-sm font-medium">Group Class Schedule</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            {/* Promo Codes */}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={currentPageName === "PromoCodes"}
+              >
+                <Link to="/PromoCodes" className="flex items-center gap-3 px-4 py-2.5">
+                  <Tag className="w-4 h-4" />
+                  <span className="text-sm font-medium">Promo Codes</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
