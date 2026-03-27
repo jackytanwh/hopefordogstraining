@@ -217,6 +217,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
       if (formData.requires_assessment_report === undefined) newErrors.requires_assessment_report = 'Required';
     } else {
       if (!formData.understanding_confirmed) newErrors.understanding_confirmed = 'Required';
+      if (!formData.training_updates_confirmed) newErrors.training_updates_confirmed = 'Required';
+      if (!formData.training_updates_confirmed) newErrors.training_updates_confirmed = 'Required';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -1299,6 +1301,17 @@ export default function BehaviouralModificationForm({ service, formData, setForm
               </Label>
             </div>
             {errors.understanding_confirmed && <p className="text-sm text-red-600">{errors.understanding_confirmed}</p>}
+            <div className="flex items-start space-x-2 mt-3">
+              <Checkbox 
+                id="training-updates" 
+                checked={formData.training_updates_confirmed || false}
+                onCheckedChange={(checked) => handleInputChange('training_updates_confirmed', checked)}
+              />
+              <Label htmlFor="training-updates" className="text-sm cursor-pointer leading-relaxed">
+                Updates on training progress, accompanied by video recordings, will be shared every few days. *
+              </Label>
+            </div>
+            {errors.training_updates_confirmed && <p className="text-sm text-red-600">{errors.training_updates_confirmed}</p>}
           </div>
         )}
 
