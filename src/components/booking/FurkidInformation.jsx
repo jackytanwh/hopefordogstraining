@@ -119,13 +119,19 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
             ageString = `${months} month${months > 1 ? 's' : ''}`;
           }
           
-          handleInputChange(i, 'furkidAge', ageString);
+          if (isFYOG || isMultiEntryForm) {
+            setFormData(prev => {
+              const newFurkids = [...(prev.furkids || [])];
+              if (!newFurkids[actualIndex]) newFurkids[actualIndex] = {};
+              newFurkids[actualIndex] = { ...newFurkids[actualIndex], furkidAge: ageString };
+              return { ...prev, furkids: newFurkids };
+            });
+          } else {
+            setFormData(prev => ({ ...prev, furkidAge: ageString }));
+          }
         } catch (e) {
           console.error('Error calculating age:', e);
-          handleInputChange(i, 'furkidAge', '');
         }
-      } else {
-        handleInputChange(i, 'furkidAge', '');
       }
     }
   }, [numberOfFurkids, ...((isFYOG || isMultiEntryForm) ? (formData.furkids || []).map(f => `${f?.dobMonth}-${f?.dobDay}-${f?.dobYear}`) : [`${formData.dobMonth}-${formData.dobDay}-${formData.dobYear}`])]);
