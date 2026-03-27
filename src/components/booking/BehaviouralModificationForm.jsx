@@ -1114,9 +1114,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             <Label>When was the dog's last health check? *</Label>
             <div className="grid grid-cols-2 gap-2">
               <Select value={formData.last_health_check_month || ''} onValueChange={(v) => {
-                handleInputChange('last_health_check_month', v);
                 const yr = formData.last_health_check_year || '';
-                handleInputChange('last_health_check', yr ? `${v} ${yr}` : v);
+                setFormData(prev => ({ ...prev, last_health_check_month: v, last_health_check: yr ? `${v} ${yr}` : v }));
               }}>
                 <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Month" />
@@ -1126,9 +1125,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 </SelectContent>
               </Select>
               <Select value={formData.last_health_check_year || ''} onValueChange={(v) => {
-                handleInputChange('last_health_check_year', v);
                 const mo = formData.last_health_check_month || '';
-                handleInputChange('last_health_check', mo ? `${mo} ${v}` : v);
+                setFormData(prev => ({ ...prev, last_health_check_year: v, last_health_check: mo ? `${mo} ${v}` : v }));
               }}>
                 <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Year" />
