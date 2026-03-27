@@ -94,7 +94,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
                 'Water for <strong>[furkid_name]</strong>',
             ],
             pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-6-weeks-Handouts-2025.pdf',
-            pdfLabel: 'Basic Manners 7-Weeks Handouts 2025',
+            pdfLabel: 'Basic Manners 6-Weeks Handouts 2025',
             promoBlock: pawsBotanicPromo,
             addressLabel: 'Location',
             discountCode: '',
@@ -295,7 +295,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
                 </table>
             </div>
 
-            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 16px 0 0 0;">Feel free to reach out if you have any questions.</p>
+            <p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 16px 0 0 0;">Feel free to reach out if you have any questions.</p>
 
             <p style="font-size: 15px; color: #1e293b; margin: 20px 0 0 0;">
                 Kind regards,<br/>
