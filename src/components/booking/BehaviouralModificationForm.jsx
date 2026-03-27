@@ -460,8 +460,9 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             <Label>How old was the furkid when he/she joined your household? *</Label>
             <div className="grid grid-cols-2 gap-2">
               <Select value={formData.joined_family_age_year ?? ''} onValueChange={(v) => {
+                handleInputChange('joined_family_age_year', v);
                 const m = formData.joined_family_age_month ?? '0';
-                setFormData(prev => ({ ...prev, joined_family_age_year: v, furkid_joined_family_age: `${v}y ${m}m` }));
+                handleInputChange('furkid_joined_family_age', `${v}y ${m}m`);
               }}>
                 <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Year" />
@@ -471,8 +472,9 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 </SelectContent>
               </Select>
               <Select value={formData.joined_family_age_month ?? ''} onValueChange={(v) => {
+                handleInputChange('joined_family_age_month', v);
                 const y = formData.joined_family_age_year ?? '0';
-                setFormData(prev => ({ ...prev, joined_family_age_month: v, furkid_joined_family_age: `${y}y ${v}m` }));
+                handleInputChange('furkid_joined_family_age', `${y}y ${v}m`);
               }}>
                 <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Month" />
@@ -884,6 +886,12 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 <Label htmlFor="enrich-none" className="cursor-pointer text-sm">None</Label>
               </div>
             </div>
+            <Textarea 
+              value={formData.enrichment_tools || ''} 
+              onChange={(e) => handleInputChange('enrichment_tools', e.target.value)} 
+              rows={2}
+              placeholder="e.g., Kong, puzzle toys, treat balls, snuffle mat, lick mat..."
+            />
             {errors.enrichment_tools && <p className="text-sm text-red-600">{errors.enrichment_tools}</p>}
           </div>
         </div>
@@ -1007,14 +1015,14 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>How often does the furkid get short or long-duration chews? *</Label>
-            <Input value={formData.chews_frequency || ''} onChange={(e) => handleInputChange('chews_frequency', e.target.value)} />
+            <Input value={formData.chews_frequency || ''} onChange={(e) => handleInputChange('chews_frequency', e.target.value)} placeholder="e.g. bully sticks/yak chews/meaty bones" />
             {errors.chews_frequency && <p className="text-sm text-red-600">{errors.chews_frequency}</p>}
           </div>
 
           {formData.chews_frequency?.trim() && (
             <div className="space-y-2">
               <Label>What kind of chews? *</Label>
-              <Input value={formData.chews_type || ''} onChange={(e) => handleInputChange('chews_type', e.target.value)} placeholder="e.g. bully sticks, yak chews, meaty bones" />
+              <Input value={formData.chews_type || ''} onChange={(e) => handleInputChange('chews_type', e.target.value)} />
               {errors.chews_type && <p className="text-sm text-red-600">{errors.chews_type}</p>}
             </div>
           )}
@@ -1115,8 +1123,9 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             <Label>When was the dog's last health check? *</Label>
             <div className="grid grid-cols-2 gap-2">
               <Select value={formData.last_health_check_month || ''} onValueChange={(v) => {
+                handleInputChange('last_health_check_month', v);
                 const yr = formData.last_health_check_year || '';
-                setFormData(prev => ({ ...prev, last_health_check_month: v, last_health_check: yr ? `${v} ${yr}` : v }));
+                handleInputChange('last_health_check', yr ? `${v} ${yr}` : v);
               }}>
                 <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Month" />
@@ -1126,8 +1135,9 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 </SelectContent>
               </Select>
               <Select value={formData.last_health_check_year || ''} onValueChange={(v) => {
+                handleInputChange('last_health_check_year', v);
                 const mo = formData.last_health_check_month || '';
-                setFormData(prev => ({ ...prev, last_health_check_year: v, last_health_check: mo ? `${mo} ${v}` : v }));
+                handleInputChange('last_health_check', mo ? `${mo} ${v}` : v);
               }}>
                 <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Year" />
