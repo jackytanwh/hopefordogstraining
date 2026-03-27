@@ -306,8 +306,8 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
 
         <!-- Footer -->
         <div style="padding: 24px; text-align: center; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; background: #f8fafc;">
-            <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">🐾 Hope For Dogs Training</p>
-            <p style="margin: 0; font-size: 13px; color: #94a3b8;">Canine Training &amp; Behaviour Specialists</p>
+            <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">HopeForDogs Canine Training</p>
+            <p style="margin: 0; font-size: 13px; color: #94a3b8;">Educate | Advocate | Empower</p>
             <p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;">
                 <a href="https://bookings.hopefordogs.sg" style="color: #2563eb; text-decoration: none;">bookings.hopefordogs.sg</a>
                 &nbsp;&middot;&nbsp; +65 8222 8376
