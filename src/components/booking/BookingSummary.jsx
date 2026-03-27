@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +9,10 @@ import { format, parseISO, getDay } from "date-fns";
 import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
 export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount }) {
+  const [promoCode, setPromoCode] = useState('');
+  const [promoApplied, setPromoApplied] = useState(null); // { code, discount_type, discount_value, description }
+  const [promoError, setPromoError] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
   const [leashAgreement, setLeashAgreement] = useState(false);
   const [refundAgreement, setRefundAgreement] = useState(false);
   const [behaviorAgreement, setBehaviorAgreement] = useState(false);
@@ -26,6 +31,28 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isFYOGMulti = isFYOG && formData.clients && formData.clients.length > 0;
   const useSharedLayout = isKinderPuppyMulti || isFYOGMulti;
   const dogLabel = isKinderPuppy ? 'Puppy' : 'Dog';
+
+  const promoDiscount = promoApplied
+    ? promoApplied.discount_type === 'percentage'
+      ? (pricing.total * promoApplied.discount_value) / 100
+      : Math.min(promoApplied.discount_value, pricing.total)
+    : 0;
+  const finalTotal = Math.max(0, pricing.total - promoDiscount);
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoError('');
+    setPromoApplied(null);
+    const codes = await base44.entities.PromoCode.filter({ code: promoCode.trim().toUpperCase() });
+    const match = codes.find(c => c.active && (!c.max_uses || c.usage_count < c.max_uses));
+    if (match) {
+      setPromoApplied(match);
+    } else {
+      setPromoError('Invalid or expired promo code.');
+    }
+    setPromoLoading(false);
+  };
 
   const handleSubmit = () => {
     if (isBasicManners) {
@@ -59,7 +86,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
       kinderPuppyRefundPolicy: puppyRefundAgreement
     };
     
-    onSubmit(agreements);
+    onSubmit(agreements, promoApplied, finalTotal);
   };
 
   // Helper function to safely get client field value, checking common variations
@@ -490,9 +517,37 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               </div>
             )}
             
+            {promoApplied && (
+              <div className="flex justify-between text-green-600">
+                <span>Promo Code ({promoApplied.code}):</span>
+                <span className="font-medium">-${promoDiscount.toFixed(2)}</span>
+              </div>
+            )}
+
             <div className="border-t border-slate-200 pt-2 flex justify-between text-lg font-bold">
               <span>Total Amount:</span>
-              <span className="text-blue-600 text-2xl">${pricing.total.toFixed(2)}</span>
+              <span className="text-blue-600 text-2xl">${finalTotal.toFixed(2)}</span>
+            </div>
+
+            {/* Promo Code Field */}
+            <div className="pt-4 border-t border-slate-200">
+              <p className="text-sm font-medium text-slate-700 mb-2">Have a promo code?</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoError(''); setPromoApplied(null); }}
+                  placeholder="Enter promo code"
+                  className="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Button onClick={handleApplyPromo} disabled={promoLoading || !promoCode.trim()} variant="outline" size="sm">
+                  {promoLoading ? 'Checking...' : 'Apply'}
+                </Button>
+              </div>
+              {promoError && <p className="text-sm text-red-600 mt-1">{promoError}</p>}
+              {promoApplied && (
+                <p className="text-sm text-green-600 mt-1">✓ {promoApplied.description || `${promoApplied.discount_type === 'percentage' ? promoApplied.discount_value + '%' : '$' + promoApplied.discount_value} discount applied!`}</p>
+              )}
             </div>
           </div>
         </div>

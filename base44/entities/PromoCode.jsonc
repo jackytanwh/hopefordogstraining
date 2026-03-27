@@ -1,0 +1,68 @@
+{
+  "name": "PromoCode",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "The promo code string (e.g. SAVE10)"
+    },
+    "discount_type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed"
+      ],
+      "description": "Whether the discount is a percentage or a fixed dollar amount"
+    },
+    "discount_value": {
+      "type": "number",
+      "description": "The discount value (e.g. 10 for 10% or $10)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the promo code"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this promo code is currently active"
+    },
+    "usage_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "How many times this code has been used"
+    },
+    "max_uses": {
+      "type": "integer",
+      "description": "Maximum number of uses (leave empty for unlimited)"
+    }
+  },
+  "required": [
+    "code",
+    "discount_type",
+    "discount_value"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {}
+  }
+}

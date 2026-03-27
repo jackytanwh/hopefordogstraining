@@ -391,7 +391,7 @@ export default function BookService() {
     return { name, email, mobile };
   };
 
-  const handleSubmit = async (agreements) => {
+  const handleSubmit = async (agreements, promoApplied = null, finalTotal = null) => {
     setIsSubmitting(true);
     
     console.log('=== BOOKING SUBMISSION STARTED ===');
@@ -602,9 +602,22 @@ export default function BookService() {
       
       console.log('=== INITIATING RAZORPAY PAYMENT ===');
 
+      const paymentAmount = finalTotal !== null ? finalTotal : pricing.total;
+
+      // Increment promo code usage if applied
+      if (promoApplied?.id) {
+        try {
+          await base44.entities.PromoCode.update(promoApplied.id, {
+            usage_count: (promoApplied.usage_count || 0) + 1
+          });
+        } catch (e) {
+          console.warn('Could not update promo usage count:', e);
+        }
+      }
+
       const orderResponse = await base44.functions.invoke('createRazorpayOrder', {
         bookingId: booking.id,
-        amount: pricing.total,
+        amount: paymentAmount,
       });
 
       const orderData = orderResponse?.data;
