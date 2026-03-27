@@ -9,20 +9,6 @@ import { format, parseISO, getDay } from "date-fns";
 import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
 export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount }) {
-  const [promoCode, setPromoCode] = useState('');
-  const [promoApplied, setPromoApplied] = useState(null); // { code, discount_type, discount_value, description }
-  const [promoError, setPromoError] = useState('');
-  const [promoLoading, setPromoLoading] = useState(false);
-  const [leashAgreement, setLeashAgreement] = useState(false);
-  const [refundAgreement, setRefundAgreement] = useState(false);
-  const [behaviorAgreement, setBehaviorAgreement] = useState(false);
-  const [modificationAgreement, setModificationAgreement] = useState(false);
-  const [modificationAgreement2, setModificationAgreement2] = useState(false);
-  const [curriculumAgreement, setCurriculumAgreement] = useState(false);
-  const [pottyAgreement, setPottyAgreement] = useState(false);
-  const [puppyRefundAgreement, setPuppyRefundAgreement] = useState(false);
-  const [agreementError, setAgreementError] = useState('');
-
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';

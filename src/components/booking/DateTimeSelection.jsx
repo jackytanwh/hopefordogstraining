@@ -439,7 +439,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
       return;
     }
     
-    setFormData({ ...formData, sessionDates: selectedDates });
+    setFormData(prev => ({ ...prev, sessionDates: selectedDates }));
     onNext();
   };
 

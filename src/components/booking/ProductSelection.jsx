@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -125,21 +124,21 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
       discounted_price: product.discountedPrice
     })).filter(item => item.quantity > 0);
 
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       productSelections: selectedProducts,
       productsTotal: calculateTotal()
-    });
+    }));
     
     onNext();
   };
 
   const handleSkip = () => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       productSelections: [],
       productsTotal: 0
-    });
+    }));
     onNext();
   };
 
