@@ -12,6 +12,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const [refundAgreement, setRefundAgreement] = useState(false);
   const [behaviorAgreement, setBehaviorAgreement] = useState(false);
   const [modificationAgreement, setModificationAgreement] = useState(false);
+  const [modificationAgreement2, setModificationAgreement2] = useState(false);
   const [curriculumAgreement, setCurriculumAgreement] = useState(false);
   const [pottyAgreement, setPottyAgreement] = useState(false);
   const [puppyRefundAgreement, setPuppyRefundAgreement] = useState(false);
@@ -35,7 +36,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
     }
     
     if (isBehaviouralModification) {
-      if (!modificationAgreement) {
+      if (!modificationAgreement || !modificationAgreement2) {
         setAgreementError('Please acknowledge the agreement to proceed');
         return;
       }
@@ -573,7 +574,24 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                   htmlFor="behavioralModificationAgreement" 
                   className="text-sm leading-relaxed cursor-pointer font-normal"
                 >
-                  I have read the FAQs and understand that behaviour change takes time and is influenced by many factors. I recognise that my dog's progress will rely on my consistency and commitment to following the trainer's guidance.
+                  I acknowledge that Hopefordogs Canine Training does not provide refunds, exchanges, or cancellations. I understand that behaviour change requires time and may be influenced by several factors.
+                </Label>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <Checkbox
+                  id="behavioralModificationAgreement2"
+                  checked={modificationAgreement2}
+                  onCheckedChange={(checked) => {
+                    setModificationAgreement2(checked);
+                    if (agreementError) setAgreementError('');
+                  }}
+                />
+                <Label 
+                  htmlFor="behavioralModificationAgreement2" 
+                  className="text-sm leading-relaxed cursor-pointer font-normal"
+                >
+                  I fully understand that the training progress depends on my consistency and commitment to implementing the trainer's guidance.
                 </Label>
               </div>
 
