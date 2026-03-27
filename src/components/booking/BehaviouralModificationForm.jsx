@@ -886,12 +886,6 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 <Label htmlFor="enrich-none" className="cursor-pointer text-sm">None</Label>
               </div>
             </div>
-            <Textarea 
-              value={formData.enrichment_tools || ''} 
-              onChange={(e) => handleInputChange('enrichment_tools', e.target.value)} 
-              rows={2}
-              placeholder="e.g., Kong, puzzle toys, treat balls, snuffle mat, lick mat..."
-            />
             {errors.enrichment_tools && <p className="text-sm text-red-600">{errors.enrichment_tools}</p>}
           </div>
         </div>
