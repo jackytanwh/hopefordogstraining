@@ -97,7 +97,9 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </h3>
           <div className="space-y-2 text-sm">
             <p className="font-medium text-lg">{service.name}</p>
-            <p className="text-slate-600">{service.sessions} sessions • {service.duration} hour per session</p>
+            {service.id !== 'canine_assessment' && (
+              <p className="text-slate-600">{service.sessions} sessions • {service.duration} hour per session</p>
+            )}
             {(isFYOG || isGroupClass) && formData.numberOfFurkids && (
               <div className="flex gap-2 mt-2">
                 <Badge variant="secondary">{formData.numberOfFurkids} {isKinderPuppy ? (formData.numberOfFurkids > 1 ? 'Puppies' : 'Puppy') : (formData.numberOfFurkids > 1 ? 'Dogs' : 'Dog')}</Badge>
