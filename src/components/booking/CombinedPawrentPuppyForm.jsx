@@ -649,7 +649,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
               id="walkingFrequency"
               value={furkid.walkingFrequency || ''}
               onChange={(e) => handleFurkidChange('walkingFrequency', e.target.value)}
-              placeholder="e.g., Twice a day, Once every 2 days"
+              placeholder="e.g., Twice a day, once every 2 days, 15mins each time"
               className={errors.furkid_walkingFrequency ? 'border-red-500' : ''}
             />
             {errors.furkid_walkingFrequency && (
