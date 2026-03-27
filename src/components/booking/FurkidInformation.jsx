@@ -572,7 +572,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
                   id={`${prefix}walkingFrequency`}
                   value={furkid.walkingFrequency || ''}
                   onChange={(e) => handleInputChange(index, 'walkingFrequency', e.target.value)}
-                  placeholder="e.g., Twice a day, Once every 2 days"
+                  placeholder="e.g., Twice a day, once every 2 days, 15mins each time"
                   className={errors[`${prefix}walkingFrequency`] ? 'border-red-500' : ''}
                 />
                 {errors[`${prefix}walkingFrequency`] && (
