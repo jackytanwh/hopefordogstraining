@@ -852,42 +852,6 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             {errors.walking_equipment && <p className="text-sm text-red-600">{errors.walking_equipment}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label>Do you have any of the following food puzzles? *</Label>
-            <div className="flex gap-4 mb-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="enrich-snuffle"
-                  checked={hasSnuffleMat}
-                  onCheckedChange={() => handleEnrichmentToggle('Snuffle mat')}
-                />
-                <Label htmlFor="enrich-snuffle" className="cursor-pointer text-sm">Snuffle mat</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="enrich-lick"
-                  checked={hasLickMat}
-                  onCheckedChange={() => handleEnrichmentToggle('Lick mat')}
-                />
-                <Label htmlFor="enrich-lick" className="cursor-pointer text-sm">Lick mat</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="enrich-none"
-                  checked={formData.enrichment_tools === 'None'}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      handleInputChange('enrichment_tools', 'None');
-                    } else {
-                      handleInputChange('enrichment_tools', '');
-                    }
-                  }}
-                />
-                <Label htmlFor="enrich-none" className="cursor-pointer text-sm">None</Label>
-              </div>
-            </div>
-            {errors.enrichment_tools && <p className="text-sm text-red-600">{errors.enrichment_tools}</p>}
-          </div>
         </div>
 
         {/* Training History */}
@@ -992,6 +956,43 @@ export default function BehaviouralModificationForm({ service, formData, setForm
               ))}
             </div>
             {errors.feeding_method && <p className="text-sm text-red-600">{errors.feeding_method}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Do you have any of the following food puzzles? *</Label>
+            <div className="flex gap-4 mb-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-snuffle"
+                  checked={hasSnuffleMat}
+                  onCheckedChange={() => handleEnrichmentToggle('Snuffle mat')}
+                />
+                <Label htmlFor="enrich-snuffle" className="cursor-pointer text-sm">Snuffle mat</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-lick"
+                  checked={hasLickMat}
+                  onCheckedChange={() => handleEnrichmentToggle('Lick mat')}
+                />
+                <Label htmlFor="enrich-lick" className="cursor-pointer text-sm">Lick mat</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-none"
+                  checked={formData.enrichment_tools === 'None'}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      handleInputChange('enrichment_tools', 'None');
+                    } else {
+                      handleInputChange('enrichment_tools', '');
+                    }
+                  }}
+                />
+                <Label htmlFor="enrich-none" className="cursor-pointer text-sm">None</Label>
+              </div>
+            </div>
+            {errors.enrichment_tools && <p className="text-sm text-red-600">{errors.enrichment_tools}</p>}
           </div>
 
           <div className="space-y-2">
