@@ -1293,11 +1293,11 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 onCheckedChange={(checked) => handleInputChange('understanding_confirmed', checked)}
               />
               <Label htmlFor="understanding" className="text-sm cursor-pointer leading-relaxed">
-                By checking this box, I confirm that I have read the{' '}
+                I confirm that I have read the{' '}
                 <a href="https://www.hopefordogs.sg/behavioural-modification/#faq" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                   FAQs
                 </a>
-                {' '}and understand that behavior modification is influenced by various factors and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the recommended strategies by the canine behaviour consultant. *
+                {' '}and understand that various factors influence behaviour modification and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the training plan provided by the canine behaviour consultant. *
               </Label>
             </div>
             {errors.understanding_confirmed && <p className="text-sm text-red-600">{errors.understanding_confirmed}</p>}
