@@ -383,9 +383,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 <Label>If yes, at what age? *</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <Select value={formData.sterilisation_age_year ?? ''} onValueChange={(v) => {
-                    handleInputChange('sterilisation_age_year', v);
                     const m = formData.sterilisation_age_month ?? '0';
-                    handleInputChange('furkid_sterilisation_age', `${v}y ${m}m`);
+                    setFormData(prev => ({ ...prev, sterilisation_age_year: v, furkid_sterilisation_age: `${v}y ${m}m` }));
                   }}>
                     <SelectTrigger className={errors.furkid_sterilisation_age ? 'border-red-500' : ''}>
                       <SelectValue placeholder="Year" />
@@ -395,9 +394,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                     </SelectContent>
                   </Select>
                   <Select value={formData.sterilisation_age_month ?? ''} onValueChange={(v) => {
-                    handleInputChange('sterilisation_age_month', v);
                     const y = formData.sterilisation_age_year ?? '0';
-                    handleInputChange('furkid_sterilisation_age', `${y}y ${v}m`);
+                    setFormData(prev => ({ ...prev, sterilisation_age_month: v, furkid_sterilisation_age: `${y}y ${v}m` }));
                   }}>
                     <SelectTrigger className={errors.furkid_sterilisation_age ? 'border-red-500' : ''}>
                       <SelectValue placeholder="Month" />
@@ -460,9 +458,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             <Label>How old was the furkid when he/she joined your household? *</Label>
             <div className="grid grid-cols-2 gap-2">
               <Select value={formData.joined_family_age_year ?? ''} onValueChange={(v) => {
-                handleInputChange('joined_family_age_year', v);
                 const m = formData.joined_family_age_month ?? '0';
-                handleInputChange('furkid_joined_family_age', `${v}y ${m}m`);
+                setFormData(prev => ({ ...prev, joined_family_age_year: v, furkid_joined_family_age: `${v}y ${m}m` }));
               }}>
                 <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Year" />
@@ -472,9 +469,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 </SelectContent>
               </Select>
               <Select value={formData.joined_family_age_month ?? ''} onValueChange={(v) => {
-                handleInputChange('joined_family_age_month', v);
                 const y = formData.joined_family_age_year ?? '0';
-                handleInputChange('furkid_joined_family_age', `${y}y ${v}m`);
+                setFormData(prev => ({ ...prev, joined_family_age_month: v, furkid_joined_family_age: `${y}y ${v}m` }));
               }}>
                 <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Month" />
