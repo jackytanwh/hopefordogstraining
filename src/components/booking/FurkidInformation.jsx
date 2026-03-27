@@ -64,14 +64,14 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
     const actualIndex = isMultiEntryForm ? multiEntryIndex : furkidIndex;
     
     if (isFYOG || isMultiEntryForm) {
-      const newFurkids = [...(formData.furkids || [])];
-      if (!newFurkids[actualIndex]) {
-        newFurkids[actualIndex] = {};
-      }
-      newFurkids[actualIndex][field] = value;
-      setFormData({ ...formData, furkids: newFurkids });
+      setFormData(prev => {
+        const newFurkids = [...(prev.furkids || [])];
+        if (!newFurkids[actualIndex]) newFurkids[actualIndex] = {};
+        newFurkids[actualIndex] = { ...newFurkids[actualIndex], [field]: value };
+        return { ...prev, furkids: newFurkids };
+      });
     } else {
-      setFormData({ ...formData, [field]: value });
+      setFormData(prev => ({ ...prev, [field]: value }));
     }
     
     if (errors[`${furkidIndex}_${field}`] || errors[field]) {
