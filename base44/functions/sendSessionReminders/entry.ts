@@ -49,12 +49,13 @@ Deno.serve(async (req) => {
         for (const booking of activeBookings) {
             for (const session of booking.session_dates) {
                 if (session.completed) continue;
+                if (session.reminder_sent) continue;
 
                 const sessionDate = new Date(session.date + 'T' + session.start_time);
                 const timeDiff = sessionDate.getTime() - now.getTime();
                 const hoursUntilSession = timeDiff / (1000 * 60 * 60);
 
-                if (hoursUntilSession < 47 || hoursUntilSession > 49) continue;
+                if (hoursUntilSession < 0 || hoursUntilSession > 48) continue;
 
                 const clientMobile = booking.client_mobile ||
                     (booking.clients?.[0]?.client_mobile || booking.clients?.[0]?.clientMobile || '');
@@ -197,6 +198,19 @@ Deno.serve(async (req) => {
                         if (result.whatsapp !== 'sent') remindersSent++;
                     } catch (emailErr) {
                         result.email = 'failed';
+                    }
+                }
+
+                // Mark this session as reminder_sent to prevent duplicates
+                if (result.whatsapp === 'sent' || result.email === 'sent') {
+                    try {
+                        const updatedSessions = booking.session_dates.map((s: any) =>
+                            s.session_number === session.session_number ? { ...s, reminder_sent: true } : s
+                        );
+                        await base44.asServiceRole.entities.Booking.update(booking.id, { session_dates: updatedSessions });
+                        console.log(`✅ Marked session ${session.session_number} of booking ${booking.id} as reminder_sent`);
+                    } catch (markErr) {
+                        console.warn(`⚠️ Could not mark reminder_sent for booking ${booking.id}:`, markErr);
                     }
                 }
 
