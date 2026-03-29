@@ -64,14 +64,14 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
     const actualIndex = isMultiEntryForm ? multiEntryIndex : furkidIndex;
     
     if (isFYOG || isMultiEntryForm) {
-      const newFurkids = [...(formData.furkids || [])];
-      if (!newFurkids[actualIndex]) {
-        newFurkids[actualIndex] = {};
-      }
-      newFurkids[actualIndex][field] = value;
-      setFormData({ ...formData, furkids: newFurkids });
+      setFormData(prev => {
+        const newFurkids = [...(prev.furkids || [])];
+        if (!newFurkids[actualIndex]) newFurkids[actualIndex] = {};
+        newFurkids[actualIndex] = { ...newFurkids[actualIndex], [field]: value };
+        return { ...prev, furkids: newFurkids };
+      });
     } else {
-      setFormData({ ...formData, [field]: value });
+      setFormData(prev => ({ ...prev, [field]: value }));
     }
     
     if (errors[`${furkidIndex}_${field}`] || errors[field]) {
@@ -119,13 +119,19 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
             ageString = `${months} month${months > 1 ? 's' : ''}`;
           }
           
-          handleInputChange(i, 'furkidAge', ageString);
+          if (isFYOG || isMultiEntryForm) {
+            setFormData(prev => {
+              const newFurkids = [...(prev.furkids || [])];
+              if (!newFurkids[actualIndex]) newFurkids[actualIndex] = {};
+              newFurkids[actualIndex] = { ...newFurkids[actualIndex], furkidAge: ageString };
+              return { ...prev, furkids: newFurkids };
+            });
+          } else {
+            setFormData(prev => ({ ...prev, furkidAge: ageString }));
+          }
         } catch (e) {
           console.error('Error calculating age:', e);
-          handleInputChange(i, 'furkidAge', '');
         }
-      } else {
-        handleInputChange(i, 'furkidAge', '');
       }
     }
   }, [numberOfFurkids, ...((isFYOG || isMultiEntryForm) ? (formData.furkids || []).map(f => `${f?.dobMonth}-${f?.dobDay}-${f?.dobYear}`) : [`${formData.dobMonth}-${formData.dobDay}-${formData.dobYear}`])]);
@@ -572,7 +578,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
                   id={`${prefix}walkingFrequency`}
                   value={furkid.walkingFrequency || ''}
                   onChange={(e) => handleInputChange(index, 'walkingFrequency', e.target.value)}
-                  placeholder="e.g., Twice a day, Once every 2 days"
+                  placeholder="e.g., Twice a day, once every 2 days, 15mins each time"
                   className={errors[`${prefix}walkingFrequency`] ? 'border-red-500' : ''}
                 />
                 {errors[`${prefix}walkingFrequency`] && (

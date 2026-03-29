@@ -62,7 +62,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
 
     if (serviceType.includes('kinder_puppy')) {
         return {
-            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [],
             pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/08/KPP-Overview-and-Handouts-2025-merged.pdf',
             pdfLabel: 'KPP Overview and Handouts 2025',
@@ -74,7 +74,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
 
     if (serviceType === 'basic_manners_in_home') {
         return {
-            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [
                 'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
             ],
@@ -88,13 +88,13 @@ function getProgramConfig(serviceType: string): ProgramConfig {
 
     if (serviceType === 'basic_manners_fyog') {
         return {
-            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [
                 'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
                 'Water for <strong>[furkid_name]</strong>',
             ],
-            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-7-weeks-Handouts-2025.pdf',
-            pdfLabel: 'Basic Manners 7-Weeks Handouts 2025',
+            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-6-weeks-Handouts-2025.pdf',
+            pdfLabel: 'Basic Manners 6-Weeks Handouts 2025',
             promoBlock: pawsBotanicPromo,
             addressLabel: 'Location',
             discountCode: '',
@@ -103,7 +103,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
 
     if (serviceType === 'basic_manners_group_class') {
         return {
-            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [
                 'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
                 'Water for <strong>[furkid_name]</strong>',
@@ -118,7 +118,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
 
     if (serviceType === 'behavioural_modification') {
         return {
-            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [],
             pdfLink: '',
             pdfLabel: '',
@@ -130,7 +130,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
 
     if (serviceType === 'canine_assessment') {
         return {
-            greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+            greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [],
             pdfLink: '',
             pdfLabel: '',
@@ -141,7 +141,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
     }
 
     return {
-        greeting: 'Thank you for choosing Hopefordogs as your training partner!',
+        greeting: 'Thank you for choosing Hopefordogs Canine Training. ',
         instructions: [],
         pdfLink: '',
         pdfLabel: '',
@@ -295,19 +295,19 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
                 </table>
             </div>
 
-            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 16px 0 0 0;">Feel free to reach out if you have any questions.</p>
+            <p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 16px 0 0 0;">Feel free to reach out if you have any questions.</p>
 
             <p style="font-size: 15px; color: #1e293b; margin: 20px 0 0 0;">
                 Kind regards,<br/>
-                <strong>Jacky</strong><br/>
-                Hopefordogs
+                <strong>Jacky, ISCP Dip. Prac.</strong><br/>
+                Hopefordogs Canine Training
             </p>
         </div>
 
         <!-- Footer -->
         <div style="padding: 24px; text-align: center; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; background: #f8fafc;">
-            <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">🐾 Hope For Dogs Training</p>
-            <p style="margin: 0; font-size: 13px; color: #94a3b8;">Canine Training &amp; Behaviour Specialists</p>
+            <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">Hopefordogs Canine Training</p>
+            <p style="margin: 0; font-size: 13px; color: #94a3b8;">Educate | Advocate | Empower</p>
             <p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;">
                 <a href="https://bookings.hopefordogs.sg" style="color: #2563eb; text-decoration: none;">bookings.hopefordogs.sg</a>
                 &nbsp;&middot;&nbsp; +65 8222 8376

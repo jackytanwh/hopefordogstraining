@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,10 +9,15 @@ import { format, parseISO, getDay } from "date-fns";
 import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
 export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount }) {
+  const [promoCode, setPromoCode] = useState('');
+  const [promoApplied, setPromoApplied] = useState(null);
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoError, setPromoError] = useState('');
   const [leashAgreement, setLeashAgreement] = useState(false);
   const [refundAgreement, setRefundAgreement] = useState(false);
   const [behaviorAgreement, setBehaviorAgreement] = useState(false);
   const [modificationAgreement, setModificationAgreement] = useState(false);
+  const [modificationAgreement2, setModificationAgreement2] = useState(false);
   const [curriculumAgreement, setCurriculumAgreement] = useState(false);
   const [pottyAgreement, setPottyAgreement] = useState(false);
   const [puppyRefundAgreement, setPuppyRefundAgreement] = useState(false);
@@ -21,10 +27,31 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
-  // FYOG multi-dog uses CombinedPawrentPuppyForm just like KinderPuppy multi — shared address layout
   const isFYOGMulti = isFYOG && formData.clients && formData.clients.length > 0;
   const useSharedLayout = isKinderPuppyMulti || isFYOGMulti;
   const dogLabel = isKinderPuppy ? 'Puppy' : 'Dog';
+
+  const promoDiscount = promoApplied
+    ? promoApplied.discount_type === 'percentage'
+      ? (pricing.total * promoApplied.discount_value) / 100
+      : Math.min(promoApplied.discount_value, pricing.total)
+    : 0;
+  const finalTotal = Math.max(0, pricing.total - promoDiscount);
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoError('');
+    setPromoApplied(null);
+    const codes = await base44.entities.PromoCode.filter({ code: promoCode.trim().toUpperCase() });
+    const match = codes.find(c => c.active && (!c.max_uses || c.usage_count < c.max_uses));
+    if (match) {
+      setPromoApplied(match);
+    } else {
+      setPromoError('Invalid or expired promo code.');
+    }
+    setPromoLoading(false);
+  };
 
   const handleSubmit = () => {
     if (isBasicManners) {
@@ -35,7 +62,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
     }
     
     if (isBehaviouralModification) {
-      if (!modificationAgreement) {
+      if (!modificationAgreement || !modificationAgreement2) {
         setAgreementError('Please acknowledge the agreement to proceed');
         return;
       }
@@ -58,29 +85,19 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
       kinderPuppyRefundPolicy: puppyRefundAgreement
     };
     
-    onSubmit(agreements);
+    onSubmit(agreements, promoApplied, finalTotal);
   };
 
-  // Helper function to safely get client field value, checking common variations
   const getClientField = (client, field) => {
     const fieldWithoutPrefix = field.startsWith('client') ? field.substring(6) : field;
     const lowerCaseFieldWithoutPrefix = fieldWithoutPrefix.charAt(0).toLowerCase() + fieldWithoutPrefix.slice(1);
-
-    return client?.[field] || 
-           client?.[field.toLowerCase()] || 
-           client?.[lowerCaseFieldWithoutPrefix] || 
-           'N/A';
+    return client?.[field] || client?.[field.toLowerCase()] || client?.[lowerCaseFieldWithoutPrefix] || 'N/A';
   };
 
-  // Helper function to safely get furkid field value, checking common variations
   const getFurkidField = (furkid, field) => {
     const fieldWithoutPrefix = field.startsWith('furkid') ? field.substring(6) : field;
     const lowerCaseFieldWithoutPrefix = fieldWithoutPrefix.charAt(0).toLowerCase() + fieldWithoutPrefix.slice(1);
-
-    return furkid?.[field] || 
-           furkid?.[field.toLowerCase()] || 
-           furkid?.[lowerCaseFieldWithoutPrefix] || 
-           'N/A';
+    return furkid?.[field] || furkid?.[field.toLowerCase()] || furkid?.[lowerCaseFieldWithoutPrefix] || 'N/A';
   };
 
   return (
@@ -96,7 +113,9 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </h3>
           <div className="space-y-2 text-sm">
             <p className="font-medium text-lg">{service.name}</p>
-            <p className="text-slate-600">{service.sessions} sessions • {service.duration} hour per session</p>
+            {service.id !== 'canine_assessment' && (
+              <p className="text-slate-600">{service.sessions} sessions • {service.duration} hour per session</p>
+            )}
             {(isFYOG || isGroupClass) && formData.numberOfFurkids && (
               <div className="flex gap-2 mt-2">
                 <Badge variant="secondary">{formData.numberOfFurkids} {isKinderPuppy ? (formData.numberOfFurkids > 1 ? 'Puppies' : 'Puppy') : (formData.numberOfFurkids > 1 ? 'Dogs' : 'Dog')}</Badge>
@@ -120,7 +139,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               {formData.sessionDates.map((session, idx) => {
                 const date = parseISO(session.date);
                 const isWeekend = getDay(date) === 0 || getDay(date) === 6;
-                
                 return (
                   <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                     <div>
@@ -169,11 +187,9 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
         )}
 
         {useSharedLayout ? (
-          // For multi-dog KinderPuppy/FYOG: Display Pawrent + Dog pairs in combined cards
           <div className="space-y-4">
             {formData.clients && formData.clients.map((client, idx) => (
               <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                {/* Combined Pawrent & Puppy Header */}
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-300">
                   <User className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-slate-900">Pawrent {idx + 1}</span>
@@ -181,9 +197,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                   <PawPrint className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-slate-900">{dogLabel} {idx + 1}</span>
                 </div>
-
                 <div className="grid md:grid-cols-2 gap-6">
-                  {/* Pawrent Information */}
                   <div className="space-y-2">
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pawrent Details</p>
                     <div className="space-y-1.5 text-sm">
@@ -201,8 +215,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                       </div>
                     </div>
                   </div>
-
-                  {/* Puppy Information */}
                   {formData.furkids && formData.furkids[idx] && (
                     <div className="space-y-2">
                       <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{dogLabel} Details</p>
@@ -236,8 +248,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 </div>
               </div>
             ))}
-
-            {/* Shared Training Location */}
             {formData.sharedAddress && (
               <div className="border-t border-slate-200 pt-6">
                 <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -270,26 +280,11 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                   <p className="font-semibold text-sm text-slate-900 mb-2">Client {idx + 1}</p>
                   <div className="space-y-1.5 text-sm">
-                    <div className="flex">
-                      <span className="font-medium text-slate-600 w-28">Name:</span>
-                      <span className="text-slate-900">{getClientField(client, 'clientName')}</span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-medium text-slate-600 w-28">Email:</span>
-                      <span className="text-slate-900">{getClientField(client, 'clientEmail')}</span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-medium text-slate-600 w-28">Mobile:</span>
-                      <span className="text-slate-900">{getClientField(client, 'clientMobile')}</span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-medium text-slate-600 w-28">Address:</span>
-                      <span className="text-slate-900">{getClientField(client, 'clientAddress')}</span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-medium text-slate-600 w-28">Postal Code:</span>
-                      <span className="text-slate-900">{getClientField(client, 'clientPostalCode')}</span>
-                    </div>
+                    <div className="flex"><span className="font-medium text-slate-600 w-28">Name:</span><span className="text-slate-900">{getClientField(client, 'clientName')}</span></div>
+                    <div className="flex"><span className="font-medium text-slate-600 w-28">Email:</span><span className="text-slate-900">{getClientField(client, 'clientEmail')}</span></div>
+                    <div className="flex"><span className="font-medium text-slate-600 w-28">Mobile:</span><span className="text-slate-900">{getClientField(client, 'clientMobile')}</span></div>
+                    <div className="flex"><span className="font-medium text-slate-600 w-28">Address:</span><span className="text-slate-900">{getClientField(client, 'clientAddress')}</span></div>
+                    <div className="flex"><span className="font-medium text-slate-600 w-28">Postal Code:</span><span className="text-slate-900">{getClientField(client, 'clientPostalCode')}</span></div>
                   </div>
                 </div>
               ))}
@@ -303,26 +298,11 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             </h3>
             <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
               <div className="space-y-1.5 text-sm">
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Name:</span>
-                  <span className="text-slate-900">{formData.clientName || 'N/A'}</span>
-                </div>
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Email:</span>
-                  <span className="text-slate-900">{formData.clientEmail || 'N/A'}</span>
-                </div>
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Mobile:</span>
-                  <span className="text-slate-900">{formData.clientMobile || 'N/A'}</span>
-                </div>
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Address:</span>
-                  <span className="text-slate-900">{formData.clientAddress || 'N/A'}</span>
-                </div>
-                <div className="flex">
-                  <span className="font-medium text-slate-600 w-28">Postal Code:</span>
-                  <span className="text-slate-900">{formData.clientPostalCode || 'N/A'}</span>
-                </div>
+                <div className="flex"><span className="font-medium text-slate-600 w-28">Name:</span><span className="text-slate-900">{formData.clientName || 'N/A'}</span></div>
+                <div className="flex"><span className="font-medium text-slate-600 w-28">Email:</span><span className="text-slate-900">{formData.clientEmail || 'N/A'}</span></div>
+                <div className="flex"><span className="font-medium text-slate-600 w-28">Mobile:</span><span className="text-slate-900">{formData.clientMobile || 'N/A'}</span></div>
+                <div className="flex"><span className="font-medium text-slate-600 w-28">Address:</span><span className="text-slate-900">{formData.clientAddress || 'N/A'}</span></div>
+                <div className="flex"><span className="font-medium text-slate-600 w-28">Postal Code:</span><span className="text-slate-900">{formData.clientPostalCode || 'N/A'}</span></div>
               </div>
             </div>
           </div>
@@ -337,69 +317,36 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 : ((isFYOG || isGroupClass) && formData.numberOfFurkids > 1 ? 'Furkids Information' : 'Furkid Information')
               }
             </h3>
-
             {((isFYOG || isGroupClass) && formData.furkids && formData.furkids.length > 0) ? (
               <div className="space-y-3">
-                {formData.furkids && formData.furkids.length > 0 ? (
-                  formData.furkids.map((furkid, idx) => (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                      <p className="font-semibold text-sm text-slate-900 mb-2">
-                        {isKinderPuppy ? 'Puppy' : 'Dog'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
-                      </p>
-                      <div className="space-y-1.5 text-sm">
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Age:</span>
-                          <span className="text-slate-900">{getFurkidField(furkid, 'furkidAge')}</span>
+                {formData.furkids.map((furkid, idx) => (
+                  <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <p className="font-semibold text-sm text-slate-900 mb-2">
+                      {isKinderPuppy ? 'Puppy' : 'Dog'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
+                    </p>
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex"><span className="font-medium text-slate-600 w-28">Age:</span><span className="text-slate-900">{getFurkidField(furkid, 'furkidAge')}</span></div>
+                      <div className="flex"><span className="font-medium text-slate-600 w-28">Breed:</span><span className="text-slate-900">{getFurkidField(furkid, 'furkidBreed')}</span></div>
+                      <div className="flex"><span className="font-medium text-slate-600 w-28">Gender:</span><span className="text-slate-900 capitalize">{getFurkidField(furkid, 'furkidGender')}</span></div>
+                      {furkid?.isAdopted && (
+                        <div className="mt-2">
+                          <Badge className="bg-green-100 text-green-800 border-green-300">Singapore Special / Adopted (10% discount)</Badge>
                         </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Breed:</span>
-                          <span className="text-slate-900">{getFurkidField(furkid, 'furkidBreed')}</span>
-                        </div>
-                        <div className="flex">
-                          <span className="font-medium text-slate-600 w-28">Gender:</span>
-                          <span className="text-slate-900 capitalize">{getFurkidField(furkid, 'furkidGender')}</span>
-                        </div>
-                        {furkid?.isAdopted && (
-                          <div className="mt-2">
-                            <Badge className="bg-green-100 text-green-800 border-green-300">
-                              Singapore Special / Adopted (10% discount)
-                            </Badge>
-                          </div>
-                        )}
-                      </div>
+                      )}
                     </div>
-                  ))
-                ) : (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-sm text-red-800 font-semibold">⚠️ No furkid information available</p>
-                    <p className="text-xs text-red-600 mt-1">Expected {formData.numberOfFurkids} {isKinderPuppy ? (formData.numberOfFurkids > 1 ? 'puppies' : 'puppy') : (formData.numberOfFurkids > 1 ? 'dogs' : 'dog')}</p>
                   </div>
-                )}
+                ))}
               </div>
             ) : (
               <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div className="space-y-1.5 text-sm">
-                  <div className="flex">
-                    <span className="font-medium text-slate-600 w-28">Name:</span>
-                    <span className="text-slate-900">{formData.furkidName || 'N/A'}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium text-slate-600 w-28">Age:</span>
-                    <span className="text-slate-900">{formData.furkidAge || 'N/A'}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium text-slate-600 w-28">Breed:</span>
-                    <span className="text-slate-900">{formData.furkidBreed || 'N/A'}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="font-medium text-slate-600 w-28">Gender:</span>
-                    <span className="text-slate-900 capitalize">{formData.furkidGender || 'N/A'}</span>
-                  </div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-28">Name:</span><span className="text-slate-900">{formData.furkidName || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-28">Age:</span><span className="text-slate-900">{formData.furkidAge || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-28">Breed:</span><span className="text-slate-900">{formData.furkidBreed || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-28">Gender:</span><span className="text-slate-900 capitalize">{formData.furkidGender || 'N/A'}</span></div>
                   {formData.isAdopted && (
                     <div className="mt-2">
-                      <Badge className="bg-green-100 text-green-800 border-green-300">
-                        Singapore Special / Adopted (10% discount)
-                      </Badge>
+                      <Badge className="bg-green-100 text-green-800 border-green-300">Singapore Special / Adopted (10% discount)</Badge>
                     </div>
                   )}
                 </div>
@@ -416,18 +363,9 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             </h3>
             <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
               <ul className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                  Treat Pouch (Clicker+Whistle)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                  Dog Mat
-                  </li>
-                  <li className="flex items-center gap-2">
-                   <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                   3m Leash
-                </li>
+                <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-600"></span>Treat Pouch (Clicker+Whistle)</li>
+                <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-600"></span>Dog Mat</li>
+                <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-600"></span>3m Leash</li>
               </ul>
             </div>
           </div>
@@ -443,40 +381,32 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               <span className="text-slate-600">Base Price:</span>
               <span className="font-medium">${pricing.basePrice.toFixed(2)}</span>
             </div>
-            
             {pricing.discount > 0 && (
               <div className="flex justify-between text-green-600">
                 <span>Adoption Discount (10%):</span>
                 <span className="font-medium">-${pricing.discount.toFixed(2)}</span>
               </div>
             )}
-            
             {pricing.surcharge > 0 && (
               <div className="flex justify-between text-orange-600">
                 <span>Weekend Surcharge (5% for {pricing.weekendSessionCount} session{pricing.weekendSessionCount > 1 ? 's' : ''}):</span>
                 <span className="font-medium">+${pricing.surcharge.toFixed(2)}</span>
               </div>
             )}
-            
             {pricing.sentosaSurcharge > 0 && (
               <div className="flex justify-between text-orange-600">
                 <span>Sentosa Surcharge ($10 × {service.sessions} sessions):</span>
                 <span className="font-medium">+${pricing.sentosaSurcharge.toFixed(2)}</span>
               </div>
             )}
-
             {formData.productSelections && formData.productSelections.length > 0 && (
               <div className="pt-2 border-t border-slate-200">
                 <p className="font-medium text-slate-700 mb-2">Products:</p>
                 <div className="space-y-1.5 pl-4">
                   {formData.productSelections.map((product, idx) => (
                     <div key={idx} className="flex justify-between text-blue-600">
-                      <span className="text-sm">
-                        {product.product_name} × {product.quantity}
-                      </span>
-                      <span className="font-medium">
-                        ${(product.discounted_price * product.quantity).toFixed(2)}
-                      </span>
+                      <span className="text-sm">{product.product_name} × {product.quantity}</span>
+                      <span className="font-medium">${(product.discounted_price * product.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -486,10 +416,35 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 </div>
               </div>
             )}
-            
+            {promoApplied && (
+              <div className="flex justify-between text-green-600">
+                <span>Promo Code ({promoApplied.code}):</span>
+                <span className="font-medium">-${promoDiscount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="border-t border-slate-200 pt-2 flex justify-between text-lg font-bold">
               <span>Total Amount:</span>
-              <span className="text-blue-600 text-2xl">${pricing.total.toFixed(2)}</span>
+              <span className="text-blue-600 text-2xl">${finalTotal.toFixed(2)}</span>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200">
+              <p className="text-sm font-medium text-slate-700 mb-2">Have a promo code?</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoError(''); setPromoApplied(null); }}
+                  placeholder="Enter promo code"
+                  className="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Button onClick={handleApplyPromo} disabled={promoLoading || !promoCode.trim()} variant="outline" size="sm">
+                  {promoLoading ? 'Checking...' : 'Apply'}
+                </Button>
+              </div>
+              {promoError && <p className="text-sm text-red-600 mt-1">{promoError}</p>}
+              {promoApplied && (
+                <p className="text-sm text-green-600 mt-1">✓ {promoApplied.description || `${promoApplied.discount_type === 'percentage' ? promoApplied.discount_value + '%' : '$' + promoApplied.discount_value} discount applied!`}</p>
+              )}
             </div>
           </div>
         </div>
@@ -499,59 +454,24 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             <h3 className="font-semibold text-slate-900 mb-3">Terms & Agreements</h3>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="agreement1"
-                  checked={leashAgreement}
-                  onCheckedChange={(checked) => {
-                    setLeashAgreement(checked);
-                    if (agreementError) setAgreementError('');
-                  }}
-                />
-                <Label 
-                  htmlFor="agreement1" 
-                  className="text-sm leading-relaxed cursor-pointer font-normal"
-                >
+                <Checkbox id="agreement1" checked={leashAgreement} onCheckedChange={(checked) => { setLeashAgreement(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="agreement1" className="text-sm leading-relaxed cursor-pointer font-normal">
                   I agree not to use retractable or slip leashes during training sessions.
                 </Label>
               </div>
-
               <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="agreement2"
-                  checked={refundAgreement}
-                  onCheckedChange={(checked) => {
-                    setRefundAgreement(checked);
-                    if (agreementError) setAgreementError('');
-                  }}
-                />
-                <Label 
-                  htmlFor="agreement2" 
-                  className="text-sm leading-relaxed cursor-pointer font-normal"
-                >
+                <Checkbox id="agreement2" checked={refundAgreement} onCheckedChange={(checked) => { setRefundAgreement(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="agreement2" className="text-sm leading-relaxed cursor-pointer font-normal">
                   I understand that HopeforDogs does not offer refunds, exchanges, or cancellations. Any refund provided will be at HopeforDogs discretion and as a gesture of goodwill.
                 </Label>
               </div>
-
               <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="agreement3"
-                  checked={behaviorAgreement}
-                  onCheckedChange={(checked) => {
-                    setBehaviorAgreement(checked);
-                    if (agreementError) setAgreementError('');
-                  }}
-                />
-                <Label 
-                  htmlFor="agreement3" 
-                  className="text-sm leading-relaxed cursor-pointer font-normal"
-                >
+                <Checkbox id="agreement3" checked={behaviorAgreement} onCheckedChange={(checked) => { setBehaviorAgreement(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="agreement3" className="text-sm leading-relaxed cursor-pointer font-normal">
                   I confirm that my dog is not fearful, anxious, and/or reactive towards people or other dogs. I understand that HopeforDogs may adjust the training programme if my dog is observed to be fearful or anxious.
                 </Label>
               </div>
-
-              {agreementError && (
-                <p className="text-sm text-red-600 font-medium">{agreementError}</p>
-              )}
+              {agreementError && <p className="text-sm text-red-600 font-medium">{agreementError}</p>}
             </div>
           </div>
         )}
@@ -561,25 +481,18 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             <h3 className="font-semibold text-slate-900 mb-3">Terms & Agreements</h3>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="behavioralModificationAgreement"
-                  checked={modificationAgreement}
-                  onCheckedChange={(checked) => {
-                    setModificationAgreement(checked);
-                    if (agreementError) setAgreementError('');
-                  }}
-                />
-                <Label 
-                  htmlFor="behavioralModificationAgreement" 
-                  className="text-sm leading-relaxed cursor-pointer font-normal"
-                >
-                  I have read the FAQs and understand that behaviour change takes time and is influenced by many factors. I recognise that my dog's progress will rely on my consistency and commitment to following the trainer's guidance.
+                <Checkbox id="behavioralModificationAgreement" checked={modificationAgreement} onCheckedChange={(checked) => { setModificationAgreement(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="behavioralModificationAgreement" className="text-sm leading-relaxed cursor-pointer font-normal">
+                  I acknowledge that Hopefordogs Canine Training does not provide refunds, exchanges, or cancellations. I understand that behaviour change requires time and may be influenced by several factors.
                 </Label>
               </div>
-
-              {agreementError && (
-                <p className="text-sm text-red-600 font-medium">{agreementError}</p>
-              )}
+              <div className="flex items-start space-x-3">
+                <Checkbox id="behavioralModificationAgreement2" checked={modificationAgreement2} onCheckedChange={(checked) => { setModificationAgreement2(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="behavioralModificationAgreement2" className="text-sm leading-relaxed cursor-pointer font-normal">
+                  I fully understand that the training progress depends on my consistency and commitment to implementing the trainer's guidance.
+                </Label>
+              </div>
+              {agreementError && <p className="text-sm text-red-600 font-medium">{agreementError}</p>}
             </div>
           </div>
         )}
@@ -589,63 +502,27 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             <h3 className="font-semibold text-slate-900 mb-3">Terms & Agreements</h3>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="kinderPuppyAgreement1"
-                  checked={curriculumAgreement}
-                  onCheckedChange={(checked) => {
-                    setCurriculumAgreement(checked);
-                    if (agreementError) setAgreementError('');
-                  }}
-                />
-                <Label 
-                  htmlFor="kinderPuppyAgreement1" 
-                  className="text-sm leading-relaxed cursor-pointer font-normal"
-                >
+                <Checkbox id="kinderPuppyAgreement1" checked={curriculumAgreement} onCheckedChange={(checked) => { setCurriculumAgreement(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="kinderPuppyAgreement1" className="text-sm leading-relaxed cursor-pointer font-normal">
                   I have reviewed the curriculum and understand that puppy training goes beyond teaching basic cues like "sit" or "down," or addressing potty training alone. The curriculum supports my goals and includes a range of essential skills and knowledge vital for my puppy's long-term development and overall well-being.
                 </Label>
               </div>
-
               <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="kinderPuppyAgreement2"
-                  checked={pottyAgreement}
-                  onCheckedChange={(checked) => {
-                    setPottyAgreement(checked);
-                    if (agreementError) setAgreementError('');
-                  }}
-                />
-                <Label 
-                  htmlFor="kinderPuppyAgreement2" 
-                  className="text-sm leading-relaxed cursor-pointer font-normal"
-                >
+                <Checkbox id="kinderPuppyAgreement2" checked={pottyAgreement} onCheckedChange={(checked) => { setPottyAgreement(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="kinderPuppyAgreement2" className="text-sm leading-relaxed cursor-pointer font-normal">
                   I understand that successful potty training requires a consistent routine of feeding, potty breaks, and playtime. I acknowledge that patience and consistency are key, and that there are no quick fixes. I recognise that limited supervision may affect my puppy's potty training progress.
                 </Label>
               </div>
-
               <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="kinderPuppyAgreement3"
-                  checked={puppyRefundAgreement}
-                  onCheckedChange={(checked) => {
-                    setPuppyRefundAgreement(checked);
-                    if (agreementError) setAgreementError('');
-                  }}
-                />
-                <Label 
-                  htmlFor="kinderPuppyAgreement3" 
-                  className="text-sm leading-relaxed cursor-pointer font-normal"
-                >
+                <Checkbox id="kinderPuppyAgreement3" checked={puppyRefundAgreement} onCheckedChange={(checked) => { setPuppyRefundAgreement(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="kinderPuppyAgreement3" className="text-sm leading-relaxed cursor-pointer font-normal">
                   I understand that HopeforDogs Canine Training's refund policy does not allow refunds, exchanges, or cancellations. Any refund provided will be entirely at HopeforDogs Canine Training's discretion and as a gesture of goodwill.
                 </Label>
               </div>
-
-              {agreementError && (
-                <p className="text-sm text-red-600 font-medium">{agreementError}</p>
-              )}
+              {agreementError && <p className="text-sm text-red-600 font-medium">{agreementError}</p>}
             </div>
           </div>
         )}
-
 
         <div className="flex gap-3 pt-4">
           <Button variant="outline" onClick={onBack} disabled={isSubmitting} className="flex-1">

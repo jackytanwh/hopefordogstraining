@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -218,6 +217,8 @@ export default function BehaviouralModificationForm({ service, formData, setForm
       if (formData.requires_assessment_report === undefined) newErrors.requires_assessment_report = 'Required';
     } else {
       if (!formData.understanding_confirmed) newErrors.understanding_confirmed = 'Required';
+      if (!formData.training_updates_confirmed) newErrors.training_updates_confirmed = 'Required';
+      if (!formData.training_updates_confirmed) newErrors.training_updates_confirmed = 'Required';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -382,7 +383,30 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             <>
               <div className="space-y-2">
                 <Label>If yes, at what age? *</Label>
-                <Input value={formData.furkid_sterilisation_age || ''} onChange={(e) => handleInputChange('furkid_sterilisation_age', e.target.value)} placeholder="e.g., 6 months" />
+                <div className="grid grid-cols-2 gap-2">
+                  <Select value={formData.sterilisation_age_year ?? ''} onValueChange={(v) => {
+                    const m = formData.sterilisation_age_month ?? '0';
+                    setFormData(prev => ({ ...prev, sterilisation_age_year: v, furkid_sterilisation_age: `${v}y ${m}m` }));
+                  }}>
+                    <SelectTrigger className={errors.furkid_sterilisation_age ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({length: 26}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} yr</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select value={formData.sterilisation_age_month ?? ''} onValueChange={(v) => {
+                    const y = formData.sterilisation_age_year ?? '0';
+                    setFormData(prev => ({ ...prev, sterilisation_age_month: v, furkid_sterilisation_age: `${y}y ${v}m` }));
+                  }}>
+                    <SelectTrigger className={errors.furkid_sterilisation_age ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({length: 13}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} mo</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
                 {errors.furkid_sterilisation_age && <p className="text-sm text-red-600">{errors.furkid_sterilisation_age}</p>}
               </div>
               <div className="space-y-2">
@@ -434,7 +458,30 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>How old was the furkid when he/she joined your household? *</Label>
-            <Input value={formData.furkid_joined_family_age || ''} onChange={(e) => handleInputChange('furkid_joined_family_age', e.target.value)} />
+            <div className="grid grid-cols-2 gap-2">
+              <Select value={formData.joined_family_age_year ?? ''} onValueChange={(v) => {
+                const m = formData.joined_family_age_month ?? '0';
+                setFormData(prev => ({ ...prev, joined_family_age_year: v, furkid_joined_family_age: `${v}y ${m}m` }));
+              }}>
+                <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({length: 26}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} yr</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={formData.joined_family_age_month ?? ''} onValueChange={(v) => {
+                const y = formData.joined_family_age_year ?? '0';
+                setFormData(prev => ({ ...prev, joined_family_age_month: v, furkid_joined_family_age: `${y}y ${v}m` }));
+              }}>
+                <SelectTrigger className={errors.furkid_joined_family_age ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({length: 13}, (_, i) => i).map(n => <SelectItem key={n} value={String(n)}>{String(n).padStart(2,'0')} mo</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             {errors.furkid_joined_family_age && <p className="text-sm text-red-600">{errors.furkid_joined_family_age}</p>}
           </div>
 
@@ -558,13 +605,13 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>Any known past trauma or mistreatment? *</Label>
-            <Textarea value={formData.past_trauma || ''} onChange={(e) => handleInputChange('past_trauma', e.target.value)} rows={3} />
+            <Textarea value={formData.past_trauma || ''} onChange={(e) => handleInputChange('past_trauma', e.target.value)} rows={2} />
             {errors.past_trauma && <p className="text-sm text-red-600">{errors.past_trauma}</p>}
           </div>
 
           <div className="space-y-2">
             <Label>Your immediate reaction(s) to mediate the behaviour *</Label>
-            <Textarea value={formData.immediate_reaction || ''} onChange={(e) => handleInputChange('immediate_reaction', e.target.value)} rows={3} />
+            <Textarea value={formData.immediate_reaction || ''} onChange={(e) => handleInputChange('immediate_reaction', e.target.value)} rows={2} />
             {errors.immediate_reaction && <p className="text-sm text-red-600">{errors.immediate_reaction}</p>}
           </div>
 
@@ -582,7 +629,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>How does the dog react to strangers/visitors? *</Label>
-            <Textarea value={formData.reaction_to_strangers || ''} onChange={(e) => handleInputChange('reaction_to_strangers', e.target.value)} rows={3} />
+            <Textarea value={formData.reaction_to_strangers || ''} onChange={(e) => handleInputChange('reaction_to_strangers', e.target.value)} rows={2} />
             {errors.reaction_to_strangers && <p className="text-sm text-red-600">{errors.reaction_to_strangers}</p>}
           </div>
 
@@ -627,7 +674,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           
           <div className="space-y-2">
             <Label>What do you wish to achieve with the program? *</Label>
-            <Textarea value={formData.program_goals || ''} onChange={(e) => handleInputChange('program_goals', e.target.value)} rows={3} />
+            <Textarea value={formData.program_goals || ''} onChange={(e) => handleInputChange('program_goals', e.target.value)} rows={2} />
             {errors.program_goals && <p className="text-sm text-red-600">{errors.program_goals}</p>}
           </div>
 
@@ -740,13 +787,13 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>How long is the dog left alone daily? *</Label>
+            <Label>How often, and for how long, is the dog typically left alone? *</Label>
             <Input value={formData.alone_duration || ''} onChange={(e) => handleInputChange('alone_duration', e.target.value)} />
             {errors.alone_duration && <p className="text-sm text-red-600">{errors.alone_duration}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label>Anxiety behaviours when left alone? *</Label>
+            <Label>Does the dog exhibit any anxious behaviours when alone? *</Label>
             <Textarea value={formData.anxiety_when_alone || ''} onChange={(e) => handleInputChange('anxiety_when_alone', e.target.value)} rows={2} />
             {errors.anxiety_when_alone && <p className="text-sm text-red-600">{errors.anxiety_when_alone}</p>}
           </div>
@@ -766,8 +813,23 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>Indoor or outdoor potty trained? *</Label>
-            <Input value={formData.potty_training || ''} onChange={(e) => handleInputChange('potty_training', e.target.value)} />
+            <Label>Is the dog indoor or outdoors potty trained? *</Label>
+            <RadioGroup value={formData.potty_training} onValueChange={(v) => handleInputChange('potty_training', v)}>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Indoors" id="potty-indoor" />
+                  <Label htmlFor="potty-indoor" className="cursor-pointer">Indoors</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Outdoors" id="potty-outdoor" />
+                  <Label htmlFor="potty-outdoor" className="cursor-pointer">Outdoors</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Both indoors and outdoors" id="potty-both" />
+                  <Label htmlFor="potty-both" className="cursor-pointer">Both indoors and outdoors</Label>
+                </div>
+              </div>
+            </RadioGroup>
             {errors.potty_training && <p className="text-sm text-red-600">{errors.potty_training}</p>}
           </div>
 
@@ -788,34 +850,6 @@ export default function BehaviouralModificationForm({ service, formData, setForm
             {errors.walking_equipment && <p className="text-sm text-red-600">{errors.walking_equipment}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label>Enrichment tools available? *</Label>
-            <div className="flex gap-4 mb-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="enrich-snuffle"
-                  checked={hasSnuffleMat}
-                  onCheckedChange={() => handleEnrichmentToggle('Snuffle mat')}
-                />
-                <Label htmlFor="enrich-snuffle" className="cursor-pointer text-sm">Snuffle mat</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="enrich-lick"
-                  checked={hasLickMat}
-                  onCheckedChange={() => handleEnrichmentToggle('Lick mat')}
-                />
-                <Label htmlFor="enrich-lick" className="cursor-pointer text-sm">Lick mat</Label>
-              </div>
-            </div>
-            <Textarea 
-              value={formData.enrichment_tools || ''} 
-              onChange={(e) => handleInputChange('enrichment_tools', e.target.value)} 
-              rows={2}
-              placeholder="e.g., Kong, puzzle toys, treat balls, snuffle mat, lick mat..."
-            />
-            {errors.enrichment_tools && <p className="text-sm text-red-600">{errors.enrichment_tools}</p>}
-          </div>
         </div>
 
         {/* Training History */}
@@ -848,9 +882,15 @@ export default function BehaviouralModificationForm({ service, formData, setForm
               </div>
 
               <div className="space-y-2">
-                <Label>What school? *</Label>
+                <Label>What school/trainer? *</Label>
                 <Input value={formData.previous_training_school || ''} onChange={(e) => handleInputChange('previous_training_school', e.target.value)} />
                 {errors.previous_training_school && <p className="text-sm text-red-600">{errors.previous_training_school}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label>What training methods have been used? *</Label>
+                <Input value={formData.previous_training_methods || ''} onChange={(e) => handleInputChange('previous_training_methods', e.target.value)} />
+                {errors.previous_training_methods && <p className="text-sm text-red-600">{errors.previous_training_methods}</p>}
               </div>
             </>
           )}
@@ -887,7 +927,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>How many times a day do you feed? *</Label>
+              <Label>How many meals does the dog get each day? *</Label>
               <Input value={formData.feeding_frequency || ''} onChange={(e) => handleInputChange('feeding_frequency', e.target.value)} />
               {errors.feeding_frequency && <p className="text-sm text-red-600">{errors.feeding_frequency}</p>}
             </div>
@@ -917,6 +957,43 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
+            <Label>Do you have any of the following food puzzles? *</Label>
+            <div className="flex gap-4 mb-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-snuffle"
+                  checked={hasSnuffleMat}
+                  onCheckedChange={() => handleEnrichmentToggle('Snuffle mat')}
+                />
+                <Label htmlFor="enrich-snuffle" className="cursor-pointer text-sm">Snuffle mat</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-lick"
+                  checked={hasLickMat}
+                  onCheckedChange={() => handleEnrichmentToggle('Lick mat')}
+                />
+                <Label htmlFor="enrich-lick" className="cursor-pointer text-sm">Lick mat</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enrich-none"
+                  checked={formData.enrichment_tools === 'None'}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      handleInputChange('enrichment_tools', 'None');
+                    } else {
+                      handleInputChange('enrichment_tools', '');
+                    }
+                  }}
+                />
+                <Label htmlFor="enrich-none" className="cursor-pointer text-sm">None</Label>
+              </div>
+            </div>
+            {errors.enrichment_tools && <p className="text-sm text-red-600">{errors.enrichment_tools}</p>}
+          </div>
+
+          <div className="space-y-2">
             <Label>Eating speed * (1: slow – 5: gobbles)</Label>
             <Select value={formData.eating_speed?.toString()} onValueChange={(v) => handleInputChange('eating_speed', parseInt(v))}>
               <SelectTrigger className={errors.eating_speed ? 'border-red-500' : ''}>
@@ -930,7 +1007,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>How often gets chews (bully sticks, bones)? *</Label>
+            <Label>How often does the furkid get short or long-duration chews? *</Label>
             <Input value={formData.chews_frequency || ''} onChange={(e) => handleInputChange('chews_frequency', e.target.value)} />
             {errors.chews_frequency && <p className="text-sm text-red-600">{errors.chews_frequency}</p>}
           </div>
@@ -938,7 +1015,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           {formData.chews_frequency?.trim() && (
             <div className="space-y-2">
               <Label>What kind of chews? *</Label>
-              <Input value={formData.chews_type || ''} onChange={(e) => handleInputChange('chews_type', e.target.value)} />
+              <Input value={formData.chews_type || ''} onChange={(e) => handleInputChange('chews_type', e.target.value)} placeholder="e.g. bully sticks/yak chews/meaty bones" />
               {errors.chews_type && <p className="text-sm text-red-600">{errors.chews_type}</p>}
             </div>
           )}
@@ -987,7 +1064,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           {formData.food_allergies && (
             <div className="space-y-2">
-              <Label>If yes, what allergies? *</Label>
+              <Label>What substances or foods is the dog allergic to? *</Label>
               <Textarea value={formData.food_allergies_details || ''} onChange={(e) => handleInputChange('food_allergies_details', e.target.value)} rows={2} />
               {errors.food_allergies_details && <p className="text-sm text-red-600">{errors.food_allergies_details}</p>}
             </div>
@@ -1037,7 +1114,30 @@ export default function BehaviouralModificationForm({ service, formData, setForm
 
           <div className="space-y-2">
             <Label>When was the dog's last health check? *</Label>
-            <Input value={formData.last_health_check || ''} onChange={(e) => handleInputChange('last_health_check', e.target.value)} />
+            <div className="grid grid-cols-2 gap-2">
+              <Select value={formData.last_health_check_month || ''} onValueChange={(v) => {
+                const yr = formData.last_health_check_year || '';
+                setFormData(prev => ({ ...prev, last_health_check_month: v, last_health_check: yr ? `${v} ${yr}` : v }));
+              }}>
+                <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map(m => <SelectItem key={m.value} value={m.label}>{m.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={formData.last_health_check_year || ''} onValueChange={(v) => {
+                const mo = formData.last_health_check_month || '';
+                setFormData(prev => ({ ...prev, last_health_check_year: v, last_health_check: mo ? `${mo} ${v}` : v }));
+              }}>
+                <SelectTrigger className={errors.last_health_check ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map(y => <SelectItem key={y} value={y.toString()}>{y}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             {errors.last_health_check && <p className="text-sm text-red-600">{errors.last_health_check}</p>}
           </div>
 
@@ -1117,7 +1217,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           )}
 
           <div className="space-y-2">
-            <Label>Is he/she on any medication? *</Label>
+            <Label>Is the dog currently on any medication? *</Label>
             <RadioGroup value={formData.on_medication?.toString()} onValueChange={(v) => handleInputChange('on_medication', v === 'true')}>
               <div className="flex gap-4">
                 <div className="flex items-center space-x-2">
@@ -1138,6 +1238,29 @@ export default function BehaviouralModificationForm({ service, formData, setForm
               <Label>If yes, what medications and any possible side effects: *</Label>
               <Textarea value={formData.medication_details || ''} onChange={(e) => handleInputChange('medication_details', e.target.value)} rows={2} placeholder="Medication name and dosage, possible side effects" />
               {errors.medication_details && <p className="text-sm text-red-600">{errors.medication_details}</p>}
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label>Is the dog on flea/tick treatment? *</Label>
+            <RadioGroup value={formData.flea_tick_treatment?.toString()} onValueChange={(v) => handleInputChange('flea_tick_treatment', v === 'true')}>
+              <div className="flex gap-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="true" id="flea-yes" />
+                  <Label htmlFor="flea-yes" className="cursor-pointer">Yes</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="false" id="flea-no" />
+                  <Label htmlFor="flea-no" className="cursor-pointer">No</Label>
+                </div>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {formData.flea_tick_treatment && (
+            <div className="space-y-2">
+              <Label>What type of treatment and the frequency? *</Label>
+              <Input value={formData.flea_tick_treatment_details || ''} onChange={(e) => handleInputChange('flea_tick_treatment_details', e.target.value)} />
             </div>
           )}
         </div>
@@ -1163,6 +1286,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
         ) : (
           <div className="space-y-3 p-4 bg-slate-100 rounded-lg border-2 border-slate-300">
+            <h3 className="font-semibold text-slate-900 text-lg mb-3">Agreement</h3>
             <div className="flex items-start space-x-2">
               <Checkbox 
                 id="understanding" 
@@ -1170,14 +1294,25 @@ export default function BehaviouralModificationForm({ service, formData, setForm
                 onCheckedChange={(checked) => handleInputChange('understanding_confirmed', checked)}
               />
               <Label htmlFor="understanding" className="text-sm cursor-pointer leading-relaxed">
-                By checking this box, I confirm that I have read the{' '}
+                I confirm that I have read the{' '}
                 <a href="https://www.hopefordogs.sg/behavioural-modification/#faq" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                   FAQs
                 </a>
-                {' '}and understand that behavior modification is influenced by various factors and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the recommended strategies by the canine behaviour consultant. *
+                {' '}and understand that various factors influence behaviour modification and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the training plan provided by the canine behaviour consultant. *
               </Label>
             </div>
             {errors.understanding_confirmed && <p className="text-sm text-red-600">{errors.understanding_confirmed}</p>}
+            <div className="flex items-start space-x-2 mt-3">
+              <Checkbox 
+                id="training-updates" 
+                checked={formData.training_updates_confirmed || false}
+                onCheckedChange={(checked) => handleInputChange('training_updates_confirmed', checked)}
+              />
+              <Label htmlFor="training-updates" className="text-sm cursor-pointer leading-relaxed">
+                Updates on training progress, accompanied by video recordings, will be shared every few days. *
+              </Label>
+            </div>
+            {errors.training_updates_confirmed && <p className="text-sm text-red-600">{errors.training_updates_confirmed}</p>}
           </div>
         )}
 

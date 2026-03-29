@@ -51,22 +51,22 @@ export default function ClientInformation({ service, formData, setFormData, onNe
     const actualIndex = isMultiEntryForm ? multiEntryIndex : clientIndex;
     
     if (isMultiClient || isMultiEntryForm) {
-      const newClients = [...(formData.clients || [])];
-      if (!newClients[actualIndex]) {
-        newClients[actualIndex] = {};
-      }
-      newClients[actualIndex][field] = value;
-      setFormData({ ...formData, clients: newClients });
+      setFormData(prev => {
+        const newClients = [...(prev.clients || [])];
+        if (!newClients[actualIndex]) newClients[actualIndex] = {};
+        newClients[actualIndex] = { ...newClients[actualIndex], [field]: value };
+        return { ...prev, clients: newClients };
+      });
     } else {
-      const updatedFormData = { ...formData, [field]: value };
-      
-      if (field === 'clientPostalCode') {
-        updatedFormData.isSentosa = checkSentosaPostalCode(value);
-      }
-      
-      setFormData(updatedFormData);
+      setFormData(prev => {
+        const updated = { ...prev, [field]: value };
+        if (field === 'clientPostalCode') {
+          updated.isSentosa = checkSentosaPostalCode(value);
+        }
+        return updated;
+      });
     }
-    
+
     if (errors[`${clientIndex}_${field}`] || errors[field]) {
       const newErrors = { ...errors };
       delete newErrors[`${clientIndex}_${field}`];

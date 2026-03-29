@@ -267,6 +267,15 @@ export default function BookService() {
           adoptionDiscount += (idx === 0 ? fyogBasePrice : fyogExtraPrice) * 0.1;
         }
       });
+    } else if (isKinderPuppy) {
+      const kinderFurkids = formData.furkids || [];
+      const kinderCount = formData.kinderPuppyCount || 1;
+      const pricePerPuppy = basePrice / kinderCount;
+      kinderFurkids.forEach((furkid) => {
+        if (furkid && furkid.isAdopted) {
+          adoptionDiscount += pricePerPuppy * 0.1;
+        }
+      });
     } else {
       adoptionDiscount = formData.isAdopted ? basePrice * 0.1 : 0;
     }
@@ -391,7 +400,7 @@ export default function BookService() {
     return { name, email, mobile };
   };
 
-  const handleSubmit = async (agreements) => {
+  const handleSubmit = async (agreements, promoApplied = null, finalTotal = null) => {
     setIsSubmitting(true);
     
     console.log('=== BOOKING SUBMISSION STARTED ===');
@@ -439,6 +448,40 @@ export default function BookService() {
         } else {
           bookingData.agreement_behavioral_modification_understanding = Boolean(agreements?.behavioralModificationUnderstanding);
         }
+
+        // Behavioural history form fields
+        const behaviouralFields = [
+          'furkid_sterilisation_age', 'furkid_sterilisation_method',
+          'furkid_acquired_from', 'furkid_joined_family_age',
+          'has_previous_guardian', 'previous_guardian_reason',
+          'behaviour_first_noticed', 'is_aggression_issue', 'has_bitten',
+          'bite_count', 'bite_triggers', 'bite_severity',
+          'behaviour_symptoms', 'past_trauma', 'immediate_reaction',
+          'methods_tried', 'methods_effectiveness', 'reaction_to_strangers',
+          'behaviour_severity_change', 'behaviour_seriousness_scale',
+          'program_goals', 'daily_training_time', 'main_caregivers',
+          'purpose_of_getting_furkid', 'why_chose_furkid',
+          'other_pets', 'other_pets_list', 'previous_furkids_owned', 'previous_furkids',
+          'hangout_location', 'sleep_location', 'alone_duration', 'anxiety_when_alone',
+          'walk_frequency', 'walk_duration', 'potty_training',
+          'walking_equipment', 'enrichment_tools',
+          'previous_training', 'previous_training_type', 'previous_training_school',
+          'known_cues_reliable', 'known_cues_list',
+          'feeding_frequency', 'diet_type', 'feeding_method', 'eating_speed',
+          'chews_frequency', 'chews_type', 'loves_treats', 'treats_type',
+          'food_allergies', 'food_allergies_details',
+          'handling_reaction', 'equipment_resistance',
+          'touch_discomfort', 'touch_discomfort_details',
+          'last_health_check', 'medical_conditions', 'medical_conditions_details',
+          'pain_history', 'pain_history_details',
+          'discomfort_signs', 'discomfort_signs_details',
+          'on_medication', 'medication_details',
+        ];
+        behaviouralFields.forEach(field => {
+          if (formData[field] !== undefined && formData[field] !== null && formData[field] !== '') {
+            bookingData[field] = formData[field];
+          }
+        });
       }
 
       if (isKinderPuppy) {
@@ -568,9 +611,22 @@ export default function BookService() {
       
       console.log('=== INITIATING RAZORPAY PAYMENT ===');
 
+      const paymentAmount = finalTotal !== null ? finalTotal : pricing.total;
+
+      // Increment promo code usage if applied
+      if (promoApplied?.id) {
+        try {
+          await base44.entities.PromoCode.update(promoApplied.id, {
+            usage_count: (promoApplied.usage_count || 0) + 1
+          });
+        } catch (e) {
+          console.warn('Could not update promo usage count:', e);
+        }
+      }
+
       const orderResponse = await base44.functions.invoke('createRazorpayOrder', {
         bookingId: booking.id,
-        amount: pricing.total,
+        amount: paymentAmount,
       });
 
       const orderData = orderResponse?.data;
@@ -873,7 +929,7 @@ export default function BookService() {
             onBack={handleBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
-            isFYOG={fyogCount > 1}
+            isFYOG={true}
           />
         );
       }
