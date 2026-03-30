@@ -200,7 +200,8 @@ export default function BehaviouralModificationDetails({ booking }) {
           <YesNo label="Pain/injury/surgery history?" value={b.pain_history} details={b.pain_history_details} />
           <YesNo label="Signs of discomfort?" value={b.discomfort_signs} details={b.discomfort_signs_details} />
           <YesNo label="On medication?" value={b.on_medication} details={b.medication_details} detailsLabel="Details" />
-          <YesNo label="On flea/tick treatment?" value={b.flea_tick_treatment} details={b.flea_tick_treatment_details} detailsLabel="Details" />
+          <YesNo label="On flea/tick treatment?" value={b.flea_tick_treatment} />
+          {b.flea_tick_treatment && <Field label="Treatment type & frequency" value={b.flea_tick_treatment_details} />}
         </Section>
 
       </CardContent>
