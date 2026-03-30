@@ -26,6 +26,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
   const isBehaviouralModification = service.id === 'behavioural_modification';
+  const isCanineAssessment = service.id === 'canine_assessment';
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
   const isFYOGMulti = isFYOG && formData.clients && formData.clients.length > 0;
   const useSharedLayout = isKinderPuppyMulti || isFYOGMulti;
@@ -352,6 +353,45 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {(isCanineAssessment || isBehaviouralModification) && (
+          <div className="border-t border-slate-200 pt-6">
+            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <PawPrint className="w-5 h-5" />
+              Canine History
+            </h3>
+            <div className="space-y-3">
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Basic Information</p>
+                <div className="space-y-1.5 text-sm">
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">Name:</span><span className="text-slate-900">{formData.furkidName || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">Breed:</span><span className="text-slate-900">{formData.furkidBreed || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">Age:</span><span className="text-slate-900">{formData.furkidAge || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">Gender:</span><span className="text-slate-900 capitalize">{formData.furkidGender || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">Sterilised:</span><span className="text-slate-900">{formData.furkidSterilised === true ? 'Yes' : formData.furkidSterilised === false ? 'No' : 'N/A'}</span></div>
+                  {formData.isAdopted && (
+                    <div className="mt-2"><Badge className="bg-green-100 text-green-800 border-green-300">Singapore Special / Adopted (10% discount)</Badge></div>
+                  )}
+                </div>
+              </div>
+              <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Behaviour Details</p>
+                <div className="space-y-1.5 text-sm">
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">First noticed:</span><span className="text-slate-900">{formData.behaviour_first_noticed || 'N/A'}</span></div>
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">Aggression issue:</span><span className="text-slate-900 capitalize">{formData.is_aggression_issue || 'N/A'}</span></div>
+                  <div className="flex flex-col gap-0.5"><span className="font-medium text-slate-600">Symptoms:</span><span className="text-slate-900 whitespace-pre-wrap">{formData.behaviour_symptoms || 'N/A'}</span></div>
+                  <div className="flex flex-col gap-0.5"><span className="font-medium text-slate-600">Program goals:</span><span className="text-slate-900 whitespace-pre-wrap">{formData.program_goals || 'N/A'}</span></div>
+                </div>
+              </div>
+              {isCanineAssessment && formData.requires_assessment_report !== undefined && (
+                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Assessment Report</p>
+                  <div className="flex"><span className="font-medium text-slate-600 w-36">Report required:</span><span className="text-slate-900">{formData.requires_assessment_report ? 'Yes' : 'No'}</span></div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
