@@ -234,7 +234,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         discountHtml = `
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0; text-align: center;">
             <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">10% discount for any future program</p>
-            <p style="font-size: 20px; font-weight: 700; color: #15803d; margin: 0; letter-spacing: 1px;">${config.discountCode}</p>
+            <p style="font-size: 24px; font-weight: 700; color: #15803d; margin: 0; letter-spacing: 2px;">${config.discountCode}</p>
         </div>`;
     }
 
@@ -299,7 +299,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
 
             <p style="font-size: 15px; color: #1e293b; margin: 20px 0 0 0;">
                 Kind regards,<br/>
-                <strong>Jacky, ISCP Dip. Canine Prac.</strong><br/>
+                <strong>Jacky, ISCP Dip. Prac.</strong><br/>
                 Hopefordogs Canine Training
             </p>
         </div>
