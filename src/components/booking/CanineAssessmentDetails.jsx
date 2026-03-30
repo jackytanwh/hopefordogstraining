@@ -155,6 +155,8 @@ export default function CanineAssessmentDetails({ booking: b }) {
           {b.discomfort_signs && <Field label="Discomfort Details" value={b.discomfort_signs_details} />}
           <Field label="On Medication" value={b.on_medication} />
           {b.on_medication && <Field label="Medication Details" value={b.medication_details} />}
+          <Field label="Flea/Tick Treatment" value={b.flea_tick_treatment} />
+          {b.flea_tick_treatment && <Field label="Flea/Tick Treatment Details" value={b.flea_tick_treatment_details} />}
         </Section>
 
         {/* Assessment */}
