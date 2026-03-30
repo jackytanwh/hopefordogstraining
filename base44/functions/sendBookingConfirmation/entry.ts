@@ -290,7 +290,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
                         <td style="padding: 4px 0; font-size: 15px; color: #475569; font-weight: 600;">Total Paid</td>
-                        <td style="padding: 4px 0; text-align: right; font-size: 26px; color: #16a34a; font-weight: 700;">$${totalPrice}</td>
+                        <td style="padding: 4px 0; text-align: right; font-size: 15px; color: #16a34a; font-weight: 700;">$${totalPrice}</td>
                     </tr>
                 </table>
             </div>
@@ -299,7 +299,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
 
             <p style="font-size: 15px; color: #1e293b; margin: 20px 0 0 0;">
                 Kind regards,<br/>
-                <strong>Jacky, ISCP Dip. Prac.</strong><br/>
+                <strong>Jacky, ISCP Canine Dip. Prac.</strong><br/>
                 Hopefordogs Canine Training
             </p>
         </div>
