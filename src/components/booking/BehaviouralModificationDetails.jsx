@@ -156,7 +156,6 @@ export default function BehaviouralModificationDetails({ booking }) {
               </div>
             </div>
           )}
-          <Field label="Enrichment tools" value={b.enrichment_tools} />
         </Section>
 
         {/* Training History */}
@@ -188,6 +187,7 @@ export default function BehaviouralModificationDetails({ booking }) {
           {b.chews_frequency && <Field label="Chews type" value={b.chews_type} />}
           <YesNo label="Loves treats?" value={b.loves_treats} details={b.treats_type} detailsLabel="Type" />
           <YesNo label="Food allergies?" value={b.food_allergies} details={b.food_allergies_details} detailsLabel="Details" />
+          <Field label="Enrichment tools" value={b.enrichment_tools} />
         </Section>
 
         {/* Health & Medical */}
