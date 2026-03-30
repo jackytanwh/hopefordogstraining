@@ -21,6 +21,7 @@ import {
 import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import BehaviouralModificationDetails from "../components/booking/BehaviouralModificationDetails";
+import CanineAssessmentDetails from "../components/booking/CanineAssessmentDetails";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -1162,6 +1163,11 @@ export default function BookingDetail() {
             {/* Behavioural Modification Details */}
             {booking.service_type === 'behavioural_modification' && (
               <BehaviouralModificationDetails booking={booking} />
+            )}
+
+            {/* Canine Assessment Details */}
+            {booking.service_type === 'canine_assessment' && (
+              <CanineAssessmentDetails booking={booking} />
             )}
 
             {/* Curriculum Tracker */}
