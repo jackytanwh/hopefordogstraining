@@ -476,6 +476,7 @@ export default function BookService() {
           'pain_history', 'pain_history_details',
           'discomfort_signs', 'discomfort_signs_details',
           'on_medication', 'medication_details',
+          'flea_tick_treatment', 'flea_tick_treatment_details',
         ];
         behaviouralFields.forEach(field => {
           if (formData[field] !== undefined && formData[field] !== null && formData[field] !== '') {
