@@ -47,9 +47,14 @@ Deno.serve(async (req) => {
         }
 
         for (const booking of activeBookings) {
+            // Track which sessions already had reminders sent (stored as comma-separated string)
+            const sentReminders: string[] = (booking.reminders_sent_for || '').split(',').filter(Boolean);
+
             for (const session of booking.session_dates) {
                 if (session.completed) continue;
-                if (session.reminder_sent) continue;
+
+                const sessionKey = `s${session.session_number}`;
+                if (sentReminders.includes(sessionKey)) continue;
 
                 const sessionDate = new Date(session.date + 'T' + session.start_time);
                 const timeDiff = sessionDate.getTime() - now.getTime();
@@ -201,16 +206,16 @@ Deno.serve(async (req) => {
                     }
                 }
 
-                // Mark this session as reminder_sent to prevent duplicates
+                // Mark this session as reminder sent using a simple string field on the booking
                 if (result.whatsapp === 'sent' || result.email === 'sent') {
                     try {
-                        const updatedSessions = booking.session_dates.map((s: any) =>
-                            s.session_number === session.session_number ? { ...s, reminder_sent: true } : s
-                        );
-                        await base44.asServiceRole.entities.Booking.update(booking.id, { session_dates: updatedSessions });
-                        console.log(`✅ Marked session ${session.session_number} of booking ${booking.id} as reminder_sent`);
+                        sentReminders.push(sessionKey);
+                        await base44.asServiceRole.entities.Booking.update(booking.id, {
+                            reminders_sent_for: sentReminders.join(',')
+                        });
+                        console.log(`✅ Marked ${sessionKey} of booking ${booking.id} as reminder sent`);
                     } catch (markErr) {
-                        console.warn(`⚠️ Could not mark reminder_sent for booking ${booking.id}:`, markErr);
+                        console.warn(`⚠️ Could not mark reminder for booking ${booking.id}:`, markErr);
                     }
                 }
 
