@@ -428,7 +428,7 @@ export default function BookService() {
         is_sentosa_booking: Boolean(formData.isSentosa),
         sentosa_surcharge_per_session: formData.isSentosa ? 10 : 0,
         total_sentosa_surcharge: pricing.sentosaSurcharge || 0,
-        total_price: pricing.total || 0,
+        total_price: (finalTotal !== null ? finalTotal : pricing.total) || 0,
         whatsapp_consent: Boolean(formData.whatsappConsent),
       };
 
