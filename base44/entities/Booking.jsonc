@@ -1,0 +1,716 @@
+{
+  "name": "Booking",
+  "type": "object",
+  "properties": {
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "kinder_puppy_in_home",
+        "basic_manners_in_home",
+        "kinder_puppy_fyog",
+        "basic_manners_fyog",
+        "basic_manners_group_class",
+        "canine_assessment",
+        "behavioural_modification",
+        "on_demand_1_session",
+        "on_demand_2_sessions",
+        "on_demand_3_sessions"
+      ],
+      "description": "Type of service booked"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Name of the service"
+    },
+    "booking_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Status of the booking"
+    },
+    "confirmation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when the booking was confirmed"
+    },
+    "session_dates": {
+      "type": "array",
+      "description": "Array of all session dates and times",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "Start time in HH:mm format"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "End time in HH:mm format"
+          },
+          "session_number": {
+            "type": "integer"
+          },
+          "completed": {
+            "type": "boolean",
+            "default": false
+          },
+          "was_rescheduled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Indicates if this session was automatically rescheduled due to conflicts"
+          }
+        }
+      }
+    },
+    "product_selections": {
+      "type": "array",
+      "description": "Products selected for purchase with this booking",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "original_price": {
+            "type": "number"
+          },
+          "discounted_price": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "products_total": {
+      "type": "number",
+      "description": "Total cost of selected products",
+      "default": 0
+    },
+    "number_of_furkids": {
+      "type": "integer",
+      "description": "Number of dogs/puppies in this booking (for FYOG programs and Group Class)"
+    },
+    "number_of_clients": {
+      "type": "integer",
+      "description": "Number of clients in this booking (for FYOG programs and Group Class)"
+    },
+    "clients": {
+      "type": "array",
+      "description": "Array of client information (for FYOG programs and Group Class with multiple clients)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "client_name": {
+            "type": "string"
+          },
+          "client_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "client_mobile": {
+            "type": "string"
+          },
+          "client_address": {
+            "type": "string"
+          },
+          "client_postal_code": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "furkids": {
+      "type": "array",
+      "description": "Array of furkid information (for FYOG programs and Group Class with multiple furkids)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "is_adopted": {
+            "type": "boolean"
+          },
+          "adoption_proof_url": {
+            "type": "string"
+          },
+          "furkid_name": {
+            "type": "string"
+          },
+          "furkid_dob": {
+            "type": "string",
+            "format": "date"
+          },
+          "furkid_age": {
+            "type": "string"
+          },
+          "furkid_breed": {
+            "type": "string"
+          },
+          "furkid_gender": {
+            "type": "string",
+            "enum": [
+              "boy",
+              "girl"
+            ]
+          },
+          "furkid_sterilised": {
+            "type": "boolean"
+          },
+          "furkid_acquired_from": {
+            "type": "string"
+          },
+          "furkid_joined_family": {
+            "type": "string"
+          },
+          "first_time_owner": {
+            "type": "boolean"
+          },
+          "furkid_diet": {
+            "type": "string"
+          },
+          "has_food_allergy": {
+            "type": "boolean",
+            "description": "Does the furkid have any food allergies?"
+          },
+          "food_allergy_details": {
+            "type": "string",
+            "description": "Details of food allergies"
+          },
+          "furkid_sleep_area": {
+            "type": "string"
+          },
+          "walking_frequency": {
+            "type": "string",
+            "description": "How frequently the furkid is walked"
+          },
+          "furkid_photo_url": {
+            "type": "string"
+          },
+          "furkid_instagram": {
+            "type": "string"
+          },
+          "enrolment_reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Client's full name (for single client bookings)"
+    },
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Client's email address (for single client bookings)"
+    },
+    "client_mobile": {
+      "type": "string",
+      "description": "Client's mobile number (for single client bookings)"
+    },
+    "client_address": {
+      "type": "string",
+      "description": "Client's address (for single client bookings)"
+    },
+    "client_postal_code": {
+      "type": "string",
+      "description": "Client's postal code (for single client bookings)"
+    },
+    "whatsapp_consent": {
+      "type": "boolean",
+      "description": "Client consent to receive WhatsApp notifications",
+      "default": false
+    },
+    "is_adopted": {
+      "type": "boolean",
+      "description": "Is the dog/puppy adopted? (for single furkid bookings)"
+    },
+    "adoption_proof_url": {
+      "type": "string",
+      "description": "URL to adoption proof document (for single furkid bookings)"
+    },
+    "furkid_name": {
+      "type": "string",
+      "description": "Name of the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_dob": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth of the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_age": {
+      "type": "string",
+      "description": "Age of the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_breed": {
+      "type": "string",
+      "description": "Breed of the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_gender": {
+      "type": "string",
+      "enum": [
+        "boy",
+        "girl"
+      ],
+      "description": "Gender of the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_sterilised": {
+      "type": "boolean",
+      "description": "Is the dog/puppy sterilised? (for single furkid bookings)"
+    },
+    "furkid_sterilisation_age": {
+      "type": "string",
+      "description": "Age when sterilised (for behavioural modification)"
+    },
+    "furkid_sterilisation_method": {
+      "type": "string",
+      "description": "Method of sterilisation (for behavioural modification)"
+    },
+    "furkid_acquired_from": {
+      "type": "string",
+      "description": "Where the client acquired the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_joined_family_age": {
+      "type": "string",
+      "description": "How old furkid was when joined household"
+    },
+    "furkid_joined_family": {
+      "type": "string",
+      "description": "When the dog/puppy joined the family (Month/Year) (for single furkid bookings)"
+    },
+    "has_previous_guardian": {
+      "type": "boolean",
+      "description": "Does furkid have previous guardian?"
+    },
+    "previous_guardian_reason": {
+      "type": "string",
+      "description": "Reason for previous guardian giving up furkid"
+    },
+    "behaviour_first_noticed": {
+      "type": "string",
+      "description": "When behaviour was first noticed"
+    },
+    "is_aggression_issue": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no",
+        "not_sure"
+      ],
+      "description": "Is it an aggression issue?"
+    },
+    "has_bitten": {
+      "type": "boolean",
+      "description": "Has the dog bitten anyone or another dog?"
+    },
+    "bite_count": {
+      "type": "string",
+      "description": "How many times has dog bitten"
+    },
+    "bite_triggers": {
+      "type": "string",
+      "description": "What triggered the bite(s)"
+    },
+    "bite_severity": {
+      "type": "string",
+      "description": "Bite severity level (1-6)"
+    },
+    "behaviour_symptoms": {
+      "type": "string",
+      "description": "Detailed description of behavioural symptoms"
+    },
+    "past_trauma": {
+      "type": "string",
+      "description": "Any known past trauma or mistreatment"
+    },
+    "immediate_reaction": {
+      "type": "string",
+      "description": "Immediate reaction to mediate behaviour"
+    },
+    "methods_tried": {
+      "type": "string",
+      "description": "Methods tried to resolve behaviour"
+    },
+    "methods_effectiveness": {
+      "type": "string",
+      "description": "How effective the methods were"
+    },
+    "reaction_to_strangers": {
+      "type": "string",
+      "description": "How dog reacts to strangers/visitors"
+    },
+    "behaviour_severity_change": {
+      "type": "string",
+      "enum": [
+        "worsen",
+        "same",
+        "better"
+      ],
+      "description": "Has behaviour changed in severity"
+    },
+    "behaviour_seriousness_scale": {
+      "type": "integer",
+      "description": "Household seriousness rating (1-5)"
+    },
+    "program_goals": {
+      "type": "string",
+      "description": "What client wishes to achieve"
+    },
+    "daily_training_time": {
+      "type": "string",
+      "description": "Time available for training daily"
+    },
+    "main_caregivers": {
+      "type": "string",
+      "description": "Who are main caregivers"
+    },
+    "purpose_of_getting_furkid": {
+      "type": "string",
+      "description": "Main purposes of getting a furkid"
+    },
+    "why_chose_furkid": {
+      "type": "string",
+      "description": "Why chose this specific furkid"
+    },
+    "other_pets": {
+      "type": "boolean",
+      "description": "Any other pets in household"
+    },
+    "other_pets_list": {
+      "type": "string",
+      "description": "List of other pets"
+    },
+    "previous_furkids": {
+      "type": "string",
+      "description": "Previously had other furkids"
+    },
+    "previous_furkids_owned": {
+      "type": "boolean",
+      "description": "Have you previously had other furkids?"
+    },
+    "treats_type": {
+      "type": "string",
+      "description": "Type of treats available"
+    },
+    "hangout_location": {
+      "type": "string",
+      "description": "Where dog hangs out during day"
+    },
+    "sleep_location": {
+      "type": "string",
+      "description": "Where dog sleeps at night"
+    },
+    "alone_duration": {
+      "type": "string",
+      "description": "How long dog is left alone"
+    },
+    "anxiety_when_alone": {
+      "type": "string",
+      "description": "Anxiety behaviours when left alone"
+    },
+    "walk_frequency": {
+      "type": "string",
+      "description": "How often dog is walked"
+    },
+    "walk_duration": {
+      "type": "string",
+      "description": "How long are walks"
+    },
+    "potty_training": {
+      "type": "string",
+      "description": "Indoor or outdoor potty trained"
+    },
+    "walking_equipment": {
+      "type": "array",
+      "description": "Type of walking equipment used",
+      "items": {
+        "type": "string"
+      }
+    },
+    "enrichment_tools": {
+      "type": "string",
+      "description": "Enrichment tools available"
+    },
+    "previous_training": {
+      "type": "boolean",
+      "description": "Has dog received training before"
+    },
+    "previous_training_type": {
+      "type": "string",
+      "description": "Type of previous training"
+    },
+    "previous_training_school": {
+      "type": "string",
+      "description": "Which school provided training"
+    },
+    "known_cues_reliable": {
+      "type": "boolean",
+      "description": "Does dog know cues reliably"
+    },
+    "known_cues_list": {
+      "type": "string",
+      "description": "List of cues dog knows"
+    },
+    "feeding_frequency": {
+      "type": "string",
+      "description": "How many times fed daily"
+    },
+    "diet_type": {
+      "type": "string",
+      "description": "Dog's diet type"
+    },
+    "feeding_method": {
+      "type": "array",
+      "description": "How dog is fed",
+      "items": {
+        "type": "string"
+      }
+    },
+    "eating_speed": {
+      "type": "integer",
+      "description": "Speed when eating (1-5)"
+    },
+    "chews_frequency": {
+      "type": "string",
+      "description": "How often gets chews"
+    },
+    "chews_type": {
+      "type": "string",
+      "description": "Type of chews given"
+    },
+    "loves_treats": {
+      "type": "boolean",
+      "description": "Does dog love treats"
+    },
+    "food_allergies": {
+      "type": "boolean",
+      "description": "Any food allergies"
+    },
+    "food_allergies_details": {
+      "type": "string",
+      "description": "Details of food allergies"
+    },
+    "handling_reaction": {
+      "type": "string",
+      "description": "Reaction to handling/grooming"
+    },
+    "equipment_resistance": {
+      "type": "string",
+      "description": "Resistance to collar/harness/lead"
+    },
+    "touch_discomfort": {
+      "type": "boolean",
+      "description": "Discomfort with being touched"
+    },
+    "touch_discomfort_details": {
+      "type": "string",
+      "description": "Details of touch discomfort"
+    },
+    "last_health_check": {
+      "type": "string",
+      "description": "When was last health check"
+    },
+    "medical_conditions": {
+      "type": "boolean",
+      "description": "Any existing medical conditions"
+    },
+    "medical_conditions_details": {
+      "type": "string",
+      "description": "Details of medical conditions"
+    },
+    "pain_history": {
+      "type": "boolean",
+      "description": "History of pain/injuries/surgeries"
+    },
+    "pain_history_details": {
+      "type": "string",
+      "description": "Details of pain history"
+    },
+    "discomfort_signs": {
+      "type": "boolean",
+      "description": "Any signs of discomfort"
+    },
+    "discomfort_signs_details": {
+      "type": "string",
+      "description": "Details of discomfort signs"
+    },
+    "on_medication": {
+      "type": "boolean",
+      "description": "Is dog on medication"
+    },
+    "medication_details": {
+      "type": "string",
+      "description": "Medication details and side effects"
+    },
+    "flea_tick_treatment": {
+      "type": "boolean",
+      "description": "Is dog on flea/tick treatment"
+    },
+    "flea_tick_treatment_details": {
+      "type": "string",
+      "description": "Flea/tick treatment type and frequency"
+    },
+    "requires_assessment_report": {
+      "type": "boolean",
+      "description": "Does client require an assessment report (for Canine Assessment)"
+    },
+    "first_time_owner": {
+      "type": "boolean",
+      "description": "Is this the client's first dog/puppy? (for single furkid bookings)"
+    },
+    "furkid_diet": {
+      "type": "string",
+      "description": "Diet of the dog/puppy (for single furkid bookings)"
+    },
+    "has_food_allergy": {
+      "type": "boolean",
+      "description": "Does the dog/puppy have any food allergies? (for single furkid bookings)"
+    },
+    "food_allergy_details": {
+      "type": "string",
+      "description": "Details of food allergies (for single furkid bookings)"
+    },
+    "furkid_sleep_area": {
+      "type": "string",
+      "description": "Where the dog/puppy sleeps at night (for single furkid bookings)"
+    },
+    "walking_frequency": {
+      "type": "string",
+      "description": "How frequently the furkid is walked (for single furkid bookings)"
+    },
+    "furkid_photo_url": {
+      "type": "string",
+      "description": "URL to front photo of the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_instagram": {
+      "type": "string",
+      "description": "Instagram account of the dog/puppy (for single furkid bookings)"
+    },
+    "enrolment_reason": {
+      "type": "string",
+      "description": "Reason for enrolment (for single furkid bookings)"
+    },
+    "how_did_you_know": {
+      "type": "string",
+      "enum": [
+        "Recommendation",
+        "Google",
+        "Facebook",
+        "Instagram",
+        "AVS website"
+      ],
+      "description": "How the client heard about the service"
+    },
+    "is_sentosa_booking": {
+      "type": "boolean",
+      "description": "Indicates if the booking address is on Sentosa Island (postal code 090000-099999)",
+      "default": false
+    },
+    "sentosa_surcharge_per_session": {
+      "type": "number",
+      "description": "Additional charge per session for Sentosa Island clients",
+      "default": 10
+    },
+    "total_sentosa_surcharge": {
+      "type": "number",
+      "description": "Total Sentosa surcharge for all sessions",
+      "default": 0
+    },
+    "agreement_no_retractable_leash": {
+      "type": "boolean",
+      "description": "Client agrees not to use retractable or slip leashes during training (Basic Manners programs)"
+    },
+    "agreement_no_refunds": {
+      "type": "boolean",
+      "description": "Client acknowledges no refunds/exchanges/cancellations policy (Basic Manners programs)"
+    },
+    "agreement_dog_behavior": {
+      "type": "boolean",
+      "description": "Client confirms dog is not fearful/anxious/reactive (Basic Manners programs)"
+    },
+    "agreement_behavioral_modification_understanding": {
+      "type": "boolean",
+      "description": "Client acknowledges understanding of behaviour change process and commitment required (Behavioural Modification program)"
+    },
+    "agreement_kinder_puppy_curriculum": {
+      "type": "boolean",
+      "description": "Client acknowledges understanding of Kinder Puppy curriculum and training approach (Kinder Puppy programs)"
+    },
+    "agreement_kinder_puppy_potty_training": {
+      "type": "boolean",
+      "description": "Client acknowledges understanding of potty training requirements and commitment (Kinder Puppy programs)"
+    },
+    "agreement_kinder_puppy_refund_policy": {
+      "type": "boolean",
+      "description": "Client acknowledges no refunds/exchanges/cancellations policy (Kinder Puppy programs)"
+    },
+    "base_price": {
+      "type": "number",
+      "description": "Base price before discounts/surcharges"
+    },
+    "adoption_discount": {
+      "type": "number",
+      "description": "Discount amount for adopted dogs (10%)",
+      "default": 0
+    },
+    "weekend_surcharge": {
+      "type": "number",
+      "description": "Surcharge for weekend bookings (5%)",
+      "default": 0
+    },
+    "total_price": {
+      "type": "number",
+      "description": "Final total price after all adjustments"
+    },
+    "admin_notes": {
+      "type": "string",
+      "description": "Internal notes from admin"
+    },
+    "kinder_puppy_items_given": {
+      "type": "object",
+      "description": "Items given to Kinder Puppy clients"
+    },
+    "basic_manners_items_given": {
+      "type": "object",
+      "description": "Items given to Basic Manners clients"
+    },
+    "kinder_puppy_progress": {
+      "type": "object",
+      "description": "Kinder Puppy curriculum progress"
+    },
+    "basic_manners_progress": {
+      "type": "object",
+      "description": "Basic Manners curriculum progress"
+    }
+  },
+  "required": [
+    "service_type",
+    "service_name"
+  ],
+  "rls": {
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
