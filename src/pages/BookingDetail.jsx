@@ -1016,7 +1016,6 @@ export default function BookingDetail() {
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="admin-notes-mobile-top">Internal Notes</Label>
               <Textarea
                 id="admin-notes-mobile-top"
                 value={adminNotes}
@@ -1748,7 +1747,6 @@ export default function BookingDetail() {
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="admin-notes">Internal Notes</Label>
                   <Textarea
                     id="admin-notes"
                     value={adminNotes}
