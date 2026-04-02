@@ -1015,7 +1015,7 @@ export default function BookingDetail() {
                             <img 
                               src={furkid.furkidPhotoUrl || furkid.furkid_photo_url} 
                               alt={getFurkidField(furkid, 'furkidName')} 
-                              className="rounded-lg max-w-xs" 
+                              className="rounded-lg w-32 h-32 object-cover" 
                             />
                           </div>
                         )}
@@ -1067,7 +1067,7 @@ export default function BookingDetail() {
                     {booking.furkid_photo_url && (
                       <div className="md:col-span-2">
                         <p className="text-slate-600 text-sm mb-2">Photo</p>
-                        <img src={booking.furkid_photo_url} alt={booking.furkid_name} className="rounded-lg max-w-xs" />
+                        <img src={booking.furkid_photo_url} alt={booking.furkid_name} className="rounded-lg w-32 h-32 object-cover" />
                       </div>
                     )}
                   </div>
