@@ -835,10 +835,101 @@ export default function BookingDetail() {
           </Button>
         </div>
 
+        {/* Combined Status + Pricing card for mobile only */}
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
+          <CardHeader className="border-b border-slate-100">
+            <CardTitle className="flex items-center justify-between">
+              <span>Booking Status</span>
+              <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border`}>
+                {booking.booking_status}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <div className="flex gap-2">
+              <Select value={booking.booking_status} onValueChange={handleStatusChange} disabled={saving}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="confirmed">Confirmed</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {booking.confirmation_date && (
+              <div className="pt-3 border-t border-slate-200">
+                <p className="text-base text-slate-600">Confirmed on</p>
+                <p className="font-medium text-slate-900">
+                  {format(new Date(booking.confirmation_date), 'EEEE, MMM d, yyyy')} at {format(new Date(booking.confirmation_date), 'h:mm a')}
+                </p>
+              </div>
+            )}
+            <div className="pt-4 border-t border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <DollarSign className="w-5 h-5" />
+                <span className="font-semibold text-slate-900">Pricing</span>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Base Price:</span>
+                  <span className="font-medium">${booking.base_price?.toFixed(2)}</span>
+                </div>
+                {booking.adoption_discount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Adoption Discount:</span>
+                    <span className="font-medium">-${booking.adoption_discount?.toFixed(2)}</span>
+                  </div>
+                )}
+                {booking.weekend_surcharge > 0 && (
+                  <div className="flex justify-between text-orange-600">
+                    <span>Weekend Surcharge:</span>
+                    <span className="font-medium">+${booking.weekend_surcharge?.toFixed(2)}</span>
+                  </div>
+                )}
+                {booking.total_sentosa_surcharge > 0 && (
+                  <div className="flex justify-between text-orange-600">
+                    <span>Sentosa Surcharge:</span>
+                    <span className="font-medium">+${booking.total_sentosa_surcharge?.toFixed(2)}</span>
+                  </div>
+                )}
+                {booking.product_selections && booking.product_selections.length > 0 && (
+                  <>
+                    <div className="pt-2 mt-2 border-t border-slate-200">
+                      <p className="font-medium text-slate-900 mb-2 flex items-center gap-2">
+                        <Package className="w-4 h-4" />
+                        Products:
+                      </p>
+                      <div className="space-y-1.5 pl-6">
+                        {booking.product_selections.map((product, idx) => (
+                          <div key={idx} className="flex justify-between text-xs">
+                            <span className="text-slate-600">{product.product_name} × {product.quantity}</span>
+                            <span className="font-medium text-blue-600">${(product.discounted_price * product.quantity).toFixed(2)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-blue-700 font-semibold pt-1">
+                      <span>Products Subtotal:</span>
+                      <span>${booking.products_total?.toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
+                <div className="pt-2 border-t border-slate-200 flex justify-between">
+                  <span className="font-semibold">Total:</span>
+                  <span className="font-bold text-xl text-blue-600">${booking.total_price?.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             {/* Status */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hidden lg:block">
               <CardHeader className="border-b border-slate-100">
                 <CardTitle className="flex items-center justify-between">
                   <span>Booking Status</span>
@@ -1474,7 +1565,7 @@ export default function BookingDetail() {
             </Card>
 
             {/* Pricing */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hidden lg:block">
               <CardHeader className="border-b border-slate-100">
                 <CardTitle className="flex items-center gap-2">
                   <DollarSign className="w-5 h-5" />
