@@ -31,9 +31,23 @@ export default function AdminBookings() {
   const loadBookings = async () => {
     setLoading(true);
     try {
-      const data = await base44.entities.Booking.list('-created_date');
-      setBookings(data);
-      setFilteredBookings(data);
+      const data = await base44.entities.Booking.list();
+      const now = new Date();
+      const sortedData = data.sort((a, b) => {
+        const dateA = a.session_dates?.length > 0 ? parseISO(a.session_dates[0].date) : null;
+        const dateB = b.session_dates?.length > 0 ? parseISO(b.session_dates[0].date) : null;
+        if (!dateA && dateB) return 1;
+        if (dateA && !dateB) return -1;
+        if (!dateA && !dateB) return 0;
+        const isUpcomingA = dateA >= now;
+        const isUpcomingB = dateB >= now;
+        if (isUpcomingA && !isUpcomingB) return -1;
+        if (!isUpcomingA && isUpcomingB) return 1;
+        if (isUpcomingA && isUpcomingB) return dateA - dateB;
+        return dateB - dateA;
+      });
+      setBookings(sortedData);
+      setFilteredBookings(sortedData);
     } catch (error) {
       console.error("Error loading bookings:", error);
     } finally {
