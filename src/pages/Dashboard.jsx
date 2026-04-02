@@ -587,7 +587,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 md:p-8 space-y-8">
+    <div className="p-3 md:p-8 space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 mb-2">{getPageTitle()}</h1>
