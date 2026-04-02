@@ -181,7 +181,7 @@ export default function BookingSystem() {
         <Card className="shadow-lg border-0 bg-blue-50/50 backdrop-blur-sm">
           <CardContent className="p-4 md:p-6">
             <h3 className="font-semibold text-slate-900 mb-3 text-base md:text-lg">Booking Information</h3>
-            <ul className="space-y-2 text-sm md:text-base text-slate-700">
+            <ul className="space-y-2 text-base md:text-lg text-slate-700">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-bold">•</span>
                 <span>Minimum 2 days advance booking required (7 days for Behavioural Modification)</span>
@@ -216,21 +216,21 @@ export default function BookingSystem() {
                   <CardTitle className="text-lg md:text-xl text-slate-900">{service.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 flex-grow flex flex-col">
-                  <p className="text-slate-600 text-sm md:text-base flex-grow">{service.description}</p>
+                  <p className="text-slate-600 text-base md:text-lg flex-grow">{service.description}</p>
                   
                   {isGroupClass && scheduleInfo && (
                     <div className="bg-purple-50 border border-purple-200 rounded-lg p-2.5 md:p-3 space-y-1">
-                      <p className="text-xs font-semibold text-purple-900 uppercase">Next Program Commence</p>
-                      <div className="text-sm md:text-base text-purple-800">
-                        <p className="font-semibold">{scheduleInfo.dayOfWeek}s at {scheduleInfo.time}</p>
-                        <p className="text-xs">Starts: {scheduleInfo.date}</p>
+                      <p className="text-sm font-semibold text-purple-900 uppercase">Next Program Commence</p>
+                          <div className="text-base md:text-lg text-purple-800">
+                            <p className="font-semibold">{scheduleInfo.dayOfWeek}s at {scheduleInfo.time}</p>
+                            <p className="text-sm">Starts: {scheduleInfo.date}</p>
                       </div>
                     </div>
                   )}
                   
                   <div className="space-y-2.5 md:space-y-3">
                     {!isOnDemand && (
-                      <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
+                      <div className="flex items-center gap-2 text-base md:text-lg text-slate-700">
                         <DollarSign className="w-4 h-4 text-green-600" />
                         {(isKinderPuppy || service.id === 'basic_manners_fyog') ? (
                           <span className="font-semibold">from ${service.price}</span>
@@ -243,17 +243,17 @@ export default function BookingSystem() {
                       </div>
                     )}
                     
-                    <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
+                    <div className="flex items-center gap-2 text-base md:text-lg text-slate-700">
                       <Calendar className="w-4 h-4 text-blue-600" />
                       <span>{service.sessions} session{typeof service.sessions === 'string' || service.sessions > 1 ? 's' : ''}</span>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
+                    <div className="flex items-center gap-2 text-base md:text-lg text-slate-700">
                       <Clock className="w-4 h-4 text-purple-600" />
                       <span>{formatDuration(service.duration, service.id)} per session</span>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-sm md:text-base text-slate-700">
+                    <div className="flex items-center gap-2 text-base md:text-lg text-slate-700">
                       <Users className="w-4 h-4 text-orange-600" />
                       <span>{getParticipantLabel(service)}</span>
                     </div>
