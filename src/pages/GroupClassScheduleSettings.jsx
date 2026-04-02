@@ -144,14 +144,14 @@ export default function GroupClassScheduleSettings() {
 
   if (loading) {
     return (
-      <div className="p-6 md:p-8 flex items-center justify-center min-h-screen">
+      <div className="p-3 md:p-8 flex items-center justify-center min-h-screen">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-6">
+    <div className="p-3 md:p-8 max-w-4xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Group Class Schedule Settings</h1>
         <p className="text-slate-600 mt-1">Configure the fixed schedule for Basic Manners Group Class program</p>
