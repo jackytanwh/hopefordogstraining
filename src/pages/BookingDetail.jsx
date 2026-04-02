@@ -1446,9 +1446,9 @@ export default function BookingDetail() {
                     
                     return (
                       <div key={idx} className="p-3 bg-slate-50 rounded-lg">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm">Session {session.session_number}</p>
+                                               <div className="flex items-start justify-between gap-2">
+                                                 <div className="flex-1 min-w-0">
+                                                   <p className="font-medium text-base md:text-sm">Session {session.session_number}</p>
                             <p className="text-sm text-slate-600 mt-1">
                               {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
                             </p>
