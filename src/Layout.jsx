@@ -116,7 +116,7 @@ function InnerLayout({ children, currentPageName }) {
             <SidebarMenuButton asChild isActive={currentPageName === "BookingSystem"}>
               <Link to={createPageUrl("BookingSystem")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <Calendar className="w-4 h-4" />
-                <span className="text-sm font-medium">Client Booking Portal</span>
+                <span className="text-base font-medium">Client Booking Portal</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -125,7 +125,7 @@ function InnerLayout({ children, currentPageName }) {
             <SidebarMenuButton asChild isActive={currentPageName === "AdminBookings"}>
               <Link to={createPageUrl("AdminBookings")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <AlignJustify className="w-4 h-4" />
-                <span className="text-sm font-medium">Manage Bookings</span>
+                <span className="text-base font-medium">Manage Bookings</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -134,7 +134,7 @@ function InnerLayout({ children, currentPageName }) {
             <SidebarMenuButton asChild isActive={currentPageName === "BookingCalendar"}>
               <Link to={createPageUrl("BookingCalendar")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <Calendar className="w-4 h-4" />
-                <span className="text-sm font-medium">Booking Calendar</span>
+                <span className="text-base font-medium">Booking Calendar</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -143,7 +143,7 @@ function InnerLayout({ children, currentPageName }) {
             <SidebarMenuButton asChild isActive={currentPageName === "GroupClassScheduleSettings"}>
               <Link to={createPageUrl("GroupClassScheduleSettings")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <Clock className="w-4 h-4" />
-                <span className="text-sm font-medium">Group Class Schedule</span>
+                <span className="text-base font-medium">Group Class Schedule</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -152,7 +152,7 @@ function InnerLayout({ children, currentPageName }) {
             <SidebarMenuButton asChild isActive={currentPageName === "PromoCodes"}>
               <Link to="/PromoCodes" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <Tag className="w-4 h-4" />
-                <span className="text-sm font-medium">Promo Codes</span>
+                <span className="text-base font-medium">Promo Codes</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
