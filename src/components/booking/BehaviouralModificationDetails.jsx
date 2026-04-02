@@ -79,7 +79,6 @@ export default function BehaviouralModificationDetails({ booking }) {
       </CardHeader>
       <CardContent className="p-6 space-y-4">
 
-        {/* Basic Info */}
         <Section title="Basic information" color="bg-blue-50">
           <YesNo label="Singapore Special / Adopted" value={b.is_adopted} />
           {b.adoption_proof_url && (
@@ -97,25 +96,25 @@ export default function BehaviouralModificationDetails({ booking }) {
           {b.furkid_sterilised && <Field label="Sterilisation method" value={b.furkid_sterilisation_method} />}
         </Section>
 
-        {/* History & Background */}
         <Section title="History & background" color="bg-green-50">
           <Field label="Where did you obtain the furkid?" value={b.furkid_acquired_from} />
           <Field label="Age when joined household" value={b.furkid_joined_family_age} />
           <YesNo label="Has previous guardian?" value={b.has_previous_guardian} details={b.previous_guardian_reason} detailsLabel="Reason" />
         </Section>
 
-        {/* Behaviour Details */}
         <Section title="Behaviour details" color="bg-amber-50">
           <Field label="When first noticed" value={b.behaviour_first_noticed} />
           <Field label="Aggression issue?" value={b.is_aggression_issue ? aggressionLabels[b.is_aggression_issue] : null} />
           {b.is_aggression_issue === 'yes' && (
             <YesNo label="Has bitten?" value={b.has_bitten} />
           )}
-          {b.has_bitten && <>
-            <Field label="Number of bites" value={b.bite_count} />
-            <Field label="Bite severity" value={b.bite_severity ? biteSeverityLabels[b.bite_severity] : null} />
-            <FullField label="Bite triggers" value={b.bite_triggers} />
-          </>}
+          {b.has_bitten && (
+            <>
+              <Field label="Number of bites" value={b.bite_count} />
+              <Field label="Bite severity" value={b.bite_severity ? biteSeverityLabels[b.bite_severity] : null} />
+              <FullField label="Bite triggers" value={b.bite_triggers} />
+            </>
+          )}
           <FullField label="Behavioural symptoms" value={b.behaviour_symptoms} />
           <FullField label="Known past trauma / mistreatment" value={b.past_trauma} />
           <FullField label="Immediate reaction to behaviour" value={b.immediate_reaction} />
@@ -123,10 +122,9 @@ export default function BehaviouralModificationDetails({ booking }) {
           <FullField label="Effectiveness of methods" value={b.methods_effectiveness} />
           <FullField label="Reaction to strangers / visitors" value={b.reaction_to_strangers} />
           <Field label="Behaviour severity change" value={b.behaviour_severity_change ? severityLabels[b.behaviour_severity_change] : null} />
-          <Field label="Seriousness scale (1–5)" value={b.behaviour_seriousness_scale} />
+          <Field label="Seriousness scale (1-5)" value={b.behaviour_seriousness_scale} />
         </Section>
 
-        {/* Goals & Household */}
         <Section title="Goals & household" color="bg-purple-50">
           <FullField label="Program goals" value={b.program_goals} />
           <Field label="Daily training time available" value={b.daily_training_time} />
@@ -137,7 +135,6 @@ export default function BehaviouralModificationDetails({ booking }) {
           <YesNo label="Previously owned furkids?" value={b.previous_furkids_owned} details={b.previous_furkids} />
         </Section>
 
-        {/* Daily Routine */}
         <Section title="Daily routine" color="bg-pink-50">
           <Field label="Hangs out (daytime)" value={b.hangout_location} />
           <Field label="Sleeps (night)" value={b.sleep_location} />
@@ -158,17 +155,17 @@ export default function BehaviouralModificationDetails({ booking }) {
           )}
         </Section>
 
-        {/* Training History */}
         <Section title="Training history" color="bg-indigo-50">
           <YesNo label="Previous training?" value={b.previous_training} />
-          {b.previous_training && <>
-            <Field label="Training type" value={b.previous_training_type} />
-            <Field label="Training school" value={b.previous_training_school} />
-          </>}
+          {b.previous_training && (
+            <>
+              <Field label="Training type" value={b.previous_training_type} />
+              <Field label="Training school" value={b.previous_training_school} />
+            </>
+          )}
           <YesNo label="Knows cues reliably?" value={b.known_cues_reliable} details={b.known_cues_list} detailsLabel="Cues" />
         </Section>
 
-        {/* Feeding & Diet */}
         <Section title="Feeding & diet" color="bg-yellow-50">
           <Field label="Feeding frequency" value={b.feeding_frequency} />
           <Field label="Diet" value={b.diet_type} />
@@ -182,7 +179,7 @@ export default function BehaviouralModificationDetails({ booking }) {
               </div>
             </div>
           )}
-          <Field label="Eating speed (1–5)" value={b.eating_speed} />
+          <Field label="Eating speed (1-5)" value={b.eating_speed} />
           <Field label="Chews frequency" value={b.chews_frequency} />
           {b.chews_frequency && <Field label="Chews type" value={b.chews_type} />}
           <YesNo label="Loves treats?" value={b.loves_treats} details={b.treats_type} detailsLabel="Type" />
@@ -190,7 +187,6 @@ export default function BehaviouralModificationDetails({ booking }) {
           <Field label="Enrichment tools" value={b.enrichment_tools} />
         </Section>
 
-        {/* Health & Medical */}
         <Section title="Health & medical" color="bg-red-50">
           <FullField label="Reaction to handling (grooming, vet, nail trim)" value={b.handling_reaction} />
           <FullField label="Resistance to collar/harness/lead" value={b.equipment_resistance} />
