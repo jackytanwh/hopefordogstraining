@@ -23,10 +23,9 @@ const statusColors = {
 
 const programColors = {
   kinder_puppy_in_home:    "bg-rose-200 text-rose-900",
-  kinder_puppy_fyog:       "bg-purple-200 text-purple-900",
-  basic_manners_in_home:   "bg-emerald-200 text-emerald-900",
-  basic_manners_fyog:      "bg-sky-200 text-sky-900",
+  basic_manners_fyog:      "bg-emerald-200 text-emerald-900",
   basic_manners_group_class:"bg-orange-200 text-orange-900",
+  adore_hdb_approval:      "bg-purple-200 text-purple-900",
   canine_assessment:       "bg-lime-200 text-lime-900",
   behavioural_modification:"bg-red-200 text-red-900",
   on_demand_1_session:     "bg-cyan-200 text-cyan-900",
@@ -35,16 +34,15 @@ const programColors = {
 };
 
 const programLabels = {
-  kinder_puppy_in_home:    "Kinder Puppy",
-  kinder_puppy_fyog:       "Kinder Puppy FYOG",
-  basic_manners_in_home:   "Basic Manners",
-  basic_manners_fyog:      "Basic Manners FYOG",
-  basic_manners_group_class:"Basic Manners Group",
+  kinder_puppy_in_home:    "Kinder Puppy Program",
+  basic_manners_fyog:      "Basic Manners Program",
+  basic_manners_group_class:"Basic Manners Program (Group)",
+  adore_hdb_approval:      "ADORE/HDB Approval Program",
   canine_assessment:       "Canine Assessment",
-  behavioural_modification:"Behavioural Mod.",
-  on_demand_1_session:     "On Demand",
-  on_demand_2_sessions:    "On Demand",
-  on_demand_3_sessions:    "On Demand",
+  behavioural_modification:"Behavioural Modification",
+  on_demand_1_session:     "On-Demand Training",
+  on_demand_2_sessions:    "On-Demand Training",
+  on_demand_3_sessions:    "On-Demand Training",
 };
 
 const timeSlots = [
