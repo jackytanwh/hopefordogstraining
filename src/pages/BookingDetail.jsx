@@ -178,8 +178,7 @@ export default function BookingDetail() {
       // Send cancellation notification before deleting if consent was given (wrapped in try-catch)
       if (booking && booking.whatsapp_consent) {
         try {
-          const { sendBookingCancellation } = await import("@/functions/sendBookingCancellation");
-          await sendBookingCancellation({ booking });
+          await base44.functions.invoke('sendBookingCancellation', { booking });
           console.log('WhatsApp cancellation notification sent');
         } catch (error) {
           console.error('Error sending WhatsApp notification:', error);
