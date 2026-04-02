@@ -265,29 +265,29 @@ export default function AdminBookings() {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-3">
                       <div>
-                        <p className="text-sm font-semibold text-slate-900 mb-1">Client</p>
-                        <p className="text-sm text-slate-700">{clientName}</p>
-                        <p className="text-sm text-slate-600">{clientEmail}</p>
-                        <p className="text-sm text-slate-600">{clientMobile}</p>
+                        <p className="text-base font-semibold text-slate-900 mb-1">Client</p>
+                        <p className="text-base text-slate-700">{clientName}</p>
+                        <p className="text-base text-slate-600">{clientEmail}</p>
+                        <p className="text-base text-slate-600">{clientMobile}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-slate-900 mb-1">Furkid</p>
-                        <p className="text-sm text-slate-700">{furkidName}</p>
+                        <p className="text-base font-semibold text-slate-900 mb-1">Furkid</p>
+                        <p className="text-base text-slate-700">{furkidName}</p>
                         {furkidBreed && (
-                          <p className="text-sm text-slate-600">{furkidBreed} • {furkidGender}</p>
+                          <p className="text-base text-slate-600">{furkidBreed} • {furkidGender}</p>
                         )}
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm font-semibold text-slate-900">Session Schedule</p>
+                      <p className="text-base font-semibold text-slate-900">Session Schedule</p>
                       <div className="space-y-1">
                         {booking.session_dates?.slice(0, 3).map((session, idx) => (
-                          <p key={idx} className="text-sm text-slate-600">
+                          <p key={idx} className="text-base text-slate-600">
                             Session {session.session_number}: {format(parseISO(session.date), 'MMM d, yyyy')} at {session.start_time}
                           </p>
                         ))}
                         {booking.session_dates?.length > 3 && (
-                          <p className="text-sm text-slate-500 italic">
+                          <p className="text-base text-slate-500 italic">
                             +{booking.session_dates.length - 3} more session{booking.session_dates.length - 3 > 1 ? 's' : ''}
                           </p>
                         )}
