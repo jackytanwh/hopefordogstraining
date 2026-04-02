@@ -109,28 +109,6 @@ function InnerLayout({ children, currentPageName }) {
         
         <SidebarContent className="px-3 py-4">
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 py-3">
-            Navigation
-          </div>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "AddClient"}>
-              <Link to={createPageUrl("AddClient")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
-                <UserPlus className="w-4 h-4" />
-                <span className="text-sm font-medium">Add Client</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "Clients" && !program}>
-              <Link to={createPageUrl("Clients")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
-                <Users className="w-4 h-4" />
-                <span className="text-sm font-medium">All Clients</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 py-3 mt-4">
             Booking System
           </div>
 
