@@ -31,10 +31,11 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const useSharedLayout = isKinderPuppyMulti || isFYOGMulti;
   const dogLabel = isKinderPuppy ? 'Puppy' : 'Dog';
 
+  const trainingTotal = pricing.total - (pricing.productsTotal || 0);
   const promoDiscount = promoApplied
     ? promoApplied.discount_type === 'percentage'
-      ? (pricing.total * promoApplied.discount_value) / 100
-      : Math.min(promoApplied.discount_value, pricing.total)
+      ? (trainingTotal * promoApplied.discount_value) / 100
+      : Math.min(promoApplied.discount_value, trainingTotal)
     : 0;
   const finalTotal = Math.max(0, pricing.total - promoDiscount);
 
