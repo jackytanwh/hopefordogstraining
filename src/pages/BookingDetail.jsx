@@ -926,6 +926,112 @@ export default function BookingDetail() {
           </CardContent>
         </Card>
 
+        {/* Mobile-only: Session Schedule */}
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
+          <CardHeader className="border-b border-slate-100">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                Session Schedule
+              </CardTitle>
+              <Button size="sm" variant="outline" onClick={handleOpenReschedule} className="flex items-center gap-2">
+                <Edit2 className="w-4 h-4" />
+                Reschedule
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            {booking.service_type === 'basic_manners_group_class' ? (
+              <div className="space-y-3">
+                {booking.session_dates && booking.session_dates.length > 0 ? (
+                  booking.session_dates.map((session, idx) => (
+                    <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="font-medium text-base">Session {session.session_number || idx + 1}</p>
+                          <p className="text-sm text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
+                          <p className="text-sm text-blue-600 font-medium mt-1">{session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}</p>
+                        </div>
+                        {session.was_rescheduled && (
+                          <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
+                            <RefreshCw className="w-3 h-3" />
+                            Rescheduled
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : groupSchedule?.start_date ? (
+                  Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
+                    const startDate = new Date(groupSchedule.start_date);
+                    const sessionDate = new Date(startDate);
+                    sessionDate.setDate(startDate.getDate() + i * 7);
+                    return (
+                      <div key={i} className="p-3 bg-slate-50 rounded-lg">
+                        <p className="font-medium text-base">Session {i + 1}</p>
+                        <p className="text-sm text-slate-600 mt-1">{format(sessionDate, 'EEEE, MMM d, yyyy')}</p>
+                        <p className="text-sm text-blue-600 font-medium mt-1">{groupSchedule.start_time}{groupSchedule.end_time ? ` - ${groupSchedule.end_time}` : ''}</p>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-sm text-slate-500">Schedule not yet configured.</p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {booking.session_dates?.map((session, idx) => {
+                  const wasRescheduled = Boolean(session.was_rescheduled || session.wasRescheduled || session.rescheduled || session.auto_adjusted);
+                  return (
+                    <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-base">Session {session.session_number}</p>
+                          <p className="text-sm text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
+                          <p className="text-sm text-blue-600 font-medium mt-1">{session.start_time} - {session.end_time}</p>
+                        </div>
+                        {wasRescheduled && (
+                          <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
+                            <RefreshCw className="w-3 h-3" />
+                            Auto-adjusted
+                          </Badge>
+                        )}
+                      </div>
+                      {session.completed && <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Mobile-only: Admin Notes */}
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
+          <CardHeader className="border-b border-slate-100">
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Admin Notes
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="admin-notes-mobile-top">Internal Notes</Label>
+              <Textarea
+                id="admin-notes-mobile-top"
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                placeholder="Add internal notes about this booking..."
+                className="h-32"
+              />
+            </div>
+            <Button onClick={handleSaveNotes} disabled={saving}>
+              <Save className="w-4 h-4 mr-2" />
+              {saving ? 'Saving...' : 'Save Notes'}
+            </Button>
+          </CardContent>
+        </Card>
+
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             {/* Status */}
@@ -1458,7 +1564,7 @@ export default function BookingDetail() {
 
           <div className="space-y-6">
             {/* Schedule */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hidden lg:block">
               <CardHeader className="border-b border-slate-100">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -1660,31 +1766,6 @@ export default function BookingDetail() {
           </div>
         </div>
 
-        {/* Admin Notes - shown on mobile at the bottom, hidden on desktop */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
-          <CardHeader className="border-b border-slate-100">
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Admin Notes
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="admin-notes-mobile">Internal Notes</Label>
-              <Textarea
-                id="admin-notes-mobile"
-                value={adminNotes}
-                onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="Add internal notes about this booking..."
-                className="h-32"
-              />
-            </div>
-            <Button onClick={handleSaveNotes} disabled={saving}>
-              <Save className="w-4 h-4 mr-2" />
-              {saving ? 'Saving...' : 'Save Notes'}
-            </Button>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Reschedule Dialog */}
