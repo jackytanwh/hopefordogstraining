@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '@/lib/AuthContext';
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,12 +20,20 @@ const statusColors = {
 };
 
 export default function AdminBookings() {
+  const { user, isLoadingAuth } = useAuth();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [today] = useState(() => new Date());
+
+  useEffect(() => {
+    if (!isLoadingAuth && user?.role !== 'admin') {
+      navigate('/BookingSystem');
+    }
+  }, [user, isLoadingAuth]);
 
   useEffect(() => {
     loadBookings();

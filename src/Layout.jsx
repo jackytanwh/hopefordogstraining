@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from '@/lib/AuthContext';
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -35,6 +36,8 @@ import { Toaster } from "@/components/ui/toaster";
 
 function InnerLayout({ children, currentPageName }) {
   const { setOpenMobile } = useSidebar();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const closeMenu = () => setOpenMobile(false);
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -116,50 +119,54 @@ function InnerLayout({ children, currentPageName }) {
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "AdminBookings"}>
-              <Link to={createPageUrl("AdminBookings")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
-                <AlignJustify className="w-4 h-4" />
-                <span className="text-base font-medium">Manage Bookings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {isAdmin && (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={currentPageName === "AdminBookings"}>
+                  <Link to={createPageUrl("AdminBookings")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+                    <AlignJustify className="w-4 h-4" />
+                    <span className="text-base font-medium">Manage Bookings</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "BookingCalendar"}>
-              <Link to={createPageUrl("BookingCalendar")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
-                <Calendar className="w-4 h-4" />
-                <span className="text-base font-medium">Booking Calendar</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={currentPageName === "BookingCalendar"}>
+                  <Link to={createPageUrl("BookingCalendar")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+                    <Calendar className="w-4 h-4" />
+                    <span className="text-base font-medium">Booking Calendar</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "GroupClassScheduleSettings"}>
-              <Link to={createPageUrl("GroupClassScheduleSettings")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
-                <Clock className="w-4 h-4" />
-                <span className="text-base font-medium">Group Class Schedule</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={currentPageName === "GroupClassScheduleSettings"}>
+                  <Link to={createPageUrl("GroupClassScheduleSettings")} onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-base font-medium">Group Class Schedule</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "PromoCodes"}>
-              <Link to="/PromoCodes" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
-                <Tag className="w-4 h-4" />
-                <span className="text-base font-medium">Promo Codes</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={currentPageName === "PromoCodes"}>
+                  <Link to="/PromoCodes" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+                    <Tag className="w-4 h-4" />
+                    <span className="text-base font-medium">Promo Codes</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "LeadInquiries"}>
-              <Link to="/LeadInquiries" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
-                <Inbox className="w-4 h-4" />
-                <span className="text-base font-medium">Client Contacts</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={currentPageName === "LeadInquiries"}>
+                  <Link to="/LeadInquiries" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+                    <Inbox className="w-4 h-4" />
+                    <span className="text-base font-medium">Client Contacts</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </>
+          )}
         </SidebarContent>
 
         <SidebarFooter className="border-t border-slate-100 p-4">
