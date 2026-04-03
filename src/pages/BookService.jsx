@@ -321,6 +321,7 @@ export default function BookService() {
 
   const handleNext = () => {
     setStep(step + 1);
+    window.scrollTo(0, 0);
   };
 
   const handleBack = () => {
@@ -328,6 +329,7 @@ export default function BookService() {
       navigate(createPageUrl("BookingSystem"));
     } else {
       setStep(step - 1);
+      window.scrollTo(0, 0);
     }
   };
 
