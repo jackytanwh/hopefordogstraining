@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { format, parseISO } from "date-fns";
-import { Calendar, Search, Filter, Eye, X, Check } from "lucide-react";
+import { format, parseISO, isToday } from "date-fns";
+import { Calendar, Search, Filter, Eye, X, Check, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
@@ -23,9 +23,20 @@ export default function AdminBookings() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [today] = useState(() => new Date());
 
   useEffect(() => {
     loadBookings();
+
+    // Schedule a reload at midnight (next day)
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+    const msUntilMidnight = midnight - now;
+    const timer = setTimeout(() => {
+      loadBookings();
+    }, msUntilMidnight);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const loadBookings = async () => {
@@ -171,6 +182,12 @@ export default function AdminBookings() {
     }
   };
 
+  const todayBookings = bookings.filter(booking => {
+    if (!booking.session_dates || booking.session_dates.length === 0) return false;
+    if (booking.booking_status === 'cancelled') return false;
+    return booking.session_dates.some(s => s.date && isToday(parseISO(s.date)));
+  });
+
   return (
     <div className="p-3 md:p-8 space-y-6">
       <div className="flex justify-between items-center">
@@ -179,6 +196,50 @@ export default function AdminBookings() {
           <p className="text-slate-600 mt-1">Manage all training session bookings</p>
         </div>
       </div>
+
+      {/* Today's Upcoming Sessions */}
+      {!loading && (
+        <Card className="border-2 border-blue-200 bg-blue-50/60 shadow-md">
+          <CardHeader className="pb-3 border-b border-blue-100">
+            <CardTitle className="flex items-center gap-2 text-blue-800">
+              <Clock className="w-5 h-5" />
+              Today's Sessions — {format(today, 'EEEE, MMMM d, yyyy')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            {todayBookings.length === 0 ? (
+              <p className="text-slate-500 text-sm">No sessions scheduled for today.</p>
+            ) : (
+              <div className="space-y-3">
+                {todayBookings.map(booking => {
+                  const todaySessions = booking.session_dates.filter(s => s.date && isToday(parseISO(s.date)));
+                  return (
+                    <div key={booking.id} className="flex items-center justify-between bg-white rounded-lg px-4 py-3 shadow-sm border border-blue-100">
+                      <div>
+                        <p className="font-semibold text-slate-900">{getClientName(booking)} <span className="text-slate-400 font-normal">·</span> {getFurkidName(booking)}</p>
+                        <p className="text-sm text-slate-600">{booking.service_name}</p>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {todaySessions.map((s, i) => (
+                            <span key={i} className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                              Session {s.session_number} · {s.start_time}{s.end_time ? ` – ${s.end_time}` : ''}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={`${statusColors[booking.booking_status]} border text-xs`}>{booking.booking_status}</Badge>
+                        <Link to={createPageUrl(`BookingDetail?id=${booking.id}`)}>
+                          <Button size="sm" variant="outline"><Eye className="w-4 h-4" /></Button>
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Filters */}
       <Card>
