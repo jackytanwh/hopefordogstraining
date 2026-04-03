@@ -4,7 +4,6 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Get all confirmed/active behavioural modification bookings
     const bookings = await base44.asServiceRole.entities.Booking.filter({
       service_type: 'behavioural_modification'
     });
@@ -14,20 +13,16 @@ Deno.serve(async (req) => {
 
     const sevenDaysAgo = new Date(today);
     sevenDaysAgo.setDate(today.getDate() - 7);
-    const targetDate = sevenDaysAgo.toISOString().split('T')[0]; // yyyy-MM-dd
+    const targetDate = sevenDaysAgo.toISOString().split('T')[0];
 
     const reminders = [];
 
     for (const booking of bookings) {
       if (booking.booking_status === 'cancelled') continue;
-
       const sessions = booking.session_dates || [];
       for (const session of sessions) {
         if (session.date === targetDate) {
-          reminders.push({
-            booking,
-            session
-          });
+          reminders.push({ booking, session });
         }
       }
     }
@@ -38,12 +33,18 @@ Deno.serve(async (req) => {
 
     const adminEmail = Deno.env.get('RESEND_FROM_EMAIL');
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    const waToken = Deno.env.get('WHATSAPP_ACCESS_TOKEN');
+    const waPhoneId = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
+    const adminWaNumber = Deno.env.get('ADMIN_WHATSAPP_NUMBER');
 
     for (const { booking, session } of reminders) {
       const clientName = booking.client_name || booking.clients?.[0]?.client_name || 'Client';
       const furkidName = booking.furkid_name || booking.furkids?.[0]?.furkid_name || 'Furkid';
       const sessionNum = session.session_number || '?';
+      const clientEmail = booking.client_email || booking.clients?.[0]?.client_email || 'N/A';
+      const clientMobile = booking.client_mobile || booking.clients?.[0]?.client_mobile || 'N/A';
 
+      // Send email
       const emailBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h2 style="color: #1e40af;">🐾 Follow-Up Reminder — Behavioural Modification</h2>
@@ -63,11 +64,11 @@ Deno.serve(async (req) => {
             </tr>
             <tr>
               <td style="padding: 10px; font-weight: bold; border: 1px solid #e2e8f0;">Email</td>
-              <td style="padding: 10px; border: 1px solid #e2e8f0;">${booking.client_email || booking.clients?.[0]?.client_email || 'N/A'}</td>
+              <td style="padding: 10px; border: 1px solid #e2e8f0;">${clientEmail}</td>
             </tr>
             <tr style="background: #f1f5f9;">
               <td style="padding: 10px; font-weight: bold; border: 1px solid #e2e8f0;">Mobile</td>
-              <td style="padding: 10px; border: 1px solid #e2e8f0;">${booking.client_mobile || booking.clients?.[0]?.client_mobile || 'N/A'}</td>
+              <td style="padding: 10px; border: 1px solid #e2e8f0;">${clientMobile}</td>
             </tr>
           </table>
           <p style="color: #64748b; font-size: 14px;">Sent automatically by Hopefordogs booking system.</p>
@@ -85,6 +86,25 @@ Deno.serve(async (req) => {
           to: adminEmail,
           subject: `🐾 Follow-Up Reminder: ${clientName} & ${furkidName} — Session ${sessionNum}`,
           html: emailBody
+        })
+      });
+
+      // Send WhatsApp notification to admin
+      const waMessage = `🐾 *Follow-Up Reminder*\n\nTime to check in with a Behavioural Modification client!\n\n*Client:* ${clientName}\n*Furkid:* ${furkidName}\n*Session ${sessionNum}* was on ${session.date}${session.start_time ? ` at ${session.start_time}` : ''}\n*Mobile:* ${clientMobile}\n*Email:* ${clientEmail}\n\n_It's been 1 week since their session. Give them a follow-up! 🐶_`;
+
+      const waTo = adminWaNumber.replace(/\D/g, '');
+
+      await fetch(`https://graph.facebook.com/v18.0/${waPhoneId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${waToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messaging_product: 'whatsapp',
+          to: waTo,
+          type: 'text',
+          text: { body: waMessage }
         })
       });
     }
