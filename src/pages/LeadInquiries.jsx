@@ -18,15 +18,15 @@ export default function LeadInquiries() {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Lead Inquiries</h1>
-        <p className="text-slate-600 mt-1">Prospective client submissions</p>
+        <h1 className="text-3xl font-bold text-slate-900">Client Contacts</h1>
+        <p className="text-slate-600 mt-1">Automatically collected from bookings</p>
       </div>
 
       <Card className="shadow-lg border-0 bg-white/80">
         <CardHeader className="border-b border-slate-100">
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />
-            All Leads ({leads.length})
+            All Contacts ({leads.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
