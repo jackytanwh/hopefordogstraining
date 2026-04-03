@@ -11,15 +11,22 @@
       "format": "email",
       "description": "Client's email address"
     },
+    "mobile_number": {
+      "type": "string",
+      "description": "Client's mobile number"
+    },
     "dog_dob": {
       "type": "string",
       "format": "date",
       "description": "Date of birth of the dog/puppy"
+    },
+    "dog_age": {
+      "type": "string",
+      "description": "Age of the dog/puppy"
     }
   },
   "required": [
     "client_name",
-    "email_address",
-    "dog_dob"
+    "email_address"
   ]
 }

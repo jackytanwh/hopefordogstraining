@@ -10,21 +10,25 @@ Deno.serve(async (req) => {
       return Response.json({ message: 'No booking data' }, { status: 400 });
     }
 
-    // Extract client name and email
-    let clientName, clientEmail, dogDob;
+    // Extract client info
+    let clientName, clientEmail, clientMobile, dogDob, dogAge;
 
     if (booking.clients && booking.clients.length > 0) {
       clientName = booking.clients[0].client_name;
       clientEmail = booking.clients[0].client_email;
+      clientMobile = booking.clients[0].client_mobile;
     } else {
       clientName = booking.client_name;
       clientEmail = booking.client_email;
+      clientMobile = booking.client_mobile;
     }
 
     if (booking.furkids && booking.furkids.length > 0) {
       dogDob = booking.furkids[0].furkid_dob;
+      dogAge = booking.furkids[0].furkid_age;
     } else {
       dogDob = booking.furkid_dob;
+      dogAge = booking.furkid_age;
     }
 
     if (!clientName || !clientEmail) {
@@ -34,7 +38,9 @@ Deno.serve(async (req) => {
     await base44.asServiceRole.entities.LeadInquiry.create({
       client_name: clientName,
       email_address: clientEmail,
-      dog_dob: dogDob || null
+      mobile_number: clientMobile || null,
+      dog_dob: dogDob || null,
+      dog_age: dogAge || null
     });
 
     return Response.json({ success: true });

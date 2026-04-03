@@ -40,7 +40,9 @@ export default function LeadInquiries() {
                 <tr>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Client Name</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Email</th>
+                  <th className="text-left px-6 py-3 font-semibold text-slate-700">Mobile</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Dog / Puppy DOB</th>
+                  <th className="text-left px-6 py-3 font-semibold text-slate-700">Dog Age</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Submitted</th>
                 </tr>
               </thead>
@@ -49,9 +51,11 @@ export default function LeadInquiries() {
                   <tr key={lead.id} className="border-b border-slate-100 hover:bg-slate-50">
                     <td className="px-6 py-4 font-medium text-slate-900">{lead.client_name}</td>
                     <td className="px-6 py-4 text-slate-600">{lead.email_address}</td>
+                    <td className="px-6 py-4 text-slate-600">{lead.mobile_number || '—'}</td>
                     <td className="px-6 py-4 text-slate-600">
                       {lead.dog_dob ? format(parseISO(lead.dog_dob), 'dd MMM yyyy') : '—'}
                     </td>
+                    <td className="px-6 py-4 text-slate-600">{lead.dog_age || '—'}</td>
                     <td className="px-6 py-4 text-slate-500">
                       {lead.created_date ? format(new Date(lead.created_date), 'dd MMM yyyy') : '—'}
                     </td>
