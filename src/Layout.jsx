@@ -36,8 +36,8 @@ import { Toaster } from "@/components/ui/toaster";
 
 function InnerLayout({ children, currentPageName }) {
   const { setOpenMobile } = useSidebar();
-  const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
+  const { user, isLoadingAuth } = useAuth();
+  const isAdmin = isLoadingAuth || user?.role === 'admin';
   const closeMenu = () => setOpenMobile(false);
 
   const urlParams = new URLSearchParams(window.location.search);
