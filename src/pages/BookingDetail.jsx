@@ -1263,6 +1263,18 @@ export default function BookingDetail() {
                         <p className="font-medium">{booking.furkid_diet}</p>
                       </div>
                     )}
+                    {booking.furkid_sleep_area && (
+                      <div>
+                        <p className="text-slate-600">Sleeps At Night</p>
+                        <p className="font-medium">{booking.furkid_sleep_area}</p>
+                      </div>
+                    )}
+                    {booking.walking_frequency && (
+                      <div>
+                        <p className="text-slate-600">Walk Frequency</p>
+                        <p className="font-medium">{booking.walking_frequency}</p>
+                      </div>
+                    )}
                     {booking.furkid_instagram && (
                       <div>
                         <p className="text-slate-600">Instagram</p>
