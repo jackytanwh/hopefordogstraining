@@ -13,8 +13,8 @@ const PRODUCTS = [
     name: 'Rinse-Free Fur Fresh!',
     description: "Designed to clean your pet's coat without the need for water. The foam cleanser works by lifting dirt and grime from your pet's fur, leaving it clean, soft, and smelling fresh. The no-rinse foam formula is ideal for pets who dislike water or those who require a quick clean-up between baths. Gentle on your pet's skin and coat.",
     originalPrice: 38,
-    discountedPrice: 38,
-    discountPercent: 0,
+    discountedPrice: 30.40,
+    discountPercent: 20,
     showEcoLabel: true,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/9c6ac8266_Rinsefreefurfresh.png',
@@ -26,8 +26,8 @@ const PRODUCTS = [
     name: 'Paw Protéct 3-in-1 Cleanser',
     description: "The rinse-free Paw Protéct 3-in-1 Cleanser is formulated with gentle yet effective ingredients that help cleanse, protect, and moisturise your dog's paws. The non-irritating foaming formula is safe for all skin types. Say goodbye to dirty paws and hello to a more convenient and efficient way of keeping your dog's paws clean and fresh.",
     originalPrice: 38,
-    discountedPrice: 38,
-    discountPercent: 0,
+    discountedPrice: 30.40,
+    discountPercent: 20,
     showEcoLabel: true,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/142401e31_PawProtect.png',
@@ -39,8 +39,8 @@ const PRODUCTS = [
     name: 'Flea & Tick Defence Plus',
     description: "Our innovative foam formula provides a powerful shield against fleas and ticks. It uses a natural blend of ingredients to create an environment that repels these pests, keeping your dog safe and comfortable. Free from harsh chemicals, pesticides, and artificial fragrances, it's gentle on your dog's skin and suitable for everyday use.",
     originalPrice: 32,
-    discountedPrice: 32,
-    discountPercent: 0,
+    discountedPrice: 25.60,
+    discountPercent: 20,
     showEcoLabel: true,
     imageUrls: [
       'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/f06c467f8_flea.png',
