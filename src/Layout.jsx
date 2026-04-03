@@ -5,6 +5,7 @@ import {
   Home,
   Users,
   UserPlus,
+  Inbox,
   PawPrint,
   AlignJustify,
   ChevronDown,
@@ -153,6 +154,15 @@ function InnerLayout({ children, currentPageName }) {
               <Link to="/PromoCodes" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <Tag className="w-4 h-4" />
                 <span className="text-base font-medium">Promo Codes</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={currentPageName === "LeadInquiries"}>
+              <Link to="/LeadInquiries" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+                <Inbox className="w-4 h-4" />
+                <span className="text-base font-medium">Lead Inquiries</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

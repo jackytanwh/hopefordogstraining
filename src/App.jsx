@@ -8,6 +8,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import PromoCodes from './pages/PromoCodes';
+import LeadInquiries from './pages/LeadInquiries';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/PromoCodes" element={<LayoutWrapper currentPageName="PromoCodes"><PromoCodes /></LayoutWrapper>} />
+      <Route path="/LeadInquiries" element={<LayoutWrapper currentPageName="LeadInquiries"><LeadInquiries /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
