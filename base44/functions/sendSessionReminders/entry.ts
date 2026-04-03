@@ -132,10 +132,8 @@ Deno.serve(async (req) => {
                         const reminderSubject = `Session Reminder: ${booking.service_name || 'Training'} — ${formatDateShort(session.date)}`;
                         const reminderHtml = `
                             <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
-                                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 40px 24px; text-align: center; border-radius: 12px 12px 0 0;">
-                                    <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; margin-bottom: 16px;">
-                                        ${pawSvg}
-                                    </div>
+                                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">
+                                    <img src="https://media.base44.com/images/public/690f36a014bb3e1119479c64/48f54971a_DogLogonew.png" alt="Hopefordogs" style="height: 80px; width: auto; object-fit: contain; background: white; border-radius: 8px; padding: 8px; margin-bottom: 16px;" />
                                     <h1 style="margin: 0 0 8px 0; font-size: 26px; color: white; font-weight: 700;">Session Reminder</h1>
                                     <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 15px;">${booking.service_name || 'Training Session'}</p>
                                 </div>
