@@ -270,25 +270,6 @@ export default function BookingSystem() {
           })}
         </div>
 
-        <Card className="shadow-lg border-0 bg-gradient-to-r from-green-50 to-emerald-50">
-          <CardContent className="p-4 md:p-6 text-center space-y-3 md:space-y-4">
-            <div className="flex justify-center">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-green-500 rounded-full flex items-center justify-center">
-                <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-white" />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-2">Questions? We're Here to Help!</h3>
-              <p className="text-sm md:text-base text-slate-600 mb-3 md:mb-4">
-                Chat with our friendly team on WhatsApp for instant answers about our training programs, 
-                scheduling, or any concerns about your furry friend.
-              </p>
-              <WhatsAppButton 
-                className="bg-green-600 hover:bg-green-700"
-              />
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
