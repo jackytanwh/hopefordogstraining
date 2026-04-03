@@ -56,7 +56,7 @@ import BookingDetail from './pages/BookingDetail';
 import BookingSystem from './pages/BookingSystem';
 import ClientDetail from './pages/ClientDetail';
 import Clients from './pages/Clients';
-import Dashboard from './pages/Dashboard';
+
 import EditClient from './pages/EditClient';
 import GroupClassScheduleSettings from './pages/GroupClassScheduleSettings';
 import Home from './pages/Home';
@@ -75,7 +75,7 @@ export const PAGES = {
     "BookingSystem": BookingSystem,
     "ClientDetail": ClientDetail,
     "Clients": Clients,
-    "Dashboard": Dashboard,
+
     "EditClient": EditClient,
     "GroupClassScheduleSettings": GroupClassScheduleSettings,
     "Home": Home,
@@ -84,7 +84,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Dashboard",
+    mainPage: "AdminBookings",
     Pages: PAGES,
     Layout: __Layout,
 };
