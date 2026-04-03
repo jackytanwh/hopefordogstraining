@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 
 export default function WhatsAppButton({ variant = "default", size = "default", className = "" }) {
-  const whatsappUrl = base44.agents.getWhatsAppConnectURL('booking_assistant');
+  const whatsappUrl = "https://wa.me/6582228376";
 
   return (
     <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
