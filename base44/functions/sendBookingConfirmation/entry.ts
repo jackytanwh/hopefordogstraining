@@ -432,11 +432,61 @@ Deno.serve(async (req) => {
                     }
                 }
 
+                // --- Admin notification to jacky@hopefordogs.sg ---
+                try {
+                    const firstSession = booking.session_dates?.[0];
+                    const startDate = firstSession ? formatDate(firstSession.date) : 'TBD';
+                    const startDay = firstSession ? getDayOfWeek(firstSession.date) : '';
+                    const startTime = firstSession?.start_time || '';
+                    const serviceType = booking.service_type || '';
+                    const isGroupClass = serviceType === 'basic_manners_group_class';
+                    const location = isGroupClass
+                        ? '73 Redhill Road MSCP, Level 7'
+                        : (booking.client_address
+                            ? `${booking.client_address}${booking.client_postal_code ? ', ' + booking.client_postal_code : ''}`
+                            : (booking.clients?.[0]?.client_address || booking.clients?.[0]?.clientAddress || 'N/A'));
+
+                    const adminClientName = clientName;
+                    const adminFurkidName = furkidName;
+                    const adminMobile = clientMobile || 'N/A';
+                    const totalPrice = Number(booking.total_price || 0).toFixed(2);
+                    const serviceName = booking.service_name || 'Training Service';
+
+                    const adminSubject = `${adminClientName} & ${adminFurkidName}, enrolled ${serviceName} - $${totalPrice}`;
+
+                    let productsHtml = '';
+                    if (booking.product_selections && booking.product_selections.length > 0) {
+                        const productLines = booking.product_selections.map((p: any) =>
+                            `<li>${p.product_name} × ${p.quantity} — $${Number(p.discounted_price * p.quantity).toFixed(2)}</li>`
+                        ).join('');
+                        productsHtml = `<p><strong>Products ordered:</strong></p><ul>${productLines}</ul>`;
+                    } else {
+                        productsHtml = `<p><strong>Products ordered:</strong> None</p>`;
+                    }
+
+                    const adminHtml = `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <h2 style="color: #1e293b;">New Booking</h2>
+                        <p>${adminClientName} <strong>${adminMobile}</strong> has enrolled for <strong>${serviceName}</strong> starting ${startDate}, ${startDay}, ${startTime} at ${location}</p>
+                        ${productsHtml}
+                        <p style="color: #64748b; font-size: 13px;">Total: <strong>$${totalPrice}</strong></p>
+                    </div>`;
+
+                    await resend.emails.send({
+                        from: fromAddress,
+                        to: ['jacky@hopefordogs.sg'],
+                        subject: adminSubject,
+                        html: adminHtml,
+                    });
+                    console.log('✅ Admin notification email sent to jacky@hopefordogs.sg');
+                } catch (adminEmailErr) {
+                    console.error('⚠️ Admin notification email failed:', adminEmailErr);
+                }
+
                 results.email = sentTo.length > 0 ? 'sent' : 'failed';
                 results.email_recipients = sentTo;
                 console.log(`✅ Confirmation emails sent to ${sentTo.length} recipient(s)`);
             } catch (emailError) {
-                console.error('⚠️ Email failed:', emailError);
                 results.email = 'failed';
             }
         }
