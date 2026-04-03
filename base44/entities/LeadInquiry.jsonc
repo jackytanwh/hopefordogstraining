@@ -1,0 +1,25 @@
+{
+  "name": "LeadInquiry",
+  "type": "object",
+  "properties": {
+    "client_name": {
+      "type": "string",
+      "description": "Client's full name"
+    },
+    "email_address": {
+      "type": "string",
+      "format": "email",
+      "description": "Client's email address"
+    },
+    "dog_dob": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth of the dog/puppy"
+    }
+  },
+  "required": [
+    "client_name",
+    "email_address",
+    "dog_dob"
+  ]
+}
