@@ -136,7 +136,7 @@ export default function PaymentSuccess() {
                   <div className="pt-4 border-t border-slate-200">
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Total Paid</span>
-                      <span className="text-2xl font-bold text-green-600">${booking.total_price?.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-green-600">${booking.total_price?.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
