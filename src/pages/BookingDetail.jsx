@@ -1196,6 +1196,28 @@ export default function BookingDetail() {
                               <p className="font-medium">{getFurkidField(furkid, 'furkidSleepArea')}</p>
                             </div>
                           )}
+                          {getFurkidField(furkid, 'furkidJoinedFamily') !== 'N/A' && (
+                            <div>
+                              <p className="text-slate-600">Joined Family</p>
+                              <p className="font-medium">{getFurkidField(furkid, 'furkidJoinedFamily')}</p>
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-slate-600">First Time Owner</p>
+                            <p className="font-medium">{(furkid.firstTimeOwner || furkid.first_time_owner) ? 'Yes' : 'No'}</p>
+                          </div>
+                          {getFurkidField(furkid, 'walkingFrequency') !== 'N/A' && (
+                            <div>
+                              <p className="text-slate-600">Walk Frequency</p>
+                              <p className="font-medium">{getFurkidField(furkid, 'walkingFrequency')}</p>
+                            </div>
+                          )}
+                          {getFurkidField(furkid, 'furkidInstagram') !== 'N/A' && (
+                            <div>
+                              <p className="text-slate-600">Instagram</p>
+                              <p className="font-medium">{getFurkidField(furkid, 'furkidInstagram')}</p>
+                            </div>
+                          )}
                           {getFurkidField(furkid, 'enrolmentReason') !== 'N/A' && (
                             <div className="md:col-span-2">
                               <p className="text-slate-600">Reason for Enrolment</p>
