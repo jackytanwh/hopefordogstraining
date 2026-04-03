@@ -105,7 +105,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
         return {
             greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [
-                'You will also need a regular collar/harness and leash (<strong>NO retractable leash</strong>) and lots of bite-sized treats.',
+                'You will also need a regular collar/harness and leash (<strong>NO retractable leash or slip leash</strong>) and lots of bite-sized treats.',
                 'Water for <strong>[furkid_name]</strong>',
             ],
             pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/07/Basic-Manners-7-weeks-Handouts-2025.pdf',
@@ -363,7 +363,7 @@ Deno.serve(async (req) => {
 
             let instructionsWa = '';
             if (serviceType === 'basic_manners_in_home' || serviceType === 'basic_manners_fyog' || serviceType === 'basic_manners_group_class') {
-                instructionsWa += '\n\nYou will also need a regular collar/harness and leash (NO retractable leash) and lots of bite-sized treats.';
+                instructionsWa += '\n\nYou will also need a regular collar/harness and leash (NO retractable leash/slip leash) and lots of bite-sized treats.';
             }
             if (serviceType === 'basic_manners_fyog' || serviceType === 'basic_manners_group_class') {
                 instructionsWa += `\nWater for ${furkidName}`;
