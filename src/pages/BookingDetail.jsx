@@ -1247,10 +1247,26 @@ export default function BookingDetail() {
                       <p className="text-slate-600">Adopted</p>
                       <p className="font-medium">{booking.is_adopted ? 'Yes' : 'No'}</p>
                     </div>
+                    {booking.furkid_joined_family && (
+                      <div>
+                        <p className="text-slate-600">Joined Family</p>
+                        <p className="font-medium">{booking.furkid_joined_family}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-slate-600">First Time Owner</p>
+                      <p className="font-medium">{booking.first_time_owner ? 'Yes' : 'No'}</p>
+                    </div>
                     {booking.furkid_diet && (
                       <div className="md:col-span-2">
                         <p className="text-slate-600">Diet</p>
                         <p className="font-medium">{booking.furkid_diet}</p>
+                      </div>
+                    )}
+                    {booking.furkid_instagram && (
+                      <div>
+                        <p className="text-slate-600">Instagram</p>
+                        <p className="font-medium">{booking.furkid_instagram}</p>
                       </div>
                     )}
                     {booking.enrolment_reason && (
