@@ -429,7 +429,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
               onClick={handleContinue}
               className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-sm md:text-base"
             >
-              {getSelectedCount() > 0 ? 'Continue' : 'Continue without Products'}
+              {getSelectedCount() > 0 || (isKinderPuppy && selectedComplimentary) ? 'Continue' : 'Continue without Products'}
             </Button>
           </div>
         </CardContent>
