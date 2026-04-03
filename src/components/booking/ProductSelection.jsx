@@ -3,13 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Sparkles, ShoppingCart, Plus, Minus, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles, ShoppingCart, Plus, Minus, Maximize2, ChevronLeft, ChevronRight, Gift } from "lucide-react";
+
+const COMPLIMENTARY_IDS = ['fur_fresh', 'paw_protect', 'flea_tick'];
 
 const PRODUCTS = [
   {
     id: 'fur_fresh',
     name: 'Rinse-Free Fur Fresh!',
-    description: 'Designed to clean your pet\'s coat without the need for water. The foam cleanser works by lifting dirt and grime from your pet\'s fur, leaving it clean, soft, and smelling fresh. The no-rinse foam formula is ideal for pets who dislike water or those who require a quick clean-up between baths. Gentle on your pet\'s skin and coat.',
+    description: "Designed to clean your pet's coat without the need for water. The foam cleanser works by lifting dirt and grime from your pet's fur, leaving it clean, soft, and smelling fresh. The no-rinse foam formula is ideal for pets who dislike water or those who require a quick clean-up between baths. Gentle on your pet's skin and coat.",
     originalPrice: 48,
     discountedPrice: 40.80,
     discountPercent: 15,
@@ -22,7 +24,7 @@ const PRODUCTS = [
   {
     id: 'paw_protect',
     name: 'Paw Protéct 3-in-1 Cleanser',
-    description: 'The rinse-free Paw Protéct 3-in-1 Cleanser is formulated with gentle yet effective ingredients that help cleanse, protect, and moisturise your dog\'s paws. The non-irritating foaming formula is safe for all skin types. Say goodbye to dirty paws and hello to a more convenient and efficient way of keeping your dog\'s paws clean and fresh.',
+    description: "The rinse-free Paw Protéct 3-in-1 Cleanser is formulated with gentle yet effective ingredients that help cleanse, protect, and moisturise your dog's paws. The non-irritating foaming formula is safe for all skin types. Say goodbye to dirty paws and hello to a more convenient and efficient way of keeping your dog's paws clean and fresh.",
     originalPrice: 48,
     discountedPrice: 40.80,
     discountPercent: 15,
@@ -35,7 +37,7 @@ const PRODUCTS = [
   {
     id: 'flea_tick',
     name: 'Flea & Tick Defence Plus',
-    description: 'Our innovative foam formula provides a powerful shield against fleas and ticks. It uses a natural blend of ingredients to create an environment that repels these pests, keeping your dog safe and comfortable. Free from harsh chemicals, pesticides, and artificial fragrances, it\'s gentle on your dog\'s skin and suitable for everyday use.',
+    description: "Our innovative foam formula provides a powerful shield against fleas and ticks. It uses a natural blend of ingredients to create an environment that repels these pests, keeping your dog safe and comfortable. Free from harsh chemicals, pesticides, and artificial fragrances, it's gentle on your dog's skin and suitable for everyday use.",
     originalPrice: 42,
     discountedPrice: 35.70,
     discountPercent: 15,
@@ -84,11 +86,24 @@ const PRODUCTS = [
 ];
 
 export default function ProductSelection({ formData, setFormData, onNext, onBack }) {
+  const isKinderPuppy = formData.serviceType === 'kinder_puppy_in_home' || formData.serviceType === 'kinder_puppy_fyog';
+
+  const [selectedComplimentary, setSelectedComplimentary] = useState(() => {
+    const prev = formData.productSelections?.find(item => {
+      const product = PRODUCTS.find(p => p.name === item.product_name);
+      return product && COMPLIMENTARY_IDS.includes(product.id) && item.discounted_price === 0;
+    });
+    if (prev) {
+      const product = PRODUCTS.find(p => p.name === prev.product_name);
+      return product?.id || null;
+    }
+    return null;
+  });
+
   const [quantities, setQuantities] = useState(
     formData.productSelections?.reduce((acc, item) => {
-      // Find product by name to get the id
       const product = PRODUCTS.find(p => p.name === item.product_name);
-      if (product) {
+      if (product && !COMPLIMENTARY_IDS.includes(product.id)) {
         acc[product.id] = item.quantity;
       }
       return acc;
@@ -106,7 +121,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
   };
 
   const calculateTotal = () => {
-    return PRODUCTS.reduce((total, product) => {
+    return PRODUCTS.filter(p => !COMPLIMENTARY_IDS.includes(p.id)).reduce((total, product) => {
       const qty = quantities[product.id] || 0;
       return total + (product.discountedPrice * qty);
     }, 0);
@@ -117,19 +132,33 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
   };
 
   const handleContinue = () => {
-    const selectedProducts = PRODUCTS.map(product => ({
-      product_name: product.name,
-      quantity: quantities[product.id] || 0,
-      original_price: product.originalPrice,
-      discounted_price: product.discountedPrice
-    })).filter(item => item.quantity > 0);
+    const selectedProducts = PRODUCTS
+      .filter(p => !COMPLIMENTARY_IDS.includes(p.id))
+      .map(product => ({
+        product_name: product.name,
+        quantity: quantities[product.id] || 0,
+        original_price: product.originalPrice,
+        discounted_price: product.discountedPrice
+      })).filter(item => item.quantity > 0);
+
+    if (isKinderPuppy && selectedComplimentary) {
+      const complimentaryProduct = PRODUCTS.find(p => p.id === selectedComplimentary);
+      if (complimentaryProduct) {
+        selectedProducts.unshift({
+          product_name: complimentaryProduct.name,
+          quantity: 1,
+          original_price: complimentaryProduct.originalPrice,
+          discounted_price: 0
+        });
+      }
+    }
 
     setFormData(prev => ({
       ...prev,
       productSelections: selectedProducts,
       productsTotal: calculateTotal()
     }));
-    
+
     onNext();
   };
 
@@ -159,6 +188,12 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
     }
   };
 
+  const paidProducts = isKinderPuppy
+    ? PRODUCTS.filter(p => !COMPLIMENTARY_IDS.includes(p.id))
+    : PRODUCTS;
+
+  const complimentaryProducts = PRODUCTS.filter(p => COMPLIMENTARY_IDS.includes(p.id));
+
   return (
     <>
       <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -182,9 +217,66 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
         </CardHeader>
 
         <CardContent className="p-4 md:p-6 space-y-4">
-          {/* Products List */}
+
+          {/* Complimentary Section (Kinder Puppy only) */}
+          {isKinderPuppy && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Gift className="w-5 h-5 text-emerald-600" />
+                <h3 className="font-semibold text-slate-900">Complimentary Gift — Pick 1!</h3>
+                <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border border-emerald-200">FREE</Badge>
+              </div>
+              <p className="text-sm text-slate-600">As a Kinder Puppy client, you're entitled to one complimentary product. Select your preferred item below.</p>
+              <div className="space-y-3">
+                {complimentaryProducts.map(product => {
+                  const isSelected = selectedComplimentary === product.id;
+                  const hasImages = product.imageUrls && product.imageUrls.length > 0;
+                  return (
+                    <button
+                      key={product.id}
+                      type="button"
+                      onClick={() => setSelectedComplimentary(isSelected ? null : product.id)}
+                      className={`w-full text-left border rounded-lg p-4 transition-all ${
+                        isSelected ? 'border-emerald-400 bg-emerald-50/60 ring-2 ring-emerald-200' : 'border-slate-200 hover:border-emerald-300'
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className={`mt-1 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                          isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
+                        }`}>
+                          {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                        </div>
+                        {hasImages && (
+                          <img
+                            src={product.imageUrls[0]}
+                            alt={product.name}
+                            className="w-16 h-16 object-contain rounded-lg bg-white flex-shrink-0"
+                            onClick={e => { e.stopPropagation(); handleImageClick(product, 0); }}
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-slate-900">{product.name}</span>
+                            <span className="text-sm text-slate-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                            <span className="text-sm font-bold text-emerald-600">FREE</span>
+                          </div>
+                          <p className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2">{product.description}</p>
+                          {product.showEcoLabel && (
+                            <p className="text-xs text-green-700 mt-1 font-medium">🌱 100% Vegan • 🤲 Handcrafted • ♻️ Biodegradable</p>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <hr className="border-slate-200" />
+            </div>
+          )}
+
+          {/* Paid Products List */}
           <div className="space-y-4">
-            {PRODUCTS.map((product) => {
+            {paidProducts.map((product) => {
               const qty = quantities[product.id] || 0;
               const savings = product.originalPrice - product.discountedPrice;
               const hasImages = product.imageUrls && product.imageUrls.length > 0;
@@ -197,9 +289,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                   }`}
                 >
                   <div className="space-y-3">
-                    {/* Product Header with Images */}
                     <div className="flex items-start gap-4">
-                      {/* Product Images - Clickable (only if images exist) */}
                       {hasImages && (
                         <div className="flex-shrink-0 space-y-2">
                           <button
@@ -207,8 +297,8 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                             onClick={() => handleImageClick(product, 0)}
                             className="relative rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all group"
                           >
-                            <img 
-                              src={product.imageUrls[0]} 
+                            <img
+                              src={product.imageUrls[0]}
                               alt={product.name}
                               className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-lg bg-white transition-transform group-hover:scale-105"
                             />
@@ -216,8 +306,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                               <Maximize2 className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                           </button>
-                          
-                          {/* Additional image thumbnails */}
                           {product.imageUrls.length > 1 && (
                             <div className="flex gap-1">
                               {product.imageUrls.slice(1).map((imageUrl, index) => (
@@ -227,8 +315,8 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                                   onClick={() => handleImageClick(product, index + 1)}
                                   className="relative rounded overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all group w-10 h-10"
                                 >
-                                  <img 
-                                    src={imageUrl} 
+                                  <img
+                                    src={imageUrl}
                                     alt={`${product.name} ${index + 2}`}
                                     className="w-full h-full object-cover bg-white transition-transform group-hover:scale-110"
                                   />
@@ -236,12 +324,9 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                               ))}
                             </div>
                           )}
-                          
                           <p className="text-xs text-slate-500 text-center">Click to zoom</p>
                         </div>
                       )}
-                      
-                      {/* Product Info */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-slate-900 text-base md:text-lg">
                           {product.name}
@@ -249,8 +334,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                         <p className="text-sm text-slate-600 mt-1 leading-relaxed">
                           {product.description}
                         </p>
-                        
-                        {/* Eco-friendly label for first 3 products */}
                         {product.showEcoLabel && (
                           <p className="text-xs text-green-700 mt-2 font-medium">
                             🌱 100% Vegan • 🤲 Handcrafted • ♻️ Biodegradable
@@ -259,7 +342,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                       </div>
                     </div>
 
-                    {/* Pricing and Quantity */}
                     <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
                       <div className="space-y-1">
                         <div className="flex items-baseline gap-2">
@@ -277,8 +359,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                           </span>
                         </div>
                       </div>
-
-                      {/* Quantity Controls */}
                       <div className="flex items-center gap-2">
                         <Button
                           type="button"
@@ -362,7 +442,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
             <DialogTitle className="text-xl font-bold">{selectedImage?.name}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            {/* Main Image with Navigation */}
             {selectedImage && selectedImage.imageUrls && selectedImage.imageUrls.length > 0 && (
               <>
                 <div className="relative flex justify-center bg-slate-50 rounded-lg p-6">
@@ -376,13 +455,11 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                       <ChevronLeft className="w-5 h-5" />
                     </Button>
                   )}
-                  
-                  <img 
-                    src={selectedImage.imageUrls[selectedImageIndex]} 
+                  <img
+                    src={selectedImage.imageUrls[selectedImageIndex]}
                     alt={selectedImage.name}
                     className="max-h-[60vh] w-auto object-contain"
                   />
-                  
                   {selectedImageIndex < selectedImage.imageUrls.length - 1 && (
                     <Button
                       variant="outline"
@@ -394,15 +471,11 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                     </Button>
                   )}
                 </div>
-                
-                {/* Image Counter */}
                 {selectedImage.imageUrls.length > 1 && (
                   <div className="text-center text-sm text-slate-600">
                     Image {selectedImageIndex + 1} of {selectedImage.imageUrls.length}
                   </div>
                 )}
-                
-                {/* Thumbnail Navigation */}
                 {selectedImage.imageUrls.length > 1 && (
                   <div className="flex justify-center gap-2">
                     {selectedImage.imageUrls.map((url, index) => (
@@ -410,13 +483,13 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                         key={index}
                         onClick={() => setSelectedImageIndex(index)}
                         className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                          index === selectedImageIndex 
-                            ? 'border-blue-600 ring-2 ring-blue-200' 
+                          index === selectedImageIndex
+                            ? 'border-blue-600 ring-2 ring-blue-200'
                             : 'border-slate-200 hover:border-slate-300'
                         }`}
                       >
-                        <img 
-                          src={url} 
+                        <img
+                          src={url}
                           alt={`Thumbnail ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
@@ -426,7 +499,6 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                 )}
               </>
             )}
-            
             <div className="space-y-2">
               <p className="text-sm text-slate-600 leading-relaxed">
                 {selectedImage?.description}
