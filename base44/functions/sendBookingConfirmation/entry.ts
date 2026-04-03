@@ -250,6 +250,19 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         pricingRows += `<tr><td style="padding: 6px 0; color: #475569; font-size: 14px;">Sentosa Surcharge</td><td style="padding: 6px 0; text-align: right; color: #475569; font-size: 14px;">+$${Number(booking.total_sentosa_surcharge).toFixed(2)}</td></tr>`;
     }
 
+    // Products ordered
+    let productsRowsHtml = '';
+    if (booking.product_selections && booking.product_selections.length > 0) {
+        const productLines = booking.product_selections.map((p: any) =>
+            `<tr><td style="padding: 4px 0; color: #475569; font-size: 13px; padding-left: 12px;">• ${p.product_name} × ${p.quantity}</td><td style="padding: 4px 0; text-align: right; color: #475569; font-size: 13px;">$${Number(p.discounted_price * p.quantity).toFixed(2)}</td></tr>`
+        ).join('');
+        productsRowsHtml = `
+            <tr><td colspan="2" style="padding: 8px 0 2px 0; font-size: 13px; font-weight: 600; color: #1e293b; border-top: 1px solid #e2e8f0;">Products Ordered</td></tr>
+            ${productLines}
+            <tr><td style="padding: 4px 0 8px 0; color: #64748b; font-size: 13px; padding-left: 12px;">Products Subtotal</td><td style="padding: 4px 0 8px 0; text-align: right; color: #64748b; font-size: 13px;">$${Number(booking.products_total || 0).toFixed(2)}</td></tr>
+        `;
+    }
+
     const pawSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><path d="M12 18c-3.5 0-6-2.5-6-5 0-1.7 1-3.2 2.5-4C10 8.3 11 8 12 8s2 .3 3.5 1c1.5.8 2.5 2.3 2.5 4 0 2.5-2.5 5-6 5z"/></svg>`;
 
     return `
@@ -286,11 +299,12 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
 
             <!-- Pricing -->
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
-                ${pricingRows ? `<table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">${pricingRows}</table>` : ''}
                 <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 4px 0; font-size: 15px; color: #475569; font-weight: 600;">Total Paid</td>
-                        <td style="padding: 4px 0; text-align: right; font-size: 15px; color: #16a34a; font-weight: 700;">$${totalPrice}</td>
+                    ${pricingRows}
+                    ${productsRowsHtml}
+                    <tr style="border-top: 2px solid #e2e8f0;">
+                        <td style="padding: 10px 0 4px 0; font-size: 15px; color: #475569; font-weight: 600;">Total Paid</td>
+                        <td style="padding: 10px 0 4px 0; text-align: right; font-size: 15px; color: #16a34a; font-weight: 700;">$${totalPrice}</td>
                     </tr>
                 </table>
             </div>
