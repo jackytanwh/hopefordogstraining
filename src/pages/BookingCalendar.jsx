@@ -22,7 +22,7 @@ const statusColors = {
 };
 
 const programColors = {
-  kinder_puppy_in_home:    "bg-rose-200 text-rose-900",
+  kinder_puppy_in_home:    "bg-violet-200 text-violet-900",
   basic_manners_fyog:      "bg-emerald-200 text-emerald-900",
   basic_manners_group_class:"bg-orange-200 text-orange-900",
   adore_hdb_approval:      "bg-purple-200 text-purple-900",
