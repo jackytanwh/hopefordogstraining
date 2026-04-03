@@ -502,18 +502,18 @@ export default function BookingCalendar() {
                           <div key={idx} className="border border-slate-200 rounded-lg p-3 space-y-2">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <p className="font-medium text-sm text-slate-900">{getFurkidName(booking)}</p>
-                                <p className="text-xs text-slate-600">{getClientName(booking)}</p>
+                                <p className="font-bold text-base text-slate-900">{getFurkidName(booking)}</p>
+                                <p className="text-sm font-medium text-slate-600">{getClientName(booking)}</p>
                               </div>
-                              <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border text-xs`}>
+                              <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border text-sm`}>
                                 {booking.booking_status}
                               </Badge>
                             </div>
                             
-                            <div className="text-xs text-slate-600 space-y-1">
-                              <p className="font-medium">{booking.service_name}</p>
-                              <p>Session {booking.session.session_number} of {booking.session_dates?.length}</p>
-                              <p className="font-medium text-blue-600">
+                            <div className="text-sm text-slate-600 space-y-1">
+                               <p className="font-semibold text-slate-800">{booking.service_name}</p>
+                               <p>Session {booking.session.session_number} of {booking.session_dates?.length}</p>
+                               <p className="font-semibold text-blue-600">
                                 {booking.session.start_time} - {booking.session.end_time}
                               </p>
                             </div>
