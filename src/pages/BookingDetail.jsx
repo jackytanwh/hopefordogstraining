@@ -1297,18 +1297,14 @@ export default function BookingDetail() {
                         <p className="font-medium">{booking.walking_frequency}</p>
                       </div>
                     )}
-                    {booking.furkid_instagram && (
-                      <div>
-                        <p className="text-slate-600">Instagram</p>
-                        <p className="font-medium">{booking.furkid_instagram}</p>
-                      </div>
-                    )}
-                    {booking.enrolment_reason && (
-                      <div className="md:col-span-2">
-                        <p className="text-slate-600">Reason for Enrolment</p>
-                        <p className="font-medium">{booking.enrolment_reason}</p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-slate-600">Instagram</p>
+                      <p className="font-medium">{booking.furkid_instagram || 'N/A'}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <p className="text-slate-600">Reason for Enrolment</p>
+                      <p className="font-medium">{booking.enrolment_reason || 'N/A'}</p>
+                    </div>
                     {booking.furkid_photo_url && (
                       <div className="md:col-span-2">
                         <p className="text-slate-600 text-sm mb-2">Photo</p>
