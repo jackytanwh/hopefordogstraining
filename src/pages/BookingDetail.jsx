@@ -18,7 +18,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import BehaviouralModificationDetails from "../components/booking/BehaviouralModificationDetails";
 import CanineAssessmentDetails from "../components/booking/CanineAssessmentDetails";
@@ -55,6 +56,9 @@ export default function BookingDetail() {
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showRescheduleDialog, setShowRescheduleDialog] = useState(false);
+  const [editingClient, setEditingClient] = useState(false);
+  const [clientEdits, setClientEdits] = useState({});
+  const [savingClient, setSavingClient] = useState(false);
   const [editingSessions, setEditingSessions] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
@@ -396,6 +400,44 @@ export default function BookingDetail() {
     if (hasValue(furkid[underscoreField])) return furkid[underscoreField];
     
     return 'N/A';
+  };
+
+  const handleEditClientStart = () => {
+    if (isFYOG && booking.clients && booking.clients.length > 0) {
+      setClientEdits({ clients: booking.clients.map(c => ({ ...c })) });
+    } else {
+      setClientEdits({
+        client_name: booking.client_name || '',
+        client_email: booking.client_email || '',
+        client_mobile: booking.client_mobile || '',
+        client_address: booking.client_address || '',
+        client_postal_code: booking.client_postal_code || '',
+      });
+    }
+    setEditingClient(true);
+  };
+
+  const handleSaveClientInfo = async () => {
+    setSavingClient(true);
+    try {
+      if (isFYOG && clientEdits.clients) {
+        await base44.entities.Booking.update(bookingId, { clients: clientEdits.clients });
+      } else {
+        await base44.entities.Booking.update(bookingId, {
+          client_name: clientEdits.client_name,
+          client_email: clientEdits.client_email,
+          client_mobile: clientEdits.client_mobile,
+          client_address: clientEdits.client_address,
+          client_postal_code: clientEdits.client_postal_code,
+        });
+      }
+      await loadBooking();
+      setEditingClient(false);
+    } catch (error) {
+      console.error('Error saving client info:', error);
+    } finally {
+      setSavingClient(false);
+    }
   };
 
   // Add items given management functions
@@ -1072,64 +1114,74 @@ export default function BookingDetail() {
             {/* Client Information */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Client Information
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <User className="w-5 h-5" />
+                    Client Information
+                  </div>
+                  {!editingClient ? (
+                    <Button size="sm" variant="outline" onClick={handleEditClientStart}>
+                      <Edit2 className="w-4 h-4 mr-1" /> Edit
+                    </Button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => setEditingClient(false)}>
+                        <X className="w-4 h-4 mr-1" /> Cancel
+                      </Button>
+                      <Button size="sm" onClick={handleSaveClientInfo} disabled={savingClient}>
+                        <Save className="w-4 h-4 mr-1" /> {savingClient ? 'Saving...' : 'Save'}
+                      </Button>
+                    </div>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 {isFYOG && booking.clients && booking.clients.length > 0 ? (
                   <div className="space-y-4">
-                    {booking.clients.map((client, idx) => (
+                    {(editingClient ? clientEdits.clients : booking.clients)?.map((client, idx) => (
                       <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
                         <h4 className="font-semibold text-slate-900 mb-3">Pawrent {idx + 1}</h4>
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <p className="text-slate-600">Name</p>
-                            <p className="font-medium">{getClientField(client, 'clientName')}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-600">Email</p>
-                            <p className="font-medium">{getClientField(client, 'clientEmail')}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-600">Mobile</p>
-                            <p className="font-medium">{getClientField(client, 'clientMobile')}</p>
-                          </div>
-                          <div>
-                             <p className="text-slate-600">Address</p>
-                             <p className="font-medium">{getClientField(client, 'clientAddress') !== 'N/A' ? getClientField(client, 'clientAddress') : (idx === 0 ? (booking.client_address || booking.sharedAddress || 'N/A') : 'N/A')}</p>
-                           </div>
-                           <div>
-                             <p className="text-slate-600">Postal Code</p>
-                             <p className="font-medium">{getClientField(client, 'clientPostalCode') !== 'N/A' ? getClientField(client, 'clientPostalCode') : (idx === 0 ? (booking.client_postal_code || booking.sharedPostalCode || 'N/A') : 'N/A')}</p>
-                           </div>
+                          {['client_name','client_email','client_mobile','client_address','client_postal_code'].map(field => {
+                            const labels = { client_name:'Name', client_email:'Email', client_mobile:'Mobile', client_address:'Address', client_postal_code:'Postal Code' };
+                            const val = client[field] || client[field.replace(/_([a-z])/g, (_, l) => l.toUpperCase())] || '';
+                            return (
+                              <div key={field}>
+                                <p className="text-slate-600 mb-1">{labels[field]}</p>
+                                {editingClient ? (
+                                  <Input
+                                    value={clientEdits.clients?.[idx]?.[field] ?? val}
+                                    onChange={e => {
+                                      const updated = [...(clientEdits.clients || [])];
+                                      updated[idx] = { ...updated[idx], [field]: e.target.value };
+                                      setClientEdits(prev => ({ ...prev, clients: updated }));
+                                    }}
+                                  />
+                                ) : (
+                                  <p className="font-medium">{val || 'N/A'}</p>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-slate-600">Name</p>
-                      <p className="font-medium">{booking.client_name || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-600">Email</p>
-                      <p className="font-medium">{booking.client_email || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-600">Mobile</p>
-                      <p className="font-medium">{booking.client_mobile || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-600">Address</p>
-                      <p className="font-medium">{booking.client_address || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-600">Postal Code</p>
-                      <p className="font-medium">{booking.client_postal_code || 'N/A'}</p>
-                    </div>
+                    {[['client_name','Name'],['client_email','Email'],['client_mobile','Mobile'],['client_address','Address'],['client_postal_code','Postal Code']].map(([field, label]) => (
+                      <div key={field}>
+                        <p className="text-slate-600 mb-1">{label}</p>
+                        {editingClient ? (
+                          <Input
+                            value={clientEdits[field] ?? ''}
+                            onChange={e => setClientEdits(prev => ({ ...prev, [field]: e.target.value }))}
+                          />
+                        ) : (
+                          <p className="font-medium">{booking[field] || 'N/A'}</p>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
