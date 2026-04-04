@@ -269,7 +269,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">
-            <img src="https://media.base44.com/images/public/690f36a014bb3e1119479c64/48f54971a_DogLogonew.png" alt="Hopefordogs" style="height: 48px; width: auto; object-fit: contain; background: white; border-radius: 8px; padding: 8px; margin-bottom: 16px;" />
+            <img src="https://media.base44.com/images/public/690f36a014bb3e1119479c64/48f54971a_DogLogonew.png" alt="Hopefordogs" style="height: 80px; width: auto; object-fit: contain; background: white; border-radius: 8px; padding: 8px; margin-bottom: 16px;" />
             <h1 style="margin: 0 0 8px 0; font-size: 26px; color: white; font-weight: 700;">Booking Confirmed!</h1>
             <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 15px;">${serviceName}</p>
         </div>
