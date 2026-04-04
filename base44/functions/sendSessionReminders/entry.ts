@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
                 const timeDiff = sessionDate.getTime() - now.getTime();
                 const hoursUntilSession = timeDiff / (1000 * 60 * 60);
 
-                if (hoursUntilSession < 0 || hoursUntilSession > 48) continue;
+                if (hoursUntilSession < 22 || hoursUntilSession > 26) continue;
 
                 const clientMobile = booking.client_mobile ||
                     (booking.clients?.[0]?.client_mobile || booking.clients?.[0]?.clientMobile || '');
