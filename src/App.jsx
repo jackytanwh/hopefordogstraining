@@ -47,8 +47,8 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Block non-admin users from accessing non-public paths
-  if (user && user.role !== 'admin' && !isPublicPath(window.location.pathname)) {
+  // Block non-admin (or unauthenticated) users from accessing non-public paths
+  if (!isPublicPath(window.location.pathname) && (!user || user.role !== 'admin')) {
     window.location.replace('/BookingSystem');
     return null;
   }
