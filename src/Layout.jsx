@@ -156,8 +156,8 @@ function InnerLayout({ children, currentPageName }) {
           </SidebarMenuItem>
 
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPageName === "LeadInquiries"}>
-              <Link to="/LeadInquiries" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+            <SidebarMenuButton asChild isActive={currentPageName === "ClientContacts"}>
+              <Link to="/ClientContacts" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <Inbox className="w-4 h-4" />
                 <span className="text-base font-medium">Client Contacts</span>
               </Link>

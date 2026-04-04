@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, parseISO } from "date-fns";
 import { Users } from "lucide-react";
 
-export default function LeadInquiries() {
+export default function ClientContacts() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
 
