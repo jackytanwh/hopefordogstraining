@@ -37,18 +37,15 @@ import { Toaster } from "@/components/ui/toaster";
 
 function InnerLayout({ children, currentPageName }) {
   const { setOpenMobile } = useSidebar();
-  const { user: authUser, isLoadingAuth } = useAuth();
-  const [currentUser, setCurrentUser] = useState(authUser);
+  const { user: authUser } = useAuth();
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    if (authUser) {
-      setCurrentUser(authUser);
-    } else if (!isLoadingAuth) {
-      base44.auth.me().then(setCurrentUser).catch(() => {});
-    }
-  }, [authUser, isLoadingAuth]);
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
 
-  const isAdmin = currentUser?.role === 'admin';
+  const user = authUser || currentUser;
+  const isAdmin = user?.role === 'admin';
   const closeMenu = () => setOpenMobile(false);
 
   const urlParams = new URLSearchParams(window.location.search);
