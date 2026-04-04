@@ -30,7 +30,7 @@ export default function AdminBookings() {
   const [today] = useState(() => new Date());
 
   useEffect(() => {
-    if (!isLoadingAuth && user?.role !== 'admin') {
+    if (!isLoadingAuth && user !== null && user.role !== 'admin') {
       navigate('/BookingSystem');
     }
   }, [user, isLoadingAuth]);
