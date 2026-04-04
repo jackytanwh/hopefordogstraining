@@ -699,6 +699,17 @@ export default function BookService() {
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (response) {
           console.error('❌ Razorpay payment failed:', response.error);
+          // Notify admin of failed payment
+          const useClientsArr = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
+          const failedPrimaryClient = useClientsArr ? getPrimaryClientContact(formData.clients || []) : null;
+          base44.functions.invoke('sendFailedBookingAlert', {
+            bookingId: booking.id,
+            clientName: failedPrimaryClient?.name || formData.clientName || '',
+            clientEmail: failedPrimaryClient?.email || formData.clientEmail || '',
+            clientMobile: failedPrimaryClient?.mobile || formData.clientMobile || '',
+            serviceName: service.name,
+            errorReason: response.error?.description || response.error?.reason || 'Payment failed',
+          }).catch(e => console.warn('Alert send failed:', e));
           toast({
             title: "Payment failed",
             description: response.error?.description || "Payment could not be completed. Please try again.",

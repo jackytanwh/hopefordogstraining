@@ -113,6 +113,23 @@ Deno.serve(async (req) => {
                 booking_status: "failed",
             });
             console.log(`✅ Booking ${bookingId} marked as failed via webhook`);
+
+            // Send admin alert for failed payment
+            try {
+                const clientName = booking.client_name || booking.clients?.[0]?.client_name || 'Unknown';
+                const clientEmail = booking.client_email || booking.clients?.[0]?.client_email || '';
+                const clientMobile = booking.client_mobile || booking.clients?.[0]?.client_mobile || '';
+                await base44.asServiceRole.functions.invoke('sendFailedBookingAlert', {
+                    bookingId,
+                    clientName,
+                    clientEmail,
+                    clientMobile,
+                    serviceName: booking.service_name || '',
+                    errorReason: paymentEntity?.error_description || paymentEntity?.error_code || 'Payment failed',
+                });
+            } catch (alertErr) {
+                console.warn('⚠️ Failed booking alert not sent:', alertErr);
+            }
         } else {
             console.log(`ℹ️ Unhandled event: ${event}`);
         }
