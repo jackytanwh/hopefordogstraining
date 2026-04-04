@@ -21,21 +21,37 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
 
-const PUBLIC_PATHS = ['/', '/BookingSystem', '/BookService', '/BookingConfirmation', '/PaymentSuccess', '/ThankYou'];
+const PUBLIC_PATHS = ['/', '/bookingsystem', '/bookservice', '/bookingconfirmation', '/paymentsuccess', '/thankyou'];
+
+const isPublicPath = (path) => PUBLIC_PATHS.includes(path.toLowerCase());
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
-  const { user } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
 
-  useEffect(() => {
-    if (!isLoadingAuth && user !== null && user.role !== 'admin') {
-      const path = window.location.pathname;
-      const isPublic = PUBLIC_PATHS.some(p => path === p || path.toLowerCase() === p.toLowerCase());
-      if (!isPublic) {
-        window.location.replace('/BookingSystem');
-      }
+  // Show loading spinner while checking app public settings or auth
+  if (isLoadingPublicSettings || isLoadingAuth) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Handle authentication errors
+  if (authError) {
+    if (authError.type === 'user_not_registered') {
+      return <UserNotRegisteredError />;
+    } else if (authError.type === 'auth_required') {
+      navigateToLogin();
+      return null;
     }
-  }, [user, isLoadingAuth]);
+  }
+
+  // Block non-admin users from accessing non-public paths
+  if (user && user.role !== 'admin' && !isPublicPath(window.location.pathname)) {
+    window.location.replace('/BookingSystem');
+    return null;
+  }
 
   // Render the main app
   return (
