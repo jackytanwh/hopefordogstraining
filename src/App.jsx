@@ -1,5 +1,6 @@
 import './App.css'
 import { Toaster } from "@/components/ui/toaster"
+import { useEffect } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import VisualEditAgent from '@/lib/VisualEditAgent'
@@ -20,28 +21,21 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
 
+const PUBLIC_PATHS = ['/', '/BookingSystem', '/BookService', '/BookingConfirmation', '/PaymentSuccess', '/ThankYou'];
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
+  const { user } = useAuth();
 
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
+  useEffect(() => {
+    if (!isLoadingAuth && user !== null && user.role !== 'admin') {
+      const path = window.location.pathname;
+      const isPublic = PUBLIC_PATHS.some(p => path === p || path.toLowerCase() === p.toLowerCase());
+      if (!isPublic) {
+        window.location.replace('/BookingSystem');
+      }
     }
-  }
+  }, [user, isLoadingAuth]);
 
   // Render the main app
   return (
