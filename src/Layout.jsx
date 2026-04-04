@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from '@/lib/AuthContext';
-import { base44 } from '@/api/base44Client';
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -37,18 +36,8 @@ import { Toaster } from "@/components/ui/toaster";
 
 function InnerLayout({ children, currentPageName }) {
   const { setOpenMobile } = useSidebar();
-  const { user: authUser, isLoadingAuth } = useAuth();
-  const [currentUser, setCurrentUser] = useState(authUser);
-
-  useEffect(() => {
-    if (authUser) {
-      setCurrentUser(authUser);
-    } else if (!isLoadingAuth) {
-      base44.auth.me().then(setCurrentUser).catch(() => {});
-    }
-  }, [authUser, isLoadingAuth]);
-
-  const isAdmin = currentUser?.role === 'admin';
+  const { user, isLoadingAuth } = useAuth();
+  const isAdmin = isLoadingAuth || user?.role === 'admin';
   const closeMenu = () => setOpenMobile(false);
 
   const urlParams = new URLSearchParams(window.location.search);
