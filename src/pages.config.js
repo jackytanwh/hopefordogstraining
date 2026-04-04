@@ -84,7 +84,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "AdminBookings",
+    mainPage: "BookingSystem",
     Pages: PAGES,
     Layout: __Layout,
 };
