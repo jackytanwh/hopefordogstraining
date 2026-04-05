@@ -250,6 +250,31 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         </div>`;
     }
 
+    // Terms & Agreements block
+    let agreementsHtml = '';
+    const agreementItems: string[] = [];
+
+    if (serviceType.includes('kinder_puppy')) {
+        if (booking.agreement_kinder_puppy_curriculum) agreementItems.push('I have read and understood the Kinder Puppy Program curriculum and training approach.');
+        if (booking.agreement_kinder_puppy_potty_training) agreementItems.push('I understand and commit to the potty training requirements outlined in the program.');
+        if (booking.agreement_kinder_puppy_refund_policy) agreementItems.push('I acknowledge that there are no refunds, exchanges, or cancellations once enrolled.');
+    } else if (serviceType === 'basic_manners_in_home' || serviceType === 'basic_manners_fyog' || serviceType === 'basic_manners_group_class') {
+        if (booking.agreement_no_retractable_leash) agreementItems.push('I agree not to use retractable or slip leashes during training sessions.');
+        if (booking.agreement_no_refunds) agreementItems.push('I acknowledge that there are no refunds, exchanges, or cancellations once enrolled.');
+        if (booking.agreement_dog_behavior) agreementItems.push('I confirm that my dog is not fearful, anxious, or reactive.');
+    } else if (serviceType === 'behavioural_modification') {
+        if (booking.agreement_behavioral_modification_understanding) agreementItems.push('I understand the behaviour change process and commit to the time and effort required for the Behavioural Modification program.');
+    }
+
+    if (agreementItems.length > 0) {
+        const items = agreementItems.map(a => `<li style="font-size: 13px; color: #475569; margin-bottom: 4px;">✓ ${a}</li>`).join('');
+        agreementsHtml = `
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <p style="font-size: 13px; font-weight: 600; color: #1e293b; margin: 0 0 8px 0;">Terms & Agreements Acknowledged</p>
+            <ul style="margin: 0; padding-left: 4px; list-style: none;">${items}</ul>
+        </div>`;
+    }
+
     // Pricing breakdown
     let pricingRows = '';
     if (booking.adoption_discount > 0) {
@@ -320,6 +345,8 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
                     </tr>
                 </table>
             </div>
+
+            ${agreementsHtml}
 
             <p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 16px 0 0 0;">Feel free to reach out if you have any questions.</p>
 
