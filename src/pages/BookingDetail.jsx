@@ -890,7 +890,7 @@ export default function BookingDetail() {
           <CardContent className="p-6 space-y-4">
             <div className="flex gap-2">
               <Select value={booking.booking_status} onValueChange={handleStatusChange} disabled={saving}>
-                <SelectTrigger>
+                <SelectTrigger className="text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -904,7 +904,7 @@ export default function BookingDetail() {
             {booking.confirmation_date && (
               <div className="pt-3 border-t border-slate-200">
                 <p className="text-base text-slate-600">Confirmed on</p>
-                <p className="font-medium text-slate-900">
+                <p className="font-medium text-slate-900 text-base">
                   {format(new Date(booking.confirmation_date), 'EEEE, MMM d, yyyy')} at {format(new Date(booking.confirmation_date), 'h:mm a')}
                 </p>
               </div>
@@ -914,7 +914,7 @@ export default function BookingDetail() {
                 <DollarSign className="w-5 h-5" />
                 <span className="font-semibold text-slate-900">Pricing</span>
               </div>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-base">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Base Price:</span>
                   <span className="font-medium">${booking.base_price?.toFixed(2)}</span>
@@ -946,7 +946,7 @@ export default function BookingDetail() {
                       </p>
                       <div className="space-y-1.5 pl-6">
                         {booking.product_selections.map((product, idx) => (
-                          <div key={idx} className="flex justify-between text-xs">
+                          <div key={idx} className="flex justify-between text-sm">
                             <span className="text-slate-600">{product.product_name} × {product.quantity}</span>
                             <span className="font-medium text-blue-600">${(product.discounted_price * product.quantity).toFixed(2)}</span>
                           </div>
@@ -987,12 +987,12 @@ export default function BookingDetail() {
               <div className="space-y-3">
                 {booking.session_dates && booking.session_dates.length > 0 ? (
                   booking.session_dates.map((session, idx) => (
-                    <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                    <div key={idx} className="p-4 bg-slate-50 rounded-lg">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <p className="font-medium text-base">Session {session.session_number || idx + 1}</p>
-                          <p className="text-sm text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
-                          <p className="text-sm text-blue-600 font-medium mt-1">{session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}</p>
+                          <p className="font-semibold text-lg">Session {session.session_number || idx + 1}</p>
+                          <p className="text-base text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
+                          <p className="text-base text-blue-600 font-medium mt-1">{session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}</p>
                         </div>
                         {session.was_rescheduled && (
                           <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
@@ -1009,15 +1009,15 @@ export default function BookingDetail() {
                     const sessionDate = new Date(startDate);
                     sessionDate.setDate(startDate.getDate() + i * 7);
                     return (
-                      <div key={i} className="p-3 bg-slate-50 rounded-lg">
-                        <p className="font-medium text-base">Session {i + 1}</p>
-                        <p className="text-sm text-slate-600 mt-1">{format(sessionDate, 'EEEE, MMM d, yyyy')}</p>
-                        <p className="text-sm text-blue-600 font-medium mt-1">{groupSchedule.start_time}{groupSchedule.end_time ? ` - ${groupSchedule.end_time}` : ''}</p>
+                      <div key={i} className="p-4 bg-slate-50 rounded-lg">
+                        <p className="font-semibold text-lg">Session {i + 1}</p>
+                        <p className="text-base text-slate-600 mt-1">{format(sessionDate, 'EEEE, MMM d, yyyy')}</p>
+                        <p className="text-base text-blue-600 font-medium mt-1">{groupSchedule.start_time}{groupSchedule.end_time ? ` - ${groupSchedule.end_time}` : ''}</p>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="text-sm text-slate-500">Schedule not yet configured.</p>
+                  <p className="text-base text-slate-500">Schedule not yet configured.</p>
                 )}
               </div>
             ) : (
@@ -1025,12 +1025,12 @@ export default function BookingDetail() {
                 {booking.session_dates?.map((session, idx) => {
                   const wasRescheduled = Boolean(session.was_rescheduled || session.wasRescheduled || session.rescheduled || session.auto_adjusted);
                   return (
-                    <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                    <div key={idx} className="p-4 bg-slate-50 rounded-lg">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-base">Session {session.session_number}</p>
-                          <p className="text-sm text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
-                          <p className="text-sm text-blue-600 font-medium mt-1">{session.start_time} - {session.end_time}</p>
+                          <p className="font-semibold text-lg">Session {session.session_number}</p>
+                          <p className="text-base text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
+                          <p className="text-base text-blue-600 font-medium mt-1">{session.start_time} - {session.end_time}</p>
                         </div>
                         {wasRescheduled && (
                           <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
@@ -1063,7 +1063,7 @@ export default function BookingDetail() {
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
                 placeholder="Add internal notes about this booking..."
-                className="h-32"
+                className="h-32 text-base"
               />
             </div>
             <Button onClick={handleSaveNotes} disabled={saving}>
@@ -1141,7 +1141,7 @@ export default function BookingDetail() {
                     {(editingClient ? clientEdits.clients : booking.clients)?.map((client, idx) => (
                       <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
                         <h4 className="font-semibold text-slate-900 mb-3">Pawrent {idx + 1}</h4>
-                        <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        <div className="grid md:grid-cols-2 gap-4 text-base">
                           {['client_name','client_email','client_mobile','client_address','client_postal_code'].map(field => {
                             const labels = { client_name:'Name', client_email:'Email', client_mobile:'Mobile', client_address:'Address', client_postal_code:'Postal Code' };
                             const val = client[field] || client[field.replace(/_([a-z])/g, (_, l) => l.toUpperCase())] || booking[field] || '';
@@ -1168,7 +1168,7 @@ export default function BookingDetail() {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div className="grid md:grid-cols-2 gap-4 text-base">
                     {[['client_name','clientName','Name'],['client_email','clientEmail','Email'],['client_mobile','clientMobile','Mobile'],['client_address','clientAddress','Address'],['client_postal_code','clientPostalCode','Postal Code']].map(([field, camelField, label]) => {
                       const firstClient = booking.clients?.[0];
                       const value = booking[field] || booking[camelField] || firstClient?.[field] || firstClient?.[camelField] || '';
@@ -1189,7 +1189,7 @@ export default function BookingDetail() {
                   </div>
                 )}
               </CardContent>
-            </Card>
+              </Card>
 
             {/* Furkid Information */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -1207,160 +1207,40 @@ export default function BookingDetail() {
                         <h4 className="font-semibold text-slate-900 mb-3">
                           {booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'kinder_puppy_in_home' ? 'Puppy' : 'Dog'} {idx + 1}
                         </h4>
-                        <div className="grid md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <p className="text-slate-600">Name</p>
-                            <p className="font-medium">{getFurkidField(furkid, 'furkidName')}</p>
-                          </div>
-                          {getFurkidField(furkid, 'furkidAge') !== 'N/A' && (
-                            <div>
-                              <p className="text-slate-600">Age</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'furkidAge')}</p>
-                            </div>
-                          )}
-                          {getFurkidField(furkid, 'furkidBreed') !== 'N/A' && (
-                            <div>
-                              <p className="text-slate-600">Breed</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'furkidBreed')}</p>
-                            </div>
-                          )}
-                          <div>
-                            <p className="text-slate-600">Gender</p>
-                            <p className="font-medium capitalize">{getFurkidField(furkid, 'furkidGender')}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-600">Sterilised</p>
-                            <p className="font-medium">
-                              {furkid.furkidSterilised || furkid.furkid_sterilised ? 'Yes' : 'No'}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-slate-600">Adopted</p>
-                            <p className="font-medium">
-                              {furkid.isAdopted || furkid.is_adopted ? 'Yes' : 'No'}
-                            </p>
-                          </div>
-                          {getFurkidField(furkid, 'furkidDiet') !== 'N/A' && (
-                            <div className="md:col-span-2">
-                              <p className="text-slate-600">Diet</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'furkidDiet')}</p>
-                            </div>
-                          )}
-                          {getFurkidField(furkid, 'furkidSleepArea') !== 'N/A' && (
-                            <div className="md:col-span-2">
-                              <p className="text-slate-600">Sleep Area</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'furkidSleepArea')}</p>
-                            </div>
-                          )}
-                          {getFurkidField(furkid, 'furkidJoinedFamily') !== 'N/A' && (
-                            <div>
-                              <p className="text-slate-600">Joined Family</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'furkidJoinedFamily')}</p>
-                            </div>
-                          )}
-                          <div>
-                            <p className="text-slate-600">First Time Owner</p>
-                            <p className="font-medium">{(furkid.firstTimeOwner || furkid.first_time_owner) ? 'Yes' : 'No'}</p>
-                          </div>
-                          {getFurkidField(furkid, 'walkingFrequency') !== 'N/A' && (
-                            <div>
-                              <p className="text-slate-600">Walk Frequency</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'walkingFrequency')}</p>
-                            </div>
-                          )}
-                          {getFurkidField(furkid, 'furkidInstagram') !== 'N/A' && (
-                            <div>
-                              <p className="text-slate-600">Instagram</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'furkidInstagram')}</p>
-                            </div>
-                          )}
-                          {getFurkidField(furkid, 'enrolmentReason') !== 'N/A' && (
-                            <div className="md:col-span-2">
-                              <p className="text-slate-600">Reason for Enrolment</p>
-                              <p className="font-medium">{getFurkidField(furkid, 'enrolmentReason')}</p>
-                            </div>
-                          )}
+                        <div className="grid md:grid-cols-2 gap-4 text-base">
+                          <div><p className="text-slate-600">Name</p><p className="font-medium">{getFurkidField(furkid, 'furkidName')}</p></div>
+                          {getFurkidField(furkid, 'furkidAge') !== 'N/A' && <div><p className="text-slate-600">Age</p><p className="font-medium">{getFurkidField(furkid, 'furkidAge')}</p></div>}
+                          {getFurkidField(furkid, 'furkidBreed') !== 'N/A' && <div><p className="text-slate-600">Breed</p><p className="font-medium">{getFurkidField(furkid, 'furkidBreed')}</p></div>}
+                          <div><p className="text-slate-600">Gender</p><p className="font-medium capitalize">{getFurkidField(furkid, 'furkidGender')}</p></div>
+                          <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{furkid.furkidSterilised || furkid.furkid_sterilised ? 'Yes' : 'No'}</p></div>
+                          <div><p className="text-slate-600">Adopted</p><p className="font-medium">{furkid.isAdopted || furkid.is_adopted ? 'Yes' : 'No'}</p></div>
+                          {getFurkidField(furkid, 'furkidDiet') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{getFurkidField(furkid, 'furkidDiet')}</p></div>}
+                          {getFurkidField(furkid, 'furkidSleepArea') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Sleep Area</p><p className="font-medium">{getFurkidField(furkid, 'furkidSleepArea')}</p></div>}
                         </div>
-
                         {(furkid.furkidPhotoUrl || furkid.furkid_photo_url) && (
                           <div className="mt-4">
                             <p className="text-slate-600 text-sm mb-2">Photo</p>
-                            <img 
-                              src={furkid.furkidPhotoUrl || furkid.furkid_photo_url} 
-                              alt={getFurkidField(furkid, 'furkidName')} 
-                              className="rounded-lg w-32 h-32 object-cover" 
-                            />
+                            <img src={furkid.furkidPhotoUrl || furkid.furkid_photo_url} alt={getFurkidField(furkid, 'furkidName')} className="rounded-lg w-32 h-32 object-cover" />
                           </div>
                         )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-slate-600">Name</p>
-                      <p className="font-medium">{booking.furkid_name || 'N/A'}</p>
-                    </div>
-                    {booking.furkid_age && (
-                      <div>
-                        <p className="text-slate-600">Age</p>
-                        <p className="font-medium">{booking.furkid_age}</p>
-                      </div>
-                    )}
-                    {booking.furkid_breed && (
-                      <div>
-                        <p className="text-slate-600">Breed</p>
-                        <p className="font-medium">{booking.furkid_breed}</p>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-slate-600">Gender</p>
-                      <p className="font-medium capitalize">{booking.furkid_gender || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-600">Sterilised</p>
-                      <p className="font-medium">{booking.furkid_sterilised ? 'Yes' : 'No'}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-600">Adopted</p>
-                      <p className="font-medium">{booking.is_adopted ? 'Yes' : 'No'}</p>
-                    </div>
-                    {booking.furkid_joined_family && (
-                      <div>
-                        <p className="text-slate-600">Joined Family</p>
-                        <p className="font-medium">{booking.furkid_joined_family}</p>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-slate-600">First Time Owner</p>
-                      <p className="font-medium">{booking.first_time_owner ? 'Yes' : 'No'}</p>
-                    </div>
-                    {booking.furkid_diet && (
-                      <div className="md:col-span-2">
-                        <p className="text-slate-600">Diet</p>
-                        <p className="font-medium">{booking.furkid_diet}</p>
-                      </div>
-                    )}
-                    {booking.furkid_sleep_area && (
-                      <div>
-                        <p className="text-slate-600">Sleeps At Night</p>
-                        <p className="font-medium">{booking.furkid_sleep_area}</p>
-                      </div>
-                    )}
-                    {booking.walking_frequency && (
-                      <div>
-                        <p className="text-slate-600">Walk Frequency</p>
-                        <p className="font-medium">{booking.walking_frequency}</p>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-slate-600">Instagram</p>
-                      <p className="font-medium">{booking.furkid_instagram || 'N/A'}</p>
-                    </div>
-                    <div className="md:col-span-2">
-                      <p className="text-slate-600">Reason for Enrolment</p>
-                      <p className="font-medium">{booking.enrolment_reason || 'N/A'}</p>
-                    </div>
+                  <div className="grid md:grid-cols-2 gap-4 text-base">
+                    <div><p className="text-slate-600">Name</p><p className="font-medium">{booking.furkid_name || 'N/A'}</p></div>
+                    {booking.furkid_age && <div><p className="text-slate-600">Age</p><p className="font-medium">{booking.furkid_age}</p></div>}
+                    {booking.furkid_breed && <div><p className="text-slate-600">Breed</p><p className="font-medium">{booking.furkid_breed}</p></div>}
+                    <div><p className="text-slate-600">Gender</p><p className="font-medium capitalize">{booking.furkid_gender || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{booking.furkid_sterilised ? 'Yes' : 'No'}</p></div>
+                    <div><p className="text-slate-600">Adopted</p><p className="font-medium">{booking.is_adopted ? 'Yes' : 'No'}</p></div>
+                    {booking.furkid_joined_family && <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family}</p></div>}
+                    <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{booking.first_time_owner ? 'Yes' : 'No'}</p></div>
+                    {booking.furkid_diet && <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{booking.furkid_diet}</p></div>}
+                    {booking.furkid_sleep_area && <div><p className="text-slate-600">Sleeps At Night</p><p className="font-medium">{booking.furkid_sleep_area}</p></div>}
+                    {booking.walking_frequency && <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency}</p></div>}
+                    <div><p className="text-slate-600">Instagram</p><p className="font-medium">{booking.furkid_instagram || 'N/A'}</p></div>
+                    <div className="md:col-span-2"><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{booking.enrolment_reason || 'N/A'}</p></div>
                     {booking.furkid_photo_url && (
                       <div className="md:col-span-2">
                         <p className="text-slate-600 text-sm mb-2">Photo</p>
@@ -1372,7 +1252,7 @@ export default function BookingDetail() {
               </CardContent>
             </Card>
 
-            {/* Items Given to Client */}
+              {/* Items Given to Client */}
             {(hasKinderPuppyItems || hasBasicMannersItems || hasBasicMannersFYOGItems) && (
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-slate-100">
