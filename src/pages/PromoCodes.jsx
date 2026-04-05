@@ -14,10 +14,8 @@ import {
 import { Label } from '@/components/ui/label';
 
 const PROGRAMS = [
-  { value: 'kinder_puppy_in_home', label: 'Kinder Puppy (In-Home)' },
-  { value: 'kinder_puppy_fyog', label: 'Kinder Puppy (FYOG)' },
-  { value: 'basic_manners_in_home', label: 'Basic Manners (In-Home)' },
-  { value: 'basic_manners_fyog', label: 'Basic Manners (FYOG)' },
+  { value: 'kinder_puppy_in_home', label: 'Kinder Puppy' },
+  { value: 'basic_manners_fyog', label: 'Basic Manners' },
   { value: 'basic_manners_group_class', label: 'Basic Manners (Group Class)' },
   { value: 'canine_assessment', label: 'Canine Assessment' },
   { value: 'behavioural_modification', label: 'Behavioural Modification' },

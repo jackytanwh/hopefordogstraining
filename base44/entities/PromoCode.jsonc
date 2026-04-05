@@ -43,8 +43,6 @@
         "type": "string",
         "enum": [
           "kinder_puppy_in_home",
-          "basic_manners_in_home",
-          "kinder_puppy_fyog",
           "basic_manners_fyog",
           "basic_manners_group_class",
           "canine_assessment",
