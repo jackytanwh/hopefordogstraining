@@ -1144,7 +1144,7 @@ export default function BookingDetail() {
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           {['client_name','client_email','client_mobile','client_address','client_postal_code'].map(field => {
                             const labels = { client_name:'Name', client_email:'Email', client_mobile:'Mobile', client_address:'Address', client_postal_code:'Postal Code' };
-                            const val = client[field] || client[field.replace(/_([a-z])/g, (_, l) => l.toUpperCase())] || '';
+                            const val = client[field] || client[field.replace(/_([a-z])/g, (_, l) => l.toUpperCase())] || booking[field] || '';
                             return (
                               <div key={field}>
                                 <p className="text-slate-600 mb-1">{labels[field]}</p>
