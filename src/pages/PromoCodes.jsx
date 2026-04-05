@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 
 const PROGRAMS = [
   { value: 'kinder_puppy_in_home', label: 'Kinder Puppy' },
+  { value: 'adore_hdb_approval', label: 'ADORE/HDB Approval Program' },
   { value: 'basic_manners_fyog', label: 'Basic Manners' },
   { value: 'basic_manners_group_class', label: 'Basic Manners (Group Class)' },
   { value: 'canine_assessment', label: 'Canine Assessment' },
