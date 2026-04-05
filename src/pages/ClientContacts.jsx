@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format, parseISO } from "date-fns";
-import { Users } from "lucide-react";
+import { Users, Trash2 } from "lucide-react";
 
 export default function ClientContacts() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState(null);
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    await base44.entities.LeadInquiry.delete(deleteId);
+    setLeads(prev => prev.filter(l => l.id !== deleteId));
+    setDeleteId(null);
+  };
 
   useEffect(() => {
     base44.entities.LeadInquiry.list('-created_date').then(data => {
@@ -44,7 +54,8 @@ export default function ClientContacts() {
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Dog / Puppy DOB</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Dog Age</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Submitted</th>
-                </tr>
+                  <th className="px-6 py-3"></th>
+                  </tr>
               </thead>
               <tbody>
                 {leads.map(lead => (
@@ -59,6 +70,11 @@ export default function ClientContacts() {
                     <td className="px-6 py-4 text-slate-500">
                       {lead.created_date ? format(new Date(lead.created_date), 'dd MMM yyyy') : '—'}
                     </td>
+                    <td className="px-6 py-4">
+                      <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDeleteId(lead.id)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -66,6 +82,19 @@ export default function ClientContacts() {
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Contact</AlertDialogTitle>
+            <AlertDialogDescription>Are you sure you want to delete this contact? This action cannot be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
