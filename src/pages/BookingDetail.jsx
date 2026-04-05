@@ -1169,19 +1169,23 @@ export default function BookingDetail() {
                   </div>
                 ) : (
                   <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    {[['client_name','clientName','Name'],['client_email','clientEmail','Email'],['client_mobile','clientMobile','Mobile'],['client_address','clientAddress','Address'],['client_postal_code','clientPostalCode','Postal Code']].map(([field, camelField, label]) => (
-                      <div key={field}>
-                        <p className="text-slate-600 mb-1">{label}</p>
-                        {editingClient ? (
-                          <Input
-                            value={clientEdits[field] ?? ''}
-                            onChange={e => setClientEdits(prev => ({ ...prev, [field]: e.target.value }))}
-                          />
-                        ) : (
-                          <p className="font-medium">{booking[field] || booking[camelField] || 'N/A'}</p>
-                        )}
-                      </div>
-                    ))}
+                    {[['client_name','clientName','Name'],['client_email','clientEmail','Email'],['client_mobile','clientMobile','Mobile'],['client_address','clientAddress','Address'],['client_postal_code','clientPostalCode','Postal Code']].map(([field, camelField, label]) => {
+                      const firstClient = booking.clients?.[0];
+                      const value = booking[field] || booking[camelField] || firstClient?.[field] || firstClient?.[camelField] || '';
+                      return (
+                        <div key={field}>
+                          <p className="text-slate-600 mb-1">{label}</p>
+                          {editingClient ? (
+                            <Input
+                              value={clientEdits[field] ?? ''}
+                              onChange={e => setClientEdits(prev => ({ ...prev, [field]: e.target.value }))}
+                            />
+                          ) : (
+                            <p className="font-medium">{value || 'N/A'}</p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
