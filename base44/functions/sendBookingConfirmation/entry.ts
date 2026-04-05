@@ -69,6 +69,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
             promoBlock: pawsBotanicPromo,
             addressLabel: 'Address',
             discountCode: '',
+            pawgressCode: true,
         };
     }
 
@@ -217,6 +218,17 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         </div>`;
     }
 
+    // PAWGRESS10 discount code block (Kinder Puppy only)
+    let pawgressHtml = '';
+    if (config.pawgressCode) {
+        pawgressHtml = `
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <p style="font-size: 14px; color: #166534; margin: 0 0 6px 0;">🎓 Ready to take the next step? When <strong>${furkidName}</strong> completes the Kinder Puppy Program, continue the journey with our <strong>Basic Manners Program</strong>!</p>
+            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">Use the exclusive discount code below — valid for <strong>6 months</strong> from today:</p>
+            <p style="font-size: 18px; font-weight: 700; color: #15803d; margin: 8px 0 0 0; letter-spacing: 2px;">PAWGRESS10</p>
+        </div>`;
+    }
+
     // PDF attachment link
     let pdfHtml = '';
     if (config.pdfLink) {
@@ -290,6 +302,8 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
             ${instructionsHtml}
 
             ${promoHtml}
+
+            ${pawgressHtml}
 
             ${pdfHtml}
 
@@ -371,8 +385,9 @@ Deno.serve(async (req) => {
             }
 
             const promoWa = config.promoBlock ? '\n\nShop for Paws Botanic Pet Grooming Essentials (Promo Code: 20OFFNEW)\nhttps://www.pawsbotanic.co/' : '';
+        const pawgressWa = config.pawgressCode ? `\n\n🎓 When ${furkidName} completes the Kinder Puppy Program, continue with our Basic Manners Program! Use code *PAWGRESS10* (valid 6 months) for an exclusive discount.` : '';
 
-            const message = `Hello ${clientName} and ${furkidName},\n\n${config.greeting} You have enrolled for *${booking.service_name}*${firstDate ? ` starting ${firstDate}, ${firstTime}, ${firstDay}` : ''}.${address ? `\n${config.addressLabel}: ${address}` : ''}${scheduleWa}${instructionsWa}${promoWa}\n\nFeel free to reach out if you have any questions.\n\nKind regards,\nJacky\nHopefordogs`;
+            const message = `Hello ${clientName} and ${furkidName},\n\n${config.greeting} You have enrolled for *${booking.service_name}*${firstDate ? ` starting ${firstDate}, ${firstTime}, ${firstDay}` : ''}.${address ? `\n${config.addressLabel}: ${address}` : ''}${scheduleWa}${instructionsWa}${promoWa}${pawgressWa}\n\nFeel free to reach out if you have any questions.\n\nKind regards,\nJacky\nHopefordogs`;
 
             try {
                 const conversation = await base44.asServiceRole.agents.createConversation({
