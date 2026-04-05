@@ -13,7 +13,20 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 
-const emptyForm = { code: '', discount_type: 'percentage', discount_value: '', description: '', active: true, max_uses: '' };
+const PROGRAMS = [
+  { value: 'kinder_puppy_in_home', label: 'Kinder Puppy (In-Home)' },
+  { value: 'kinder_puppy_fyog', label: 'Kinder Puppy (FYOG)' },
+  { value: 'basic_manners_in_home', label: 'Basic Manners (In-Home)' },
+  { value: 'basic_manners_fyog', label: 'Basic Manners (FYOG)' },
+  { value: 'basic_manners_group_class', label: 'Basic Manners (Group Class)' },
+  { value: 'canine_assessment', label: 'Canine Assessment' },
+  { value: 'behavioural_modification', label: 'Behavioural Modification' },
+  { value: 'on_demand_1_session', label: 'On-Demand (1 Session)' },
+  { value: 'on_demand_2_sessions', label: 'On-Demand (2 Sessions)' },
+  { value: 'on_demand_3_sessions', label: 'On-Demand (3 Sessions)' },
+];
+
+const emptyForm = { code: '', discount_type: 'percentage', discount_value: '', description: '', active: true, max_uses: '', applicable_programs: [] };
 
 export default function PromoCodes() {
   const [promoCodes, setPromoCodes] = useState([]);
@@ -34,7 +47,7 @@ export default function PromoCodes() {
 
   const openCreate = () => { setForm(emptyForm); setEditId(null); setDialogOpen(true); };
   const openEdit = (p) => {
-    setForm({ code: p.code, discount_type: p.discount_type, discount_value: p.discount_value, description: p.description || '', active: p.active ?? true, max_uses: p.max_uses || '' });
+    setForm({ code: p.code, discount_type: p.discount_type, discount_value: p.discount_value, description: p.description || '', active: p.active ?? true, max_uses: p.max_uses || '', applicable_programs: p.applicable_programs || [] });
     setEditId(p.id);
     setDialogOpen(true);
   };
@@ -47,6 +60,7 @@ export default function PromoCodes() {
       discount_value: parseFloat(form.discount_value),
       description: form.description,
       active: form.active,
+      applicable_programs: form.applicable_programs,
       ...(form.max_uses ? { max_uses: parseInt(form.max_uses) } : {}),
     };
     if (editId) {
@@ -112,6 +126,13 @@ export default function PromoCodes() {
                       </Badge>
                     </div>
                     {p.description && <p className="text-sm text-slate-500 mt-0.5">{p.description}</p>}
+                    {p.applicable_programs && p.applicable_programs.length > 0 ? (
+                      <p className="text-xs text-blue-600 mt-0.5">
+                        Valid for: {p.applicable_programs.map(v => PROGRAMS.find(pr => pr.value === v)?.label || v).join(', ')}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-slate-400 mt-0.5">Valid for all programs</p>
+                    )}
                     <p className="text-xs text-slate-400 mt-0.5">
                       Used {p.usage_count || 0} time{(p.usage_count || 0) !== 1 ? 's' : ''}
                       {p.max_uses ? ` / ${p.max_uses} max` : ' (unlimited)'}
@@ -158,6 +179,29 @@ export default function PromoCodes() {
             <div>
               <Label>Max Uses (leave empty for unlimited)</Label>
               <input type="number" min="1" className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mt-1" value={form.max_uses} onChange={e => setForm(f => ({ ...f, max_uses: e.target.value }))} placeholder="Unlimited" />
+            </div>
+            <div>
+              <Label>Applicable Programs</Label>
+              <p className="text-xs text-slate-500 mb-2">Leave all unchecked to allow for all programs</p>
+              <div className="grid grid-cols-2 gap-1.5 border border-slate-200 rounded-md p-3">
+                {PROGRAMS.map(prog => (
+                  <label key={prog.value} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4"
+                      checked={form.applicable_programs.includes(prog.value)}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setForm(f => ({ ...f, applicable_programs: [...f.applicable_programs, prog.value] }));
+                        } else {
+                          setForm(f => ({ ...f, applicable_programs: f.applicable_programs.filter(v => v !== prog.value) }));
+                        }
+                      }}
+                    />
+                    <span className="text-sm text-slate-700">{prog.label}</span>
+                  </label>
+                ))}
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" id="active" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} className="w-4 h-4" />

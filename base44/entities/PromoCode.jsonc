@@ -35,6 +35,25 @@
     "max_uses": {
       "type": "integer",
       "description": "Maximum number of uses (leave empty for unlimited)"
+    },
+    "applicable_programs": {
+      "type": "array",
+      "description": "Programs this promo code is valid for (empty = all programs)",
+      "items": {
+        "type": "string",
+        "enum": [
+          "kinder_puppy_in_home",
+          "basic_manners_in_home",
+          "kinder_puppy_fyog",
+          "basic_manners_fyog",
+          "basic_manners_group_class",
+          "canine_assessment",
+          "behavioural_modification",
+          "on_demand_1_session",
+          "on_demand_2_sessions",
+          "on_demand_3_sessions"
+        ]
+      }
     }
   },
   "required": [
@@ -44,6 +63,11 @@
   ],
   "rls": {
     "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
       "user_condition": {
         "role": "admin"
       }
@@ -62,7 +86,6 @@
       "user_condition": {
         "role": "admin"
       }
-    },
-    "read": {}
+    }
   }
 }
