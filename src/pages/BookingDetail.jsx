@@ -1169,7 +1169,7 @@ export default function BookingDetail() {
                   </div>
                 ) : (
                   <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    {[['client_name','Name'],['client_email','Email'],['client_mobile','Mobile'],['client_address','Address'],['client_postal_code','Postal Code']].map(([field, label]) => (
+                    {[['client_name','clientName','Name'],['client_email','clientEmail','Email'],['client_mobile','clientMobile','Mobile'],['client_address','clientAddress','Address'],['client_postal_code','clientPostalCode','Postal Code']].map(([field, camelField, label]) => (
                       <div key={field}>
                         <p className="text-slate-600 mb-1">{label}</p>
                         {editingClient ? (
@@ -1178,7 +1178,7 @@ export default function BookingDetail() {
                             onChange={e => setClientEdits(prev => ({ ...prev, [field]: e.target.value }))}
                           />
                         ) : (
-                          <p className="font-medium">{booking[field] || 'N/A'}</p>
+                          <p className="font-medium">{booking[field] || booking[camelField] || 'N/A'}</p>
                         )}
                       </div>
                     ))}
