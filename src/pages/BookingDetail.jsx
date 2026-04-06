@@ -1229,16 +1229,16 @@ export default function BookingDetail() {
                 ) : (
                   <div className="grid md:grid-cols-2 gap-4 text-base">
                     <div><p className="text-slate-600">Name</p><p className="font-medium">{booking.furkid_name || 'N/A'}</p></div>
-                    {booking.furkid_age && <div><p className="text-slate-600">Age</p><p className="font-medium">{booking.furkid_age}</p></div>}
-                    {booking.furkid_breed && <div><p className="text-slate-600">Breed</p><p className="font-medium">{booking.furkid_breed}</p></div>}
+                    <div><p className="text-slate-600">Age</p><p className="font-medium">{booking.furkid_age || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Breed</p><p className="font-medium">{booking.furkid_breed || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Gender</p><p className="font-medium capitalize">{booking.furkid_gender || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{booking.furkid_sterilised ? 'Yes' : 'No'}</p></div>
-                    <div><p className="text-slate-600">Adopted</p><p className="font-medium">{booking.is_adopted ? 'Yes' : 'No'}</p></div>
-                    {booking.furkid_joined_family && <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family}</p></div>}
-                    <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{booking.first_time_owner ? 'Yes' : 'No'}</p></div>
-                    {booking.furkid_diet && <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{booking.furkid_diet}</p></div>}
-                    {booking.furkid_sleep_area && <div><p className="text-slate-600">Sleeps At Night</p><p className="font-medium">{booking.furkid_sleep_area}</p></div>}
-                    {booking.walking_frequency && <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency}</p></div>}
+                    <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{booking.furkid_sterilised === true ? 'Yes' : booking.furkid_sterilised === false ? 'No' : 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Adopted</p><p className="font-medium">{booking.is_adopted === true ? 'Yes' : booking.is_adopted === false ? 'No' : 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{booking.first_time_owner === true ? 'Yes' : booking.first_time_owner === false ? 'No' : 'N/A'}</p></div>
+                    <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{booking.furkid_diet || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Sleeps At Night</p><p className="font-medium">{booking.furkid_sleep_area || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Instagram</p><p className="font-medium">{booking.furkid_instagram || 'N/A'}</p></div>
                     <div className="md:col-span-2"><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{booking.enrolment_reason || 'N/A'}</p></div>
                     {booking.furkid_photo_url && (
