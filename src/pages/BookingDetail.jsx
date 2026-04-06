@@ -1008,9 +1008,6 @@ export default function BookingDetail() {
                           </Badge>
                         )}
                         {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
-                        <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel' : 'Cancel session'}>
-                          <Ban className="w-3.5 h-3.5" />
-                        </Button>
                         <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
@@ -1572,9 +1569,6 @@ export default function BookingDetail() {
                               </Badge>
                             )}
                             {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
-                            <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel' : 'Cancel session'}>
-                              <Ban className="w-3.5 h-3.5" />
-                            </Button>
                             <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
