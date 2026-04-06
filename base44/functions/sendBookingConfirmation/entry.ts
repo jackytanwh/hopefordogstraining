@@ -363,7 +363,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
             <p style="margin: 0; font-size: 13px; color: #94a3b8;">Educate | Advocate | Empower</p>
             <p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;">
                 <a href="https://bookings.hopefordogs.sg" style="color: #2563eb; text-decoration: none;">bookings.hopefordogs.sg</a>
-                &nbsp;&middot;&nbsp; +65 8222 8376
+                &nbsp;&middot;&nbsp; WhatsApp: +65 8222 8376
             </p>
         </div>
     </div>`;
