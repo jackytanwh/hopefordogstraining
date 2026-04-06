@@ -978,80 +978,51 @@ export default function BookingDetail() {
             </div>
           </CardHeader>
           <CardContent className="p-6">
-            {booking.service_type === 'basic_manners_group_class' ? (
-              <div className="space-y-3">
-                {booking.session_dates && booking.session_dates.length > 0 ? (
-                  booking.session_dates.map((session, idx) => (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-lg">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="font-semibold text-lg">Session {session.session_number || idx + 1}</p>
-                          <p className="text-base text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
-                          <p className="text-base text-blue-600 font-medium mt-1">{session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}</p>
-                        </div>
-                        {session.was_rescheduled && (
-                          <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
+            <div className="space-y-3">
+              {booking.session_dates?.map((session, idx) => {
+                const isGroupClass = booking.service_type === 'basic_manners_group_class';
+                const wasRescheduled = Boolean(
+                  session.was_rescheduled ||
+                  session.wasRescheduled ||
+                  session.rescheduled ||
+                  session.auto_adjusted
+                );
+                const isCancelled = Boolean(session.session_cancelled);
+                return (
+                  <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className={`font-medium text-sm ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
+                        <p className={`text-sm mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
+                          {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
+                        </p>
+                        <p className={`text-sm font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
+                          {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        {wasRescheduled && !isCancelled && (
+                          <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
                             <RefreshCw className="w-3 h-3" />
-                            Rescheduled
+                            {isGroupClass ? 'Rescheduled' : 'Auto-adjusted'}
                           </Badge>
                         )}
+                        {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
+                        <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel' : 'Cancel session'}>
+                          <Ban className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
                       </div>
                     </div>
-                  ))
-                ) : groupSchedule?.start_date ? (
-                  Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
-                    const startDate = new Date(groupSchedule.start_date);
-                    const sessionDate = new Date(startDate);
-                    sessionDate.setDate(startDate.getDate() + i * 7);
-                    return (
-                      <div key={i} className="p-4 bg-slate-50 rounded-lg">
-                        <p className="font-semibold text-lg">Session {i + 1}</p>
-                        <p className="text-base text-slate-600 mt-1">{format(sessionDate, 'EEEE, MMM d, yyyy')}</p>
-                        <p className="text-base text-blue-600 font-medium mt-1">{groupSchedule.start_time}{groupSchedule.end_time ? ` - ${groupSchedule.end_time}` : ''}</p>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-base text-slate-500">Schedule not yet configured.</p>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {booking.session_dates?.map((session, idx) => {
-                  const wasRescheduled = Boolean(session.was_rescheduled || session.wasRescheduled || session.rescheduled || session.auto_adjusted);
-                  const isCancelled = Boolean(session.session_cancelled);
-                  return (
-                    <div key={idx} className={`p-4 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <p className={`font-semibold text-lg ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number}</p>
-                          <p className={`text-base mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
-                          <p className={`text-base font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>{session.start_time} - {session.end_time}</p>
-                        </div>
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          {wasRescheduled && !isCancelled && (
-                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
-                              <RefreshCw className="w-3 h-3" />
-                              Auto-adjusted
-                            </Badge>
-                          )}
-                          {isCancelled && (
-                            <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>
-                          )}
-                          <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel session' : 'Cancel session'}>
-                            <Ban className="w-4 h-4" />
-                          </Button>
-                          <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                      {session.completed && !isCancelled && <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                    {session.completed && !isCancelled && (
+                      <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
 
@@ -1571,72 +1542,33 @@ export default function BookingDetail() {
                 </div>
               </CardHeader>
               <CardContent className="p-6">
-                {booking.service_type === 'basic_manners_group_class' ? (
-                  <div className="space-y-3">
-                    {booking.session_dates && booking.session_dates.length > 0 ? (
-                      // Use booking's own rescheduled session dates
-                      booking.session_dates.map((session, idx) => {
-                        const isCancelled = Boolean(session.session_cancelled);
-                        return (
-                        <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <p className={`font-medium text-sm ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
-                              <p className={`text-sm mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
-                                {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
-                              </p>
-                              <p className={`text-sm font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
-                                {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-1 flex-shrink-0">
-                              {session.was_rescheduled && !isCancelled && (
-                                <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
-                                  <RefreshCw className="w-3 h-3" />
-                                  Rescheduled
-                                </Badge>
-                              )}
-                              {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
-                              <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel' : 'Cancel session'}>
-                                <Ban className="w-3.5 h-3.5" />
-                              </Button>
-                              <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
-                                <Trash2 className="w-3.5 h-3.5" />
-                                </Button>
-                                </div>
-                                </div>
-                                </div>
-                                );
-                                })}
-                                </div>
-                                ) : (
-                                <div className="space-y-3">
+                <div className="space-y-3">
                   {booking.session_dates?.map((session, idx) => {
+                    const isGroupClass = booking.service_type === 'basic_manners_group_class';
                     const wasRescheduled = Boolean(
-                      session.was_rescheduled || 
-                      session.wasRescheduled || 
+                      session.was_rescheduled ||
+                      session.wasRescheduled ||
                       session.rescheduled ||
                       session.auto_adjusted
                     );
                     const isCancelled = Boolean(session.session_cancelled);
-                    
                     return (
                       <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            <p className={`font-medium text-base md:text-sm ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number}</p>
+                            <p className={`font-medium text-sm ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
                             <p className={`text-sm mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
                               {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
                             </p>
                             <p className={`text-sm font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
-                              {session.start_time} - {session.end_time}
+                              {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
                             </p>
                           </div>
                           <div className="flex items-center gap-1 flex-shrink-0">
                             {wasRescheduled && !isCancelled && (
                               <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
                                 <RefreshCw className="w-3 h-3" />
-                                Auto-adjusted
+                                {isGroupClass ? 'Rescheduled' : 'Auto-adjusted'}
                               </Badge>
                             )}
                             {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
@@ -1655,7 +1587,6 @@ export default function BookingDetail() {
                     );
                   })}
                 </div>
-                )}
               </CardContent>
             </Card>
 
