@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import BehaviouralModificationDetails from "../components/booking/BehaviouralModificationDetails";
 import CanineAssessmentDetails from "../components/booking/CanineAssessmentDetails";
@@ -360,26 +360,21 @@ export default function BookingDetail() {
     }
   };
 
-  // Helper function to safely get client field value, checking common variations
-  const getClientField = (client, field) => {
-    if (!client) return 'N/A';
-    
-    const hasValue = (v) => v !== undefined && v !== null && v !== '';
-
-    // Try direct access with original field name
-    if (hasValue(client[field])) return client[field];
-    
-    // Try without 'client' prefix (e.g., 'clientName' -> 'name')
-    const fieldWithoutPrefix = field.startsWith('client') ? 
-      field.substring(6).charAt(0).toLowerCase() + field.substring(7) : field;
-    if (hasValue(client[fieldWithoutPrefix])) return client[fieldWithoutPrefix];
-    
-    // Try with underscore format (e.g., 'clientName' -> 'client_name')
-    const underscoreField = field.replace(/([A-Z])/g, '_$1').toLowerCase();
-    if (hasValue(client[underscoreField])) return client[underscoreField];
-    
-    return 'N/A';
+  const handleDeleteSession = async (idx) => {
+    const updated = (booking.session_dates || []).filter((_, i) => i !== idx);
+    await base44.entities.Booking.update(bookingId, { session_dates: updated });
+    await loadBooking();
   };
+
+  const handleToggleCancelSession = async (idx) => {
+    const updated = (booking.session_dates || []).map((s, i) =>
+      i === idx ? { ...s, session_cancelled: !s.session_cancelled } : s
+    );
+    await base44.entities.Booking.update(bookingId, { session_dates: updated });
+    await loadBooking();
+  };
+
+  // Helper function to safely get client field value
 
   // Helper function to safely get furkid field value, checking common variations
   const getFurkidField = (furkid, field) => {
@@ -1024,22 +1019,34 @@ export default function BookingDetail() {
               <div className="space-y-3">
                 {booking.session_dates?.map((session, idx) => {
                   const wasRescheduled = Boolean(session.was_rescheduled || session.wasRescheduled || session.rescheduled || session.auto_adjusted);
+                  const isCancelled = Boolean(session.session_cancelled);
                   return (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-lg">
+                    <div key={idx} className={`p-4 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-lg">Session {session.session_number}</p>
-                          <p className="text-base text-slate-600 mt-1">{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
-                          <p className="text-base text-blue-600 font-medium mt-1">{session.start_time} - {session.end_time}</p>
+                          <p className={`font-semibold text-lg ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number}</p>
+                          <p className={`text-base mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>{format(parseISO(session.date), 'EEEE, MMM d, yyyy')}</p>
+                          <p className={`text-base font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>{session.start_time} - {session.end_time}</p>
                         </div>
-                        {wasRescheduled && (
-                          <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
-                            <RefreshCw className="w-3 h-3" />
-                            Auto-adjusted
-                          </Badge>
-                        )}
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          {wasRescheduled && !isCancelled && (
+                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
+                              <RefreshCw className="w-3 h-3" />
+                              Auto-adjusted
+                            </Badge>
+                          )}
+                          {isCancelled && (
+                            <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>
+                          )}
+                          <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel session' : 'Cancel session'}>
+                            <Ban className="w-4 h-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
-                      {session.completed && <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>}
+                      {session.completed && !isCancelled && <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>}
                     </div>
                   );
                 })}
@@ -1568,51 +1575,42 @@ export default function BookingDetail() {
                   <div className="space-y-3">
                     {booking.session_dates && booking.session_dates.length > 0 ? (
                       // Use booking's own rescheduled session dates
-                      booking.session_dates.map((session, idx) => (
-                        <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                      booking.session_dates.map((session, idx) => {
+                        const isCancelled = Boolean(session.session_cancelled);
+                        return (
+                        <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
                           <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <p className="font-medium text-sm">Session {session.session_number || idx + 1}</p>
-                              <p className="text-sm text-slate-600 mt-1">
+                            <div className="flex-1 min-w-0">
+                              <p className={`font-medium text-sm ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
+                              <p className={`text-sm mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
                                 {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
                               </p>
-                              <p className="text-sm text-blue-600 font-medium mt-1">
+                              <p className={`text-sm font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
                                 {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
                               </p>
                             </div>
-                            {session.was_rescheduled && (
-                              <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
-                                <RefreshCw className="w-3 h-3" />
-                                Rescheduled
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      ))
-                    ) : groupSchedule?.start_date ? (
-                      // Fall back to global schedule for bookings not yet individually rescheduled
-                      Array.from({ length: groupSchedule.weeks || 7 }, (_, i) => {
-                        const startDate = new Date(groupSchedule.start_date);
-                        const sessionDate = new Date(startDate);
-                        sessionDate.setDate(startDate.getDate() + i * 7);
-                        return (
-                          <div key={i} className="p-3 bg-slate-50 rounded-lg">
-                            <p className="font-medium text-sm">Session {i + 1}</p>
-                            <p className="text-sm text-slate-600 mt-1">
-                              {format(sessionDate, 'EEEE, MMM d, yyyy')}
-                            </p>
-                            <p className="text-sm text-blue-600 font-medium mt-1">
-                              {groupSchedule.start_time}{groupSchedule.end_time ? ` - ${groupSchedule.end_time}` : ''}
-                            </p>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <p className="text-sm text-slate-500">Schedule not yet configured. Please set it up in Group Class Schedule settings.</p>
-                    )}
-                  </div>
-                ) : (
-                <div className="space-y-3">
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              {session.was_rescheduled && !isCancelled && (
+                                <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
+                                  <RefreshCw className="w-3 h-3" />
+                                  Rescheduled
+                                </Badge>
+                              )}
+                              {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
+                              <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel' : 'Cancel session'}>
+                                <Ban className="w-3.5 h-3.5" />
+                              </Button>
+                              <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
+                                <Trash2 className="w-3.5 h-3.5" />
+                                </Button>
+                                </div>
+                                </div>
+                                </div>
+                                );
+                                })}
+                                </div>
+                                ) : (
+                                <div className="space-y-3">
                   {booking.session_dates?.map((session, idx) => {
                     const wasRescheduled = Boolean(
                       session.was_rescheduled || 
@@ -1620,27 +1618,37 @@ export default function BookingDetail() {
                       session.rescheduled ||
                       session.auto_adjusted
                     );
+                    const isCancelled = Boolean(session.session_cancelled);
                     
                     return (
-                      <div key={idx} className="p-3 bg-slate-50 rounded-lg">
-                                               <div className="flex items-start justify-between gap-2">
-                                                 <div className="flex-1 min-w-0">
-                                                   <p className="font-medium text-base md:text-sm">Session {session.session_number}</p>
-                            <p className="text-sm text-slate-600 mt-1">
+                      <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <p className={`font-medium text-base md:text-sm ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number}</p>
+                            <p className={`text-sm mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
                               {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
                             </p>
-                            <p className="text-sm text-blue-600 font-medium mt-1">
+                            <p className={`text-sm font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
                               {session.start_time} - {session.end_time}
                             </p>
                           </div>
-                          {wasRescheduled && (
-                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs flex-shrink-0 whitespace-nowrap">
-                              <RefreshCw className="w-3 h-3" />
-                              Auto-adjusted
-                            </Badge>
-                          )}
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            {wasRescheduled && !isCancelled && (
+                              <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
+                                <RefreshCw className="w-3 h-3" />
+                                Auto-adjusted
+                              </Badge>
+                            )}
+                            {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
+                            <Button size="icon" variant="ghost" className={`h-7 w-7 ${isCancelled ? 'text-green-600 hover:text-green-700 hover:bg-green-50' : 'text-orange-500 hover:text-orange-600 hover:bg-orange-50'}`} onClick={() => handleToggleCancelSession(idx)} title={isCancelled ? 'Uncancel' : 'Cancel session'}>
+                              <Ban className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
                         </div>
-                        {session.completed && (
+                        {session.completed && !isCancelled && (
                           <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>
                         )}
                       </div>
