@@ -315,9 +315,13 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         <div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">
             <p style="font-size: 16px; color: #1e293b; margin: 0 0 16px 0;">Hello <strong>${clientName}</strong> and <strong>${furkidName}</strong>,</p>
 
-            <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">
+            <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 8px 0;">
                 ${config.greeting} You have enrolled for <strong>${serviceName}</strong>
                 ${firstDate ? ` starting <strong>${firstDate}</strong>, ${firstTime}${firstDay ? ', ' + firstDay : ''}.` : '.'}
+            </p>
+
+            <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">
+                At Hopefordogs Canine Training, we use compassionate, reward-based methods, always prioritising the dog's welfare and emotional wellbeing at the heart of our training.
             </p>
 
             ${address ? `<p style="font-size: 14px; color: #334155; margin: 0 0 4px 0;"><strong>${config.addressLabel}:</strong> ${address}${postalCode ? ', ' + postalCode : ''}</p>` : ''}
