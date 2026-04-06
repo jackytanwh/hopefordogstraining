@@ -224,8 +224,8 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         pawgressHtml = `
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0;">
             <p style="font-size: 14px; color: #166534; margin: 0 0 6px 0;">🎓 Ready to take the next step? When <strong>${furkidName}</strong> completes the Kinder Puppy Program, continue the journey with our <strong>Basic Manners Program</strong>!</p>
-            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">Use the exclusive discount code below — valid for <strong>6 months</strong> from today:</p>
-            <p style="font-size: 18px; font-weight: 700; color: #15803d; margin: 8px 0 0 0; letter-spacing: 2px;">PAWGRESS10</p>
+            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">Use the exclusive discount code below — valid for <strong>12 months</strong> from today:</p>
+            <p style="font-size: 15px; font-weight: 700; color: #15803d; margin: 8px 0 0 0; letter-spacing: 1px;">PAWGRESS10</p>
         </div>`;
     }
 
