@@ -263,7 +263,11 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         if (booking.agreement_no_refunds) agreementItems.push('I acknowledge that there are no refunds, exchanges, or cancellations once enrolled.');
         if (booking.agreement_dog_behavior) agreementItems.push('I confirm that my dog is not fearful, anxious, or reactive.');
     } else if (serviceType === 'behavioural_modification') {
-        if (booking.agreement_behavioral_modification_understanding) agreementItems.push('I understand the behaviour change process and commit to the time and effort required for the Behavioural Modification program.');
+        if (booking.agreement_behavioral_modification_understanding) {
+            agreementItems.push('I confirm that I have read the FAQs and fully understand that there are NO quick fixes in behaviour modification, and it is influenced by multiple factors, including diet, sterilisation status, the environment, medical conditions, etc.');
+            agreementItems.push('I acknowledge that behaviour change is gradual and takes time. The training progress and outcomes depend on my commitment to following the training plan provided by the canine behaviour consultant.');
+            agreementItems.push('I will provide regular updates on the training progress, accompanied by video recordings, every few days.');
+        }
     }
 
     if (agreementItems.length > 0) {

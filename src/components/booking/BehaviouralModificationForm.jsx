@@ -215,10 +215,6 @@ export default function BehaviouralModificationForm({ service, formData, setForm
     // Different validation for Canine Assessment vs Behavioural Modification
     if (isCanineAssessment) {
       if (formData.requires_assessment_report === undefined) newErrors.requires_assessment_report = 'Required';
-    } else {
-      if (!formData.understanding_confirmed) newErrors.understanding_confirmed = 'Required';
-      if (!formData.training_updates_confirmed) newErrors.training_updates_confirmed = 'Required';
-      if (!formData.training_updates_confirmed) newErrors.training_updates_confirmed = 'Required';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -1266,7 +1262,7 @@ export default function BehaviouralModificationForm({ service, formData, setForm
         </div>
 
         {/* Final Confirmation - Different for Canine Assessment vs Behavioural Modification */}
-        {isCanineAssessment ? (
+        {isCanineAssessment && (
           <div className="space-y-3 p-4 bg-slate-100 rounded-lg border-2 border-slate-300">
             <Label className="text-base font-semibold">Do you require an assessment report? *</Label>
             <RadioGroup 
@@ -1283,36 +1279,6 @@ export default function BehaviouralModificationForm({ service, formData, setForm
               </div>
             </RadioGroup>
             {errors.requires_assessment_report && <p className="text-sm text-red-600">{errors.requires_assessment_report}</p>}
-          </div>
-        ) : (
-          <div className="space-y-3 p-4 bg-slate-100 rounded-lg border-2 border-slate-300">
-            <h3 className="font-semibold text-slate-900 text-lg mb-3">Agreement</h3>
-            <div className="flex items-start space-x-2">
-              <Checkbox 
-                id="understanding" 
-                checked={formData.understanding_confirmed || false}
-                onCheckedChange={(checked) => handleInputChange('understanding_confirmed', checked)}
-              />
-              <Label htmlFor="understanding" className="text-sm cursor-pointer leading-relaxed">
-                I confirm that I have read the{' '}
-                <a href="https://www.hopefordogs.sg/behavioural-modification/#faq" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  FAQs
-                </a>
-                {' '}and understand that various factors influence behaviour modification and that there are no quick fixes. I acknowledge that any improvement or success depends on my commitment to the training plan provided by the canine behaviour consultant. *
-              </Label>
-            </div>
-            {errors.understanding_confirmed && <p className="text-sm text-red-600">{errors.understanding_confirmed}</p>}
-            <div className="flex items-start space-x-2 mt-3">
-              <Checkbox 
-                id="training-updates" 
-                checked={formData.training_updates_confirmed || false}
-                onCheckedChange={(checked) => handleInputChange('training_updates_confirmed', checked)}
-              />
-              <Label htmlFor="training-updates" className="text-sm cursor-pointer leading-relaxed">
-                Updates on training progress, accompanied by video recordings, will be shared every few days. *
-              </Label>
-            </div>
-            {errors.training_updates_confirmed && <p className="text-sm text-red-600">{errors.training_updates_confirmed}</p>}
           </div>
         )}
 

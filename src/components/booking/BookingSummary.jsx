@@ -18,6 +18,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const [behaviorAgreement, setBehaviorAgreement] = useState(false);
   const [modificationAgreement, setModificationAgreement] = useState(false);
   const [modificationAgreement2, setModificationAgreement2] = useState(false);
+  const [modificationAgreement3, setModificationAgreement3] = useState(false);
   const [curriculumAgreement, setCurriculumAgreement] = useState(false);
   const [pottyAgreement, setPottyAgreement] = useState(false);
   const [puppyRefundAgreement, setPuppyRefundAgreement] = useState(false);
@@ -63,8 +64,8 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
     }
     
     if (isBehaviouralModification) {
-      if (!modificationAgreement || !modificationAgreement2) {
-        setAgreementError('Please acknowledge the agreement to proceed');
+      if (!modificationAgreement || !modificationAgreement2 || !modificationAgreement3) {
+        setAgreementError('Please acknowledge all agreements to proceed');
         return;
       }
     }
@@ -484,13 +485,19 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               <div className="flex items-start space-x-3">
                 <Checkbox id="behavioralModificationAgreement" checked={modificationAgreement} onCheckedChange={(checked) => { setModificationAgreement(checked); if (agreementError) setAgreementError(''); }} />
                 <Label htmlFor="behavioralModificationAgreement" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I acknowledge that Hopefordogs Canine Training does not provide refunds, exchanges, or cancellations. I understand that behaviour change requires time and may be influenced by several factors.
+                  I confirm that I have read the FAQs and fully understand that there are NO quick fixes in behaviour modification, and it is influenced by multiple factors, including diet, sterilisation status, the environment, medical conditions, etc. *
                 </Label>
               </div>
               <div className="flex items-start space-x-3">
                 <Checkbox id="behavioralModificationAgreement2" checked={modificationAgreement2} onCheckedChange={(checked) => { setModificationAgreement2(checked); if (agreementError) setAgreementError(''); }} />
                 <Label htmlFor="behavioralModificationAgreement2" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I fully understand that the training progress depends on my consistency and commitment to implementing the trainer's guidance.
+                  I acknowledge that behaviour change is gradual and takes time. The training progress and outcomes depend on my commitment to following the training plan provided by the canine behaviour consultant. *
+                </Label>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Checkbox id="behavioralModificationAgreement3" checked={modificationAgreement3} onCheckedChange={(checked) => { setModificationAgreement3(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="behavioralModificationAgreement3" className="text-sm leading-relaxed cursor-pointer font-normal">
+                  I will provide regular updates on the training progress, accompanied by video recordings, every few days. *
                 </Label>
               </div>
               {agreementError && <p className="text-sm text-red-600 font-medium">{agreementError}</p>}
