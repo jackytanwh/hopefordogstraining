@@ -19,6 +19,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const [modificationAgreement, setModificationAgreement] = useState(false);
   const [modificationAgreement2, setModificationAgreement2] = useState(false);
   const [modificationAgreement3, setModificationAgreement3] = useState(false);
+  const [modificationAgreement4, setModificationAgreement4] = useState(false);
   const [curriculumAgreement, setCurriculumAgreement] = useState(false);
   const [pottyAgreement, setPottyAgreement] = useState(false);
   const [puppyRefundAgreement, setPuppyRefundAgreement] = useState(false);
@@ -64,7 +65,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
     }
     
     if (isBehaviouralModification) {
-      if (!modificationAgreement || !modificationAgreement2 || !modificationAgreement3) {
+      if (!modificationAgreement || !modificationAgreement2 || !modificationAgreement3 || !modificationAgreement4) {
         setAgreementError('Please acknowledge all agreements to proceed');
         return;
       }
@@ -498,6 +499,12 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 <Checkbox id="behavioralModificationAgreement3" checked={modificationAgreement3} onCheckedChange={(checked) => { setModificationAgreement3(checked); if (agreementError) setAgreementError(''); }} />
                 <Label htmlFor="behavioralModificationAgreement3" className="text-sm leading-relaxed cursor-pointer font-normal">
                   I will provide regular updates on the training progress, accompanied by video recordings, every few days. *
+                </Label>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Checkbox id="behavioralModificationAgreement4" checked={modificationAgreement4} onCheckedChange={(checked) => { setModificationAgreement4(checked); if (agreementError) setAgreementError(''); }} />
+                <Label htmlFor="behavioralModificationAgreement4" className="text-sm leading-relaxed cursor-pointer font-normal">
+                  I acknowledge that Hopefordogs Canine Training does NOT offer refunds, exchanges, or cancellations, regardless of the training outcome. *
                 </Label>
               </div>
               {agreementError && <p className="text-sm text-red-600 font-medium">{agreementError}</p>}

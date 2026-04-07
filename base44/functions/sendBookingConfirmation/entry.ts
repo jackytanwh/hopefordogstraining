@@ -267,6 +267,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
             agreementItems.push('I confirm that I have read the FAQs and fully understand that there are NO quick fixes in behaviour modification, and it is influenced by multiple factors, including diet, sterilisation status, the environment, medical conditions, etc.');
             agreementItems.push('I acknowledge that behaviour change is gradual and takes time. The training progress and outcomes depend on my commitment to following the training plan provided by the canine behaviour consultant.');
             agreementItems.push('I will provide regular updates on the training progress, accompanied by video recordings, every few days.');
+            agreementItems.push('I acknowledge that Hopefordogs Canine Training does NOT offer refunds, exchanges, or cancellations, regardless of the training outcome.');
         }
     }
 
