@@ -272,10 +272,10 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
     }
 
     if (agreementItems.length > 0) {
-        const items = agreementItems.map(a => `<li style="font-size: 13px; color: #475569; margin-bottom: 4px;">✓ ${a}</li>`).join('');
+        const items = agreementItems.map(a => `<li style="font-size: 15px; color: #475569; margin-bottom: 6px;">✓ ${a}</li>`).join('');
         agreementsHtml = `
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-            <p style="font-size: 13px; font-weight: 600; color: #1e293b; margin: 0 0 8px 0;">Terms & Agreements Acknowledged</p>
+            <p style="font-size: 15px; font-weight: 600; color: #1e293b; margin: 0 0 10px 0;">Terms & Agreements Acknowledged</p>
             <ul style="margin: 0; padding-left: 4px; list-style: none;">${items}</ul>
         </div>`;
     }
