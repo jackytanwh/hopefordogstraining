@@ -691,11 +691,25 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
               <div className="mt-4 pt-4 border-t border-slate-200">
                 <p className="font-medium text-sm text-slate-900 mb-2">✅ Your Schedule Preview:</p>
                 <div className="space-y-1">
-                  {selectedDates.map((session, idx) => (
-                    <div key={idx} className="text-sm text-slate-600 bg-slate-50 p-2 rounded">
-                      Session {session.session_number}: {format(new Date(session.date), 'EEE, MMM d, yyyy')} at {session.start_time}
-                    </div>
-                  ))}
+                  {selectedDates.map((session, idx) => {
+                    const showBreakAfter = (isKinderPuppy && session.session_number === 2) ||
+                      (isBasicMannersWithBreak && session.session_number === 4);
+                    const breakDate = session.date
+                      ? format(addWeeks(new Date(session.date), 1), 'EEE, MMM d, yyyy')
+                      : '';
+                    return (
+                      <React.Fragment key={idx}>
+                        <div className="text-sm text-slate-600 bg-slate-50 p-2 rounded">
+                          Session {session.session_number}: {format(new Date(session.date), 'EEE, MMM d, yyyy')} at {session.start_time}
+                        </div>
+                        {showBreakAfter && (
+                          <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 p-2 rounded flex items-center gap-2">
+                            <span>⏸</span> Break Week — No Session ({breakDate})
+                          </div>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -704,30 +718,43 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
               <div className="mt-4 pt-4 border-t border-slate-200">
                 <p className="font-medium text-sm text-slate-900 mb-2">📅 Final Schedule:</p>
                 <div className="space-y-2">
-                  {selectedDates.map((session, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`text-sm p-3 rounded-lg border ${
-                        session.was_rescheduled 
-                          ? 'bg-amber-50 border-amber-200 text-amber-900' 
-                          : 'bg-green-50 border-green-200 text-green-900'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-semibold">Session {session.session_number}</p>
-                          <p className="text-xs mt-0.5">
-                            {format(new Date(session.date), 'EEEE, MMM d, yyyy')} at {session.start_time} - {session.end_time}
-                          </p>
+                  {selectedDates.map((session, idx) => {
+                    const showBreakAfter = (isKinderPuppy && session.session_number === 2) ||
+                      (isBasicMannersWithBreak && session.session_number === 4);
+                    const breakDate = session.date
+                      ? format(addWeeks(new Date(session.date), 1), 'EEE, MMM d, yyyy')
+                      : '';
+                    return (
+                      <React.Fragment key={idx}>
+                        <div 
+                          className={`text-sm p-3 rounded-lg border ${
+                            session.was_rescheduled 
+                              ? 'bg-amber-50 border-amber-200 text-amber-900' 
+                              : 'bg-green-50 border-green-200 text-green-900'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="font-semibold">Session {session.session_number}</p>
+                              <p className="text-xs mt-0.5">
+                                {format(new Date(session.date), 'EEEE, MMM d, yyyy')} at {session.start_time} - {session.end_time}
+                              </p>
+                            </div>
+                            {session.was_rescheduled && (
+                              <span className="text-xs bg-amber-200 text-amber-900 px-2 py-1 rounded-full font-medium">
+                                Rescheduled
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        {session.was_rescheduled && (
-                          <span className="text-xs bg-amber-200 text-amber-900 px-2 py-1 rounded-full font-medium">
-                            Rescheduled
-                          </span>
+                        {showBreakAfter && (
+                          <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 p-2 rounded flex items-center gap-2">
+                            <span>⏸</span> Break Week — No Session ({breakDate})
+                          </div>
                         )}
-                      </div>
-                    </div>
-                  ))}
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
               </div>
             )}
