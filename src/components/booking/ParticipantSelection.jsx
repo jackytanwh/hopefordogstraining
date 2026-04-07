@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,32 +54,31 @@ export default function ParticipantSelection({ service, formData, setFormData, o
     
     for (let i = 0; i < (schedule.weeks || 7); i++) {
       const sessionDate = new Date(startDate);
-      sessionDate.setDate(startDate.getDate() + (i * 7));
+      
+      if (i < 4) {
+        sessionDate.setDate(startDate.getDate() + (i * 7));
+      } else {
+        sessionDate.setDate(startDate.getDate() + ((i + 1) * 7));
+      }
+      
       sessions.push({
         week: i + 1,
-        date: sessionDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+        date: sessionDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        isBreakWeek: false
       });
+      
+      if (i === 3) {
+        const breakWeekDate = new Date(startDate);
+        breakWeekDate.setDate(startDate.getDate() + (4 * 7));
+        sessions.push({
+          week: 'Break',
+          date: breakWeekDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+          isBreakWeek: true
+        });
+      }
     }
     
     return sessions;
-  };
-
-  const handleFurkidsChange = (value) => {
-    const numFurkids = parseInt(value);
-    
-    // Initialize arrays with empty objects
-    const newFurkids = Array.from({ length: numFurkids }, (_, i) => formData.furkids?.[i] || {});
-    
-    setFormData({ 
-      ...formData, 
-      numberOfFurkids: numFurkids,
-      furkids: newFurkids,
-      numberOfClients: formData.numberOfClients > numFurkids ? numFurkids : formData.numberOfClients,
-      clients: formData.clients || Array.from({ length: formData.numberOfClients || 1 }, (_, i) => formData.clients?.[i] || {})
-    });
-    if (errors.numberOfFurkids) {
-      setErrors({ ...errors, numberOfFurkids: '' });
-    }
   };
 
   const handleClientsChange = (value) => {
@@ -146,14 +144,27 @@ export default function ParticipantSelection({ service, formData, setFormData, o
                   The program runs every {schedule.day_of_week} at {schedule.start_time} for 7 weeks:
                 </p>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {generateSessionDates().map((session) => (
-                    <div key={session.week} className="flex items-center gap-3 p-2 bg-white rounded-lg border border-blue-100">
-                      <div className="w-7 h-7 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
-                        {session.week}
+                  {generateSessionDates().map((session, index) => (
+                    <div key={index} className={`flex items-center gap-3 p-2 rounded-lg border ${
+                      session.isBreakWeek ? 'bg-amber-50 border-amber-200' : 'bg-white border-blue-100'
+                    }`}>
+                      <div className={`w-7 h-7 text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
+                        session.isBreakWeek ? 'bg-amber-500' : 'bg-blue-600'
+                      }`}>
+                        {session.isBreakWeek ? '⏸' : session.week}
                       </div>
                       <div className="text-xs">
-                        <p className="font-medium text-slate-900">Week {session.week}</p>
-                        <p className="text-slate-600">{session.date} at {schedule.start_time}</p>
+                        {session.isBreakWeek ? (
+                          <>
+                            <p className="font-medium text-amber-800">Break Week — No Session</p>
+                            <p className="text-amber-700">{session.date}</p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="font-medium text-slate-900">Session {session.week}</p>
+                            <p className="text-slate-600">{session.date} at {schedule.start_time}</p>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
