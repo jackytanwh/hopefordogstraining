@@ -7,8 +7,8 @@ const Field = ({ label, value }) => {
   if (value === null || value === undefined || value === '') return null;
   return (
     <div>
-      <p className="text-slate-600 text-sm md:text-xs font-medium capitalize tracking-wide">{label}</p>
-      <p className="font-medium text-slate-900 mt-0.5 text-base md:text-sm">{String(value)}</p>
+      <p className="text-slate-600 text-sm font-medium capitalize tracking-wide">{label}</p>
+      <p className="font-medium text-slate-900 mt-0.5 text-base">{String(value)}</p>
     </div>
   );
 };
@@ -17,9 +17,9 @@ const YesNo = ({ label, value, details, detailsLabel }) => {
   if (value === null || value === undefined) return null;
   return (
     <div>
-      <p className="text-slate-600 text-sm md:text-xs font-medium capitalize tracking-wide">{label}</p>
-      <p className="font-medium text-slate-900 mt-0.5 text-base md:text-sm">{value ? 'Yes' : 'No'}</p>
-      {value && details && <p className="text-base md:text-sm text-slate-600 mt-1 italic">{detailsLabel ? `${detailsLabel}: ` : ''}{details}</p>}
+      <p className="text-slate-600 text-sm font-medium capitalize tracking-wide">{label}</p>
+      <p className="font-medium text-slate-900 mt-0.5 text-base">{value ? 'Yes' : 'No'}</p>
+      {value && details && <p className="text-base text-slate-600 mt-1 italic">{detailsLabel ? `${detailsLabel}: ` : ''}{details}</p>}
     </div>
   );
 };
@@ -27,7 +27,7 @@ const YesNo = ({ label, value, details, detailsLabel }) => {
 const Section = ({ title, color, children }) => (
   <div className={`space-y-3 p-4 ${color} rounded-lg`}>
     <h4 className="font-semibold text-slate-900 text-base">{title}</h4>
-    <div className="grid md:grid-cols-2 gap-3 text-base md:text-sm">
+    <div className="grid md:grid-cols-2 gap-3 text-base">
       {children}
     </div>
   </div>
@@ -37,8 +37,8 @@ const FullField = ({ label, value }) => {
   if (!value) return null;
   return (
     <div className="md:col-span-2">
-      <p className="text-slate-600 text-sm md:text-xs font-medium capitalize tracking-wide">{label}</p>
-      <p className="font-medium text-slate-900 mt-0.5 whitespace-pre-wrap text-base md:text-sm">{String(value)}</p>
+      <p className="text-slate-600 text-sm font-medium capitalize tracking-wide">{label}</p>
+      <p className="font-medium text-slate-900 mt-0.5 whitespace-pre-wrap text-base">{String(value)}</p>
     </div>
   );
 };
