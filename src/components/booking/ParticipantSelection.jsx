@@ -81,6 +81,23 @@ export default function ParticipantSelection({ service, formData, setFormData, o
     return sessions;
   };
 
+  const handleFurkidsChange = (value) => {
+    const numFurkids = parseInt(value);
+    
+    const newFurkids = Array.from({ length: numFurkids }, (_, i) => formData.furkids?.[i] || {});
+    
+    setFormData({ 
+      ...formData, 
+      numberOfFurkids: numFurkids,
+      furkids: newFurkids,
+      numberOfClients: formData.numberOfClients > numFurkids ? numFurkids : formData.numberOfClients,
+      clients: formData.clients || Array.from({ length: formData.numberOfClients || 1 }, (_, i) => formData.clients?.[i] || {})
+    });
+    if (errors.numberOfFurkids) {
+      setErrors({ ...errors, numberOfFurkids: '' });
+    }
+  };
+
   const handleClientsChange = (value) => {
     const numClients = parseInt(value);
     
