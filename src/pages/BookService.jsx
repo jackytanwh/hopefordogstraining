@@ -242,10 +242,14 @@ export default function BookService() {
     }
   }, [serviceId, navigate]);
 
+  const isRestrictedBreed = (breed) => breed && breed.toLowerCase().includes('restricted breed');
+
   const calculatePricing = () => {
     if (!service) return { basePrice: 0, discount: 0, surcharge: 0, sentosaSurcharge: 0, productsTotal: 0, total: 0 };
     
-    const basePrice = isGroupClass
+    const basePrice = isBehaviouralModification && isRestrictedBreed(formData.furkidBreed)
+      ? 588
+      : isGroupClass
       ? service.price * (formData.numberOfFurkids || 1)
       : isFYOG && formData.basicMannersFYOGPrice
       ? formData.basicMannersFYOGPrice
