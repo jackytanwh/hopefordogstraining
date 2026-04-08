@@ -37,7 +37,7 @@ const services = [
     sessions: 4,
     minParticipants: 1,
     maxParticipants: 1,
-    description: "Suitable for dogs that require ADORE training or HDB approval but do not need the full comprehensive training programme."
+    description: "Suitable for dogs that require ADORE/HDB approval but do not need the comprehensive training programme."
   },
   {
     id: "canine_assessment",
