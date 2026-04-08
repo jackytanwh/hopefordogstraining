@@ -11,6 +11,7 @@ import { format, parseISO, isToday } from "date-fns";
 import { Calendar, Search, Filter, Eye, X, Check, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import RecentBookings from "../components/booking/RecentBookings";
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
@@ -250,6 +251,9 @@ export default function AdminBookings() {
           </CardContent>
         </Card>
       )}
+
+      {/* Recent Bookings */}
+      {!loading && <RecentBookings bookings={bookings} />}
 
       {/* Filters */}
       <Card>
