@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
     }
 
     // Extract client info
-    let clientName, clientEmail, clientMobile, dogDob, dogAge;
+    let clientName, clientEmail, clientMobile, dogDob, dogAge, furkidName;
 
     if (booking.clients && booking.clients.length > 0) {
       clientName = booking.clients[0].client_name;
@@ -26,9 +26,11 @@ Deno.serve(async (req) => {
     if (booking.furkids && booking.furkids.length > 0) {
       dogDob = booking.furkids[0].furkid_dob;
       dogAge = booking.furkids[0].furkid_age;
+      furkidName = booking.furkids[0].furkid_name;
     } else {
       dogDob = booking.furkid_dob;
       dogAge = booking.furkid_age;
+      furkidName = booking.furkid_name;
     }
 
     if (!clientName || !clientEmail) {
@@ -39,6 +41,7 @@ Deno.serve(async (req) => {
       client_name: clientName,
       email_address: clientEmail,
       mobile_number: clientMobile || null,
+      furkid_name: furkidName || null,
       dog_dob: dogDob || null,
       dog_age: dogAge || null
     });

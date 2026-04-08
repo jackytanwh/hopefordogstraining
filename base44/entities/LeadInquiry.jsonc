@@ -15,6 +15,10 @@
       "type": "string",
       "description": "Client's mobile number"
     },
+    "furkid_name": {
+      "type": "string",
+      "description": "Name of the furkid"
+    },
     "dog_dob": {
       "type": "string",
       "format": "date",
@@ -28,5 +32,27 @@
   "required": [
     "client_name",
     "email_address"
-  ]
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }

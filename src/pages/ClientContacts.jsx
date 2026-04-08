@@ -51,7 +51,8 @@ export default function ClientContacts() {
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Client Name</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Email</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Mobile</th>
-                  <th className="text-left px-6 py-3 font-semibold text-slate-700">Dog / Puppy DOB</th>
+                  <th className="text-left px-6 py-3 font-semibold text-slate-700">Furkid's Name</th>
+                  <th className="text-left px-6 py-3 font-semibold text-slate-700">Furkid's DOB</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Dog Age</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Submitted</th>
                   <th className="px-6 py-3"></th>
@@ -63,6 +64,7 @@ export default function ClientContacts() {
                     <td className="px-6 py-4 font-medium text-slate-900">{lead.client_name}</td>
                     <td className="px-6 py-4 text-slate-600">{lead.email_address}</td>
                     <td className="px-6 py-4 text-slate-600">{lead.mobile_number || '—'}</td>
+                    <td className="px-6 py-4 text-slate-600">{lead.furkid_name || '—'}</td>
                     <td className="px-6 py-4 text-slate-600">
                       {lead.dog_dob ? format(parseISO(lead.dog_dob), 'dd MMM yyyy') : '—'}
                     </td>
