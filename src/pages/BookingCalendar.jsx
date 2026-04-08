@@ -87,6 +87,15 @@ export default function BookingCalendar() {
 
   useEffect(() => {
     loadData();
+
+    // Subscribe to real-time booking changes so new bookings appear immediately
+    const unsubscribe = base44.entities.Booking.subscribe((event) => {
+      if (event.type === 'create' || event.type === 'update' || event.type === 'delete') {
+        loadData();
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const getGroupSessionDates = (schedule) => {

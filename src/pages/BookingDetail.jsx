@@ -135,13 +135,17 @@ export default function BookingDetail() {
       const bookings = await base44.entities.Booking.list();
       const updatedBooking = bookings.find(b => b.id === bookingId);
       
-      // Send WhatsApp notification if consent was given (wrapped in try-catch)
-      if (updatedBooking && updatedBooking.whatsapp_consent) {
+      // Send confirmation email and WhatsApp when status changes to confirmed
+      if (updatedBooking && newStatus === 'confirmed') {
         try {
-          if (newStatus === 'confirmed') {
-            await base44.functions.invoke('sendWhatsappBookingConfirmation', { booking: updatedBooking });
-            console.log('WhatsApp booking confirmation sent');
-          } else if (newStatus === 'cancelled') {
+          await base44.functions.invoke('sendBookingConfirmation', { booking: updatedBooking });
+          console.log('Booking confirmation (email + WhatsApp) sent');
+        } catch (error) {
+          console.error('Error sending booking confirmation:', error);
+        }
+      } else if (updatedBooking && updatedBooking.whatsapp_consent) {
+        try {
+          if (newStatus === 'cancelled') {
             await base44.functions.invoke('sendBookingCancellation', { booking: updatedBooking });
             console.log('WhatsApp cancellation notification sent');
           } else {
@@ -153,7 +157,6 @@ export default function BookingDetail() {
           }
         } catch (error) {
           console.error('Error sending WhatsApp notification:', error);
-          // Don't block the status change if WhatsApp fails
         }
       }
     } catch (error) {
