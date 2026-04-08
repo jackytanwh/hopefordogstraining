@@ -434,7 +434,7 @@ export default function BookingCalendar() {
                         </div>
                       )}
                       {hasFullDayBlock && (
-                        <div className="text-xs text-red-700 font-medium mt-1">
+                        <div className="text-xs text-amber-700 font-medium mt-1">
                           Fully Blocked
                         </div>
                       )}
