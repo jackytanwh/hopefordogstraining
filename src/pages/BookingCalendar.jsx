@@ -56,6 +56,14 @@ const sundayTimeSlots = [
   "13:00", "13:30", "14:00", "14:30", "15:00", "15:30"
 ];
 
+// Extended slots for block end time (covers full training duration beyond 19:00)
+const extendedEndTimeSlots = [
+  "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+  "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
+  "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"
+];
+
 export default function BookingCalendar() {
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
@@ -669,7 +677,7 @@ export default function BookingCalendar() {
                       <SelectValue placeholder="Select end time" />
                     </SelectTrigger>
                     <SelectContent>
-                      {getAvailableTimeSlots().map(time => (
+                      {extendedEndTimeSlots.map(time => (
                         <SelectItem key={time} value={time}>
                           <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4" />
