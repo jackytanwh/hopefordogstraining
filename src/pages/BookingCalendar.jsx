@@ -465,24 +465,24 @@ export default function BookingCalendar() {
                   {/* Blocked Slots Section */}
                   {selectedDateBlocks.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-sm text-red-900 mb-2 flex items-center gap-2">
+                      <h3 className="font-semibold text-sm text-amber-900 mb-2 flex items-center gap-2">
                         <Ban className="w-4 h-4" />
                         Blocked Time Slots
                       </h3>
                       <div className="space-y-2">
                         {selectedDateBlocks.map((block) => (
-                          <div key={block.id} className="border border-red-200 bg-red-50 rounded-lg p-3 space-y-2">
+                          <div key={block.id} className="border border-amber-200 bg-amber-50 rounded-lg p-3 space-y-2">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
                                 {block.is_full_day ? (
-                                  <p className="font-medium text-sm text-red-900">Full Day Blocked</p>
+                                  <p className="font-medium text-sm text-amber-900">Full Day Blocked</p>
                                 ) : (
-                                  <p className="font-medium text-sm text-red-900">
+                                  <p className="font-medium text-sm text-amber-900">
                                     {block.start_time} - {block.end_time}
                                   </p>
                                 )}
                                 {block.reason && (
-                                  <p className="text-xs text-red-700 mt-1 break-words">{block.reason}</p>
+                                  <p className="text-xs text-amber-800 mt-1 break-words">{block.reason}</p>
                                 )}
                               </div>
                               <div className="flex gap-1 flex-shrink-0">
@@ -498,7 +498,7 @@ export default function BookingCalendar() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => handleDeleteBlock(block.id)}
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-100 h-8 w-8 p-0"
+                                  className="text-amber-600 hover:text-amber-700 hover:bg-amber-100 h-8 w-8 p-0"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
