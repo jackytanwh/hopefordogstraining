@@ -676,7 +676,7 @@ export default function BookingCalendar() {
                     <SelectTrigger id="end-time">
                       <SelectValue placeholder="Select end time" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-72 overflow-y-auto">
                       {extendedEndTimeSlots.map(time => (
                         <SelectItem key={time} value={time}>
                           <div className="flex items-center gap-2">
