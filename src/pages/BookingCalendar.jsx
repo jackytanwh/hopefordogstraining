@@ -412,7 +412,7 @@ export default function BookingCalendar() {
                         {format(day, 'd')}
                       </div>
                       {dayBlocks.length > 0 && !hasFullDayBlock && (
-                        <div className="text-xs bg-red-100 text-red-800 px-1 py-0.5 rounded mb-1">
+                        <div className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded mb-1">
                           {dayBlocks.length} blocked
                         </div>
                       )}
