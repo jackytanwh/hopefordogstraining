@@ -146,7 +146,7 @@ export default function PaymentSuccess() {
                   <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
                     {isConfirmed ? (
                       <>
-                        <li>Please have treats ready for training</li>
+                        <li>Please have bite-sized treats ready for training</li>
                         <li>Please check your email for more details.</li>
                       </>
                     ) : isFailed ? (
