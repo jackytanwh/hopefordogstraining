@@ -9,6 +9,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import PromoCodes from './pages/PromoCodes';
+import BookingSystem from './pages/BookingSystem';
 import BookingCalendar from './pages/BookingCalendar';
 import ClientContacts from './pages/ClientContacts';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -57,7 +58,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/" element={<LayoutWrapper currentPageName="BookingCalendar"><BookingCalendar /></LayoutWrapper>} />
+      <Route path="/" element={<LayoutWrapper currentPageName="BookingSystem"><BookingSystem /></LayoutWrapper>} />
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}
