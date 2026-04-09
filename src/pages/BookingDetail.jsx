@@ -1715,6 +1715,7 @@ export default function BookingDetail() {
                           onSelect={(date) => date && handleSessionDateChange(idx, date)}
                           disabled={(date) => date < new Date()}
                           initialFocus
+                          weekStartsOn={1}
                         />
                       </PopoverContent>
                     </Popover>
