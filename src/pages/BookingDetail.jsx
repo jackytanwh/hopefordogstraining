@@ -1194,6 +1194,8 @@ export default function BookingDetail() {
                           <div><p className="text-slate-600">Adopted</p><p className="font-medium">{furkid.isAdopted || furkid.is_adopted ? 'Yes' : 'No'}</p></div>
                           {getFurkidField(furkid, 'furkidDiet') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{getFurkidField(furkid, 'furkidDiet')}</p></div>}
                           {getFurkidField(furkid, 'furkidSleepArea') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Sleep Area</p><p className="font-medium">{getFurkidField(furkid, 'furkidSleepArea')}</p></div>}
+                          <div><p className="text-slate-600">Furkid's IG</p><p className="font-medium">{furkid.furkidInstagram || furkid.furkid_instagram || 'N/A'}</p></div>
+                          <div className="md:col-span-2"><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{furkid.enrolmentReason || furkid.enrolment_reason || 'N/A'}</p></div>
                         </div>
                         {(furkid.furkidPhotoUrl || furkid.furkid_photo_url) && (
                           <div className="mt-4">

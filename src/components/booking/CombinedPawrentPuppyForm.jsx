@@ -675,7 +675,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidInstagram">{dogLabel}'s IG Account (if any)</Label>
+            <Label htmlFor="furkidInstagram">Furkid's IG (if any)</Label>
             <Input
               id="furkidInstagram"
               value={furkid.furkidInstagram || ''}
