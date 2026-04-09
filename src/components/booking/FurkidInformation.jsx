@@ -606,7 +606,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={`${prefix}furkidInstagram`}>Furkid's IG Account (if any)</Label>
+                <Label htmlFor={`${prefix}furkidInstagram`}>Furkid's IG (if any)</Label>
                 <Input
                   id={`${prefix}furkidInstagram`}
                   value={furkid.furkidInstagram || ''}
