@@ -527,10 +527,24 @@ Deno.serve(async (req) => {
                         productsHtml = `<p><strong>Products ordered:</strong> None</p>`;
                     }
 
+                    let adminScheduleHtml = '';
+                    if (booking.session_dates && booking.session_dates.length > 0) {
+                        const sessionRows = booking.session_dates.map((s: any) =>
+                            `<tr><td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #475569;">Session ${s.session_number}</td><td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #1e293b; font-weight: 500;">${formatDateShort(s.date)}</td><td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #1e293b;">${s.start_time}${s.end_time ? ' – ' + s.end_time : ''}</td></tr>`
+                        ).join('');
+                        adminScheduleHtml = `
+                        <p><strong>Scheduled Sessions:</strong></p>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; margin-bottom: 12px;">
+                            <thead><tr style="background: #f8fafc;"><th style="padding: 8px 12px; text-align: left; font-size: 12px; color: #64748b; border-bottom: 2px solid #e2e8f0;">Session</th><th style="padding: 8px 12px; text-align: left; font-size: 12px; color: #64748b; border-bottom: 2px solid #e2e8f0;">Date</th><th style="padding: 8px 12px; text-align: left; font-size: 12px; color: #64748b; border-bottom: 2px solid #e2e8f0;">Time</th></tr></thead>
+                            <tbody>${sessionRows}</tbody>
+                        </table>`;
+                    }
+
                     const adminHtml = `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                         <h2 style="color: #1e293b;">New Booking</h2>
                         <p>${adminClientName} <strong>${adminMobile}</strong> has enrolled for <strong>${serviceName}</strong> starting ${startDate}, ${startDay}, ${startTime} at ${location}</p>
+                        ${adminScheduleHtml}
                         ${productsHtml}
                         <p style="color: #64748b; font-size: 13px;">Total: <strong>$${totalPrice}</strong></p>
                     </div>`;
