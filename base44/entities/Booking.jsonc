@@ -690,6 +690,11 @@
     "basic_manners_progress": {
       "type": "object",
       "description": "Basic Manners curriculum progress"
+    },
+    "reminder_sent": {
+      "type": "boolean",
+      "description": "Whether a session reminder email has been sent for tomorrow's session",
+      "default": false
     }
   },
   "required": [
@@ -697,17 +702,25 @@
     "service_name"
   ],
   "rls": {
-    "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     },
     "update": {
       "user_condition": {
         "role": "admin"
       }
     },
-    "write": {
+    "delete": {
       "user_condition": {
         "role": "admin"
       }
