@@ -66,7 +66,7 @@ export default function RecentBookings({ bookings }) {
                       </span>
                     )}
                     <span className="text-xs text-purple-600 font-medium">
-                      Booked {formatDistanceToNow(new Date(booking.created_date), { addSuffix: true })}
+                      Booked {formatDistanceToNow(new Date(booking.created_date.endsWith('Z') ? booking.created_date : booking.created_date + 'Z'), { addSuffix: true })}
                     </span>
                   </div>
                 </div>
