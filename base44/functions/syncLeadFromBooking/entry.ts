@@ -1,5 +1,19 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
+function calculateAge(dobString) {
+  if (!dobString) return null;
+  const dob = new Date(dobString);
+  const now = new Date();
+  const years = now.getFullYear() - dob.getFullYear();
+  const months = now.getMonth() - dob.getMonth() + years * 12;
+  if (months < 1) return 'Less than 1 month';
+  if (months < 12) return `${months} month${months > 1 ? 's' : ''}`;
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  if (m === 0) return `${y} year${y > 1 ? 's' : ''}`;
+  return `${y} year${y > 1 ? 's' : ''} ${m} month${m > 1 ? 's' : ''}`;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -11,7 +25,7 @@ Deno.serve(async (req) => {
     }
 
     // Extract client info
-    let clientName, clientEmail, clientMobile, dogDob, dogAge, furkidName;
+    let clientName, clientEmail, clientMobile, dogDob, furkidName;
 
     if (booking.clients && booking.clients.length > 0) {
       clientName = booking.clients[0].client_name;
@@ -25,17 +39,23 @@ Deno.serve(async (req) => {
 
     if (booking.furkids && booking.furkids.length > 0) {
       dogDob = booking.furkids[0].furkid_dob;
-      dogAge = booking.furkids[0].furkid_age;
       furkidName = booking.furkids[0].furkid_name;
     } else {
       dogDob = booking.furkid_dob;
-      dogAge = booking.furkid_age;
       furkidName = booking.furkid_name;
     }
 
     if (!clientName || !clientEmail) {
       return Response.json({ message: 'Missing client info, skipping' });
     }
+
+    // Check for duplicate by email
+    const existing = await base44.asServiceRole.entities.LeadInquiry.filter({ email_address: clientEmail });
+    if (existing && existing.length > 0) {
+      return Response.json({ message: 'Duplicate email, skipping' });
+    }
+
+    const dogAge = calculateAge(dogDob);
 
     await base44.asServiceRole.entities.LeadInquiry.create({
       client_name: clientName,
