@@ -65,7 +65,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
             greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [],
             pdfLink: 'https://canva.link/kpp-essential-handouts',
-            pdfLabel: 'KPP Overview and EssHandouts',
+            pdfLabel: 'IMPORTANT! Access the KPP Overview and Essential Handouts here',
             promoBlock: pawsBotanicPromo,
             addressLabel: 'Address',
             discountCode: '',
