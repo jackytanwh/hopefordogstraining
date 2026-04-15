@@ -121,8 +121,8 @@ function getProgramConfig(serviceType: string): ProgramConfig {
         return {
             greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [],
-            pdfLink: '',
-            pdfLabel: '',
+            pdfLink: 'https://canva.link/behavioural-modification-handouts',
+            pdfLabel: 'First steps to helping a reactive dog',
             promoBlock: false,
             addressLabel: 'Address',
             discountCode: '',
