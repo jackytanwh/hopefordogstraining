@@ -64,8 +64,8 @@ function getProgramConfig(serviceType: string): ProgramConfig {
         return {
             greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [],
-            pdfLink: 'https://www.hopefordogs.sg/wp-content/uploads/2025/08/KPP-Overview-and-Handouts-2025-merged.pdf',
-            pdfLabel: 'KPP Overview and Handouts 2025',
+            pdfLink: 'https://canva.link/kpp-essential-handouts',
+            pdfLabel: 'KPP Overview and EssHandouts',
             promoBlock: pawsBotanicPromo,
             addressLabel: 'Address',
             discountCode: '',
