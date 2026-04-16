@@ -536,7 +536,9 @@ export default function BookService() {
         bookingData.furkid_breed = formData.furkidBreed || '';
         bookingData.furkid_gender = formData.furkidGender || '';
         bookingData.furkid_sterilised = Boolean(formData.furkidSterilised);
-        bookingData.furkid_acquired_from = formData.furkidAcquiredFrom || '';
+        if (!isBehaviouralModification && !isCanineAssessment) {
+          bookingData.furkid_acquired_from = formData.furkidAcquiredFrom || '';
+        }
         bookingData.furkid_joined_family = formData.furkidJoinedFamily || '';
         bookingData.first_time_owner = Boolean(formData.firstTimeOwner);
         bookingData.furkid_diet = formData.furkidDiet || '';
