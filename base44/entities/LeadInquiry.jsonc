@@ -27,6 +27,10 @@
     "dog_age": {
       "type": "string",
       "description": "Age of the dog/puppy"
+    },
+    "last_program": {
+      "type": "string",
+      "description": "Training program the client last enrolled in"
     }
   },
   "required": [

@@ -49,10 +49,15 @@ Deno.serve(async (req) => {
       return Response.json({ message: 'Missing client info, skipping' });
     }
 
-    // Check for duplicate by email
+    const serviceType = booking.service_type || null;
+
+    // Check for duplicate by email — update program if already exists
     const existing = await base44.asServiceRole.entities.LeadInquiry.filter({ email_address: clientEmail });
     if (existing && existing.length > 0) {
-      return Response.json({ message: 'Duplicate email, skipping' });
+      if (serviceType) {
+        await base44.asServiceRole.entities.LeadInquiry.update(existing[0].id, { last_program: serviceType });
+      }
+      return Response.json({ message: 'Duplicate email, updated program' });
     }
 
     const dogAge = calculateAge(dogDob);
@@ -63,7 +68,8 @@ Deno.serve(async (req) => {
       mobile_number: clientMobile || null,
       furkid_name: furkidName || null,
       dog_dob: dogDob || null,
-      dog_age: dogAge || null
+      dog_age: dogAge || null,
+      last_program: serviceType || null
     });
 
     return Response.json({ success: true });

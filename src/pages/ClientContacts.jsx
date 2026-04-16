@@ -54,6 +54,7 @@ export default function ClientContacts() {
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Furkid's Name</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Furkid's DOB</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Dog Age</th>
+                  <th className="text-left px-6 py-3 font-semibold text-slate-700">Last Program</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Submitted</th>
                   <th className="px-6 py-3"></th>
                   </tr>
@@ -69,8 +70,9 @@ export default function ClientContacts() {
                       {lead.dog_dob ? format(parseISO(lead.dog_dob), 'dd MMM yyyy') : '—'}
                     </td>
                     <td className="px-6 py-4 text-slate-600">{lead.dog_age || '—'}</td>
+                    <td className="px-6 py-4 text-slate-600">{lead.last_program ? lead.last_program.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '—'}</td>
                     <td className="px-6 py-4 text-slate-500">
-                      {lead.created_date ? format(new Date(lead.created_date), 'dd MMM yyyy') : '—'}
+                     {lead.created_date ? format(new Date(lead.created_date), 'dd MMM yyyy') : '—'}
                     </td>
                     <td className="px-6 py-4">
                       <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDeleteId(lead.id)}>
