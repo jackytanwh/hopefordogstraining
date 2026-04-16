@@ -99,13 +99,12 @@ Deno.serve(async (req) => {
 
     console.log(`🔍 Checking bookings with sessions on ${tomorrowStr}`);
 
-    // Get all confirmed bookings that haven't had reminders sent
+    // Get all confirmed bookings
     const bookings = await base44.asServiceRole.entities.Booking.filter({
-      booking_status: 'confirmed',
-      reminder_sent: false
+      booking_status: 'confirmed'
     });
 
-    console.log(`📋 Found ${bookings.length} confirmed bookings without reminders`);
+    console.log(`📋 Found ${bookings.length} confirmed bookings to check`);
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const RESEND_FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL");
@@ -151,8 +150,6 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Mark reminder as sent
-      await base44.asServiceRole.entities.Booking.update(booking.id, { reminder_sent: true });
       sentCount++;
     }
 
