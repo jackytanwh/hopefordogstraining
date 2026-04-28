@@ -122,7 +122,7 @@ function getProgramConfig(serviceType: string): ProgramConfig {
             greeting: 'Thank you for choosing Hopefordogs Canine Training as your training partner!',
             instructions: [],
             pdfLink: 'https://canva.link/behavioural-modification-handouts',
-            pdfLabel: 'First steps to helping a reactive dog',
+            pdfLabel: 'IMPORTANT! First steps to helping a reactive dog',
             promoBlock: false,
             addressLabel: 'Address',
             discountCode: '',
@@ -326,7 +326,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
             </p>
 
             <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">
-                At Hopefordogs Canine Training, we use compassionate, reward-based methods, always prioritising the dog's welfare and emotional wellbeing at the heart of our training.
+                At Hopefordogs Canine Training, we are committed to using compassionate, reward-based methods, with the dog’s welfare and emotional wellbeing at the core of our approach. We do not support or permit the use of aversive tools such as choke chains, head halters, or electronic collars under any circumstances. We reserve the right to terminate services should these methods be used.
             </p>
 
             ${address ? `<p style="font-size: 14px; color: #334155; margin: 0 0 4px 0;"><strong>${config.addressLabel}:</strong> ${address}${postalCode ? ', ' + postalCode : ''}</p>` : ''}
