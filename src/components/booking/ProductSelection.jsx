@@ -24,7 +24,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_small',
     name: 'Puppy Playtime Starter Kit – S',
-    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (XS), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S).</strong> Suitable for <strong>small breeds like Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.</strong>',
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (XS), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S).</strong> Suitable for small breeds like <strong>Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.</strong>',
     originalPrice: 50.35,
     discountedPrice: 45.32,
     discountPercent: 10,
@@ -40,7 +40,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_medium',
     name: 'Puppy Playtime Starter Kit – M',
-    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (M), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M)</strong>. Suitable for <strong>medium-sized breeds like Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.',
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (M), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M).</strong> Suitable for medium-sized breeds like <strong>Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.</strong>',
     originalPrice: 64.35,
     discountedPrice: 57.92,
     discountPercent: 10,
@@ -56,7 +56,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_large',
     name: 'Puppy Playtime Starter Kit – L',
-    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound</strong>. Suitable for <strong>large breeds like Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.</strong>',
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound.</strong> Suitable for large breeds like <strong>Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.</strong>',
     originalPrice: 76.25,
     discountedPrice: 68.63,
     discountPercent: 10,
@@ -246,7 +246,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                             <span className="text-sm text-slate-400 line-through">${product.originalPrice.toFixed(2)}</span>
                             <span className="text-sm font-bold text-emerald-600">FREE</span>
                           </div>
-                          <p className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2">{product.description}</p>
+                          <p className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2" dangerouslySetInnerHTML={{ __html: product.description }} />
                           {product.showEcoLabel && (
                             <p className="text-xs text-green-700 mt-1 font-medium">🌱 100% Vegan • 🤲 Handcrafted • ♻️ Biodegradable</p>
                           )}
@@ -317,9 +317,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                         <h3 className="font-semibold text-slate-900 text-base md:text-lg">
                           {product.name}
                         </h3>
-                        <p className="text-sm text-slate-600 mt-1 leading-relaxed">
-                          {product.description}
-                        </p>
+                        <p className="text-sm text-slate-600 mt-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: product.description }} />
                         {product.showEcoLabel && (
                           <p className="text-xs text-green-700 mt-2 font-medium">
                             🌱 100% Vegan • 🤲 Handcrafted • ♻️ Biodegradable
@@ -486,9 +484,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
               </>
             )}
             <div className="space-y-2">
-              <p className="text-sm text-slate-600 leading-relaxed">
-                {selectedImage?.description}
-              </p>
+              <p className="text-sm text-slate-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: selectedImage?.description }} />
               {selectedImage?.showEcoLabel && (
                 <p className="text-xs text-green-700 font-medium">
                   🌱 100% Vegan • 🤲 Handcrafted • ♻️ Biodegradable
