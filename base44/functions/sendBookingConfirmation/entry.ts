@@ -218,6 +218,14 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         </div>`;
     }
 
+    // Pets' Delight birthday promo (all programs)
+    const petsDelightHtml = `
+    <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 16px; margin: 16px 0;">
+        <p style="font-size: 14px; color: #7c2d12; margin: 0 0 6px 0;">🎂 Celebrating <strong>${furkidName}</strong>'s birthday? Enjoy <strong>10% off all cake orders</strong> at <a href="https://petsdelight.sg/" style="color: #c2410c; font-weight: 600;">Pets' Delight</a> — no minimum spend required!</p>
+        <p style="font-size: 14px; color: #7c2d12; margin: 0 0 4px 0;">Simply use the exclusive promo code:</p>
+        <p style="font-size: 15px; font-weight: 700; color: #9a3412; margin: 4px 0 0 0; letter-spacing: 1px;">HOPEFORDOGS10</p>
+    </div>`;
+
     // PAWGRESS10 discount code block (Kinder Puppy only)
     let pawgressHtml = '';
     if (config.pawgressCode) {
@@ -341,6 +349,8 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
 
             ${pawgressHtml}
 
+            ${petsDelightHtml}
+
             ${discountHtml}
 
             <!-- Pricing -->
@@ -422,8 +432,9 @@ Deno.serve(async (req) => {
 
             const promoWa = config.promoBlock ? '\n\nShop for Paws Botanic Pet Grooming Essentials (Promo Code: 20OFFNEW)\nhttps://www.pawsbotanic.co/' : '';
         const pawgressWa = config.pawgressCode ? `\n\n🎓 When ${furkidName} completes the Kinder Puppy Program, continue with our Basic Manners Program! Use code *PAWGRESS10* (valid 6 months) for an exclusive discount.` : '';
+            const petsDelightWa = `\n\n🎂 Celebrating ${furkidName}'s birthday? Enjoy 10% off all cake orders at Pets' Delight (https://petsdelight.sg/) — no minimum spend required!\nSimply use the exclusive promo code: *HOPEFORDOGS10*`;
 
-            const message = `Hello ${clientName} and ${furkidName},\n\n${config.greeting} You have enrolled for *${booking.service_name}*${firstDate ? ` starting ${firstDate}, ${firstTime}, ${firstDay}` : ''}.${address ? `\n${config.addressLabel}: ${address}` : ''}${scheduleWa}${instructionsWa}${promoWa}${pawgressWa}\n\nFeel free to reach out if you have any questions.\n\nKind regards,\nJacky\nHopefordogs`;
+            const message = `Hello ${clientName} and ${furkidName},\n\n${config.greeting} You have enrolled for *${booking.service_name}*${firstDate ? ` starting ${firstDate}, ${firstTime}, ${firstDay}` : ''}.${address ? `\n${config.addressLabel}: ${address}` : ''}${scheduleWa}${instructionsWa}${promoWa}${pawgressWa}${petsDelightWa}\n\nFeel free to reach out if you have any questions.\n\nKind regards,\nJacky\nHopefordogs`;
 
             try {
                 const conversation = await base44.asServiceRole.agents.createConversation({
