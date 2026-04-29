@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sparkles, ShoppingCart, Plus, Minus, Maximize2, ChevronLeft, ChevronRight, Gift } from "lucide-react";
 
-const COMPLIMENTARY_IDS = ['fur_fresh', 'paw_protect', 'flea_tick'];
+const COMPLIMENTARY_IDS = ['flea_tick'];
 
 const PRODUCTS = [
   {
