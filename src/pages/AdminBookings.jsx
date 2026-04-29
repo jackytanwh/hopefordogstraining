@@ -193,11 +193,20 @@ export default function AdminBookings() {
     }
   };
 
-  const todayBookings = bookings.filter(booking => {
-    if (!booking.session_dates || booking.session_dates.length === 0) return false;
-    if (booking.booking_status === 'cancelled') return false;
-    return booking.session_dates.some(s => s.date && isToday(parseISO(s.date)));
-  });
+  const todayBookings = bookings
+    .filter(booking => {
+      if (!booking.session_dates || booking.session_dates.length === 0) return false;
+      if (booking.booking_status === 'cancelled') return false;
+      return booking.session_dates.some(s => s.date && isToday(parseISO(s.date)));
+    })
+    .sort((a, b) => {
+      const getEarliestTodayTime = (booking) => {
+        const todaySess = booking.session_dates.filter(s => s.date && isToday(parseISO(s.date)));
+        const times = todaySess.map(s => s.start_time || '99:99').sort();
+        return times[0] || '99:99';
+      };
+      return getEarliestTodayTime(a).localeCompare(getEarliestTodayTime(b));
+    });
 
   return (
     <div className="p-3 md:p-8 space-y-6">
