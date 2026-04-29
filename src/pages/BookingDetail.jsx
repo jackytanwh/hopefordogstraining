@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban, MessageCircle } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban, MessageCircle, Copy } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import BehaviouralModificationDetails from "../components/booking/BehaviouralModificationDetails";
 import CanineAssessmentDetails from "../components/booking/CanineAssessmentDetails";
@@ -1136,14 +1136,19 @@ export default function BookingDetail() {
                                    }}
                                  />
                                 ) : field === 'client_mobile' ? (
-                                 <div className="flex items-center gap-2">
-                                   <p className="font-medium">{val || 'N/A'}</p>
-                                   {val && (
-                                     <a href={`https://wa.me/${val.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
-                                       <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
-                                     </a>
-                                   )}
-                                 </div>
+                                  <div className="flex items-center gap-2">
+                                    <p className="font-medium">{val || 'N/A'}</p>
+                                    {val && (
+                                      <>
+                                        <button onClick={() => navigator.clipboard.writeText(val)} title="Copy number" className="text-slate-400 hover:text-slate-600">
+                                          <Copy className="w-3.5 h-3.5" />
+                                        </button>
+                                        <a href={`https://wa.me/${val.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
+                                          <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
+                                        </a>
+                                      </>
+                                    )}
+                                  </div>
                                 ) : (
                                  <p className="font-medium">{val || 'N/A'}</p>
                                 )}
@@ -1171,9 +1176,14 @@ export default function BookingDetail() {
                             <div className="flex items-center gap-2">
                               <p className="font-medium">{value || 'N/A'}</p>
                               {value && (
-                                <a href={`https://wa.me/${value.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
-                                  <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
-                                </a>
+                                <>
+                                  <button onClick={() => navigator.clipboard.writeText(value)} title="Copy number" className="text-slate-400 hover:text-slate-600">
+                                    <Copy className="w-3.5 h-3.5" />
+                                  </button>
+                                  <a href={`https://wa.me/${value.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
+                                    <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
+                                  </a>
+                                </>
                               )}
                             </div>
                           ) : (
