@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban, MessageCircle } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import BehaviouralModificationDetails from "../components/booking/BehaviouralModificationDetails";
 import CanineAssessmentDetails from "../components/booking/CanineAssessmentDetails";
@@ -1127,16 +1127,25 @@ export default function BookingDetail() {
                               <div key={field}>
                                 <p className="text-slate-600 mb-1">{labels[field]}</p>
                                 {editingClient ? (
-                                  <Input
-                                    value={clientEdits.clients?.[idx]?.[field] ?? val}
-                                    onChange={e => {
-                                      const updated = [...(clientEdits.clients || [])];
-                                      updated[idx] = { ...updated[idx], [field]: e.target.value };
-                                      setClientEdits(prev => ({ ...prev, clients: updated }));
-                                    }}
-                                  />
+                                 <Input
+                                   value={clientEdits.clients?.[idx]?.[field] ?? val}
+                                   onChange={e => {
+                                     const updated = [...(clientEdits.clients || [])];
+                                     updated[idx] = { ...updated[idx], [field]: e.target.value };
+                                     setClientEdits(prev => ({ ...prev, clients: updated }));
+                                   }}
+                                 />
+                                ) : field === 'client_mobile' ? (
+                                 <div className="flex items-center gap-2">
+                                   <p className="font-medium">{val || 'N/A'}</p>
+                                   {val && (
+                                     <a href={`https://wa.me/${val.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
+                                       <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
+                                     </a>
+                                   )}
+                                 </div>
                                 ) : (
-                                  <p className="font-medium">{val || 'N/A'}</p>
+                                 <p className="font-medium">{val || 'N/A'}</p>
                                 )}
                               </div>
                             );
@@ -1158,6 +1167,15 @@ export default function BookingDetail() {
                               value={clientEdits[field] ?? ''}
                               onChange={e => setClientEdits(prev => ({ ...prev, [field]: e.target.value }))}
                             />
+                          ) : field === 'client_mobile' ? (
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">{value || 'N/A'}</p>
+                              {value && (
+                                <a href={`https://wa.me/${value.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
+                                  <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
+                                </a>
+                              )}
+                            </div>
                           ) : (
                             <p className="font-medium">{value || 'N/A'}</p>
                           )}
