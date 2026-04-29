@@ -222,8 +222,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
     const petsDelightHtml = `
     <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 16px; margin: 16px 0;">
         <p style="font-size: 14px; color: #7c2d12; margin: 0 0 6px 0;">🎂 Celebrating <strong>${furkidName}</strong>'s birthday? Enjoy <strong>10% off all cake orders</strong> at <a href="https://petsdelight.sg/" style="color: #c2410c; font-weight: 600;">Pets' Delight</a> — no minimum spend required!</p>
-        <p style="font-size: 14px; color: #7c2d12; margin: 0 0 4px 0;">Simply use the exclusive promo code:</p>
-        <p style="font-size: 15px; font-weight: 700; color: #9a3412; margin: 4px 0 0 0; letter-spacing: 1px;">HOPEFORDOGS10</p>
+        <p style="font-size: 14px; color: #7c2d12; margin: 0 0 4px 0;">Simply use the exclusive promo code: <strong>HOPEFORDOGS10</strong></p>
     </div>`;
 
     // PAWGRESS10 discount code block (Kinder Puppy only)
@@ -232,8 +231,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         pawgressHtml = `
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0;">
             <p style="font-size: 14px; color: #166534; margin: 0 0 6px 0;">🎓 Ready to take the next step? When <strong>${furkidName}</strong> completes the Kinder Puppy Program, continue the journey with our <strong>Basic Manners Program</strong>!</p>
-            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">Use the exclusive discount code below — valid for <strong>12 months</strong> from today:</p>
-            <p style="font-size: 15px; font-weight: 700; color: #15803d; margin: 8px 0 0 0; letter-spacing: 1px;">PAWGRESS10</p>
+            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">Use the exclusive discount code below — valid for <strong>12 months</strong> from today: <strong>PAWGRESS10</strong></p>
         </div>`;
     }
 
@@ -253,8 +251,7 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
     if (config.discountCode) {
         discountHtml = `
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0; text-align: center;">
-            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">10% discount for any future program</p>
-            <p style="font-size: 15px; font-weight: 700; color: #15803d; margin: 0; letter-spacing: 1px;">${config.discountCode}</p>
+            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">10% discount for any future program: <strong>${config.discountCode}</strong></p>
         </div>`;
     }
 
