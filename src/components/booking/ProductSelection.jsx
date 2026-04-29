@@ -45,7 +45,13 @@ const PRODUCTS = [
     discountedPrice: 57.92,
     discountPercent: 10,
     showEcoLabel: false,
-    imageUrls: []
+    imageUrls: [
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/32a599b40_Screenshot2026-04-29175939.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/0cd973dd5_Screenshot2026-04-29175845.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/ad0b95c5d_Screenshot2026-04-29175818.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/aae0842f4_Screenshot2026-04-29180006.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/97d3b3183_Screenshot2026-04-29180652.png'
+    ]
   },
   {
     id: 'puppy_kit_large',
