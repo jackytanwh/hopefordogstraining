@@ -226,6 +226,23 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                         isSelected ? 'border-emerald-400 bg-emerald-50/60 ring-2 ring-emerald-200' : 'border-slate-200 hover:border-emerald-300'
                       }`}
                     >
+                      {/* Mobile: image at top */}
+                      {hasImages && (
+                        <div className="md:hidden mb-3">
+                          <div className="flex gap-2 overflow-x-auto pb-1">
+                            {product.imageUrls.map((imageUrl, index) => (
+                              <img
+                                key={index}
+                                src={imageUrl}
+                                alt={`${product.name} ${index + 1}`}
+                                className="w-24 h-24 flex-shrink-0 object-contain rounded-lg bg-white"
+                                onClick={e => { e.stopPropagation(); handleImageClick(product, index); }}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-xs text-slate-500 mt-1">Tap to zoom</p>
+                        </div>
+                      )}
                       <div className="flex items-start gap-4">
                         <div className={`mt-1 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
                           isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'
@@ -236,7 +253,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                           <img
                             src={product.imageUrls[0]}
                             alt={product.name}
-                            className="w-16 h-16 object-contain rounded-lg bg-white flex-shrink-0"
+                            className="hidden md:block w-16 h-16 object-contain rounded-lg bg-white flex-shrink-0"
                             onClick={e => { e.stopPropagation(); handleImageClick(product, 0); }}
                           />
                         )}
