@@ -61,7 +61,13 @@ const PRODUCTS = [
     discountedPrice: 68.63,
     discountPercent: 10,
     showEcoLabel: false,
-    imageUrls: []
+    imageUrls: [
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/7651f870c_Screenshot2026-04-29180919.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/ab048b023_Screenshot2026-04-29180943.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/119fb2ad0_Screenshot2026-04-29181011.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/048eb04e6_Screenshot2026-04-29181043.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/f7f0dba6d_Screenshot2026-04-29181113.png'
+    ]
   }
 ];
 
