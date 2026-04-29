@@ -864,7 +864,7 @@ export default function BookingDetail() {
           <Button
             variant="outline"
             onClick={() => setShowDeleteConfirm(true)}
-            className="text-red-600 border-red-200 hover:bg-red-50"
+            className="text-red-600 border-red-200 hover:bg-red-50 hidden lg:flex"
           >
             <Trash2 className="w-4 h-4 mr-2" />
             Delete Booking
