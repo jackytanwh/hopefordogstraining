@@ -1003,11 +1003,11 @@ export default function BookingDetail() {
                         {wasRescheduled && !isCancelled && (
                           <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
                             <RefreshCw className="w-3 h-3" />
-                            {isGroupClass ? 'Rescheduled' : 'Auto-adjusted'}
-                          </Badge>
-                        )}
-                        {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
+                            {isGroupClass ? 'Rescheduled' : 'Adjusted'}
+                                     </Badge>
+                                   )}
+                                   {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
@@ -1594,7 +1594,7 @@ export default function BookingDetail() {
                             {wasRescheduled && !isCancelled && (
                               <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
                                 <RefreshCw className="w-3 h-3" />
-                                {isGroupClass ? 'Rescheduled' : 'Auto-adjusted'}
+                                {isGroupClass ? 'Rescheduled' : 'Adjusted'}
                               </Badge>
                             )}
                             {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
