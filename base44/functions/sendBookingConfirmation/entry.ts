@@ -333,13 +333,13 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
 
             ${scheduleHtml}
 
+            ${pdfHtml}
+
             ${instructionsHtml}
 
             ${promoHtml}
 
             ${pawgressHtml}
-
-            ${pdfHtml}
 
             ${discountHtml}
 
