@@ -447,11 +447,10 @@ export default function BookingDetail() {
       [itemKey]: checked
     };
     
+    setBooking(prev => ({ ...prev, kinder_puppy_items_given: updatedItems }));
     await base44.entities.Booking.update(bookingId, {
       kinder_puppy_items_given: updatedItems
     });
-    
-    await loadBooking();
   };
 
   const handleBasicMannersItemsUpdate = async (itemKey, checked) => {
@@ -462,11 +461,10 @@ export default function BookingDetail() {
       [itemKey]: checked
     };
     
+    setBooking(prev => ({ ...prev, basic_manners_items_given: updatedItems }));
     await base44.entities.Booking.update(bookingId, {
       basic_manners_items_given: updatedItems
     });
-    
-    await loadBooking();
   };
 
   // Add curriculum update function
@@ -482,8 +480,7 @@ export default function BookingDetail() {
       progressField = 'basic_manners_group_class_progress';
     } else if (booking.service_type === 'adore_hdb_approval') {
       progressField = 'adore_hdb_progress';
-    }
-    else {
+    } else {
       return;
     }
     
@@ -495,11 +492,10 @@ export default function BookingDetail() {
       }
     };
     
+    setBooking(prev => ({ ...prev, [progressField]: updatedProgress }));
     await base44.entities.Booking.update(bookingId, {
       [progressField]: updatedProgress
     });
-    
-    await loadBooking();
   };
 
   if (loading) {
