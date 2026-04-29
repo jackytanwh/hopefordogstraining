@@ -24,7 +24,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_small',
     name: 'Puppy Playtime Starter Kit – S',
-    description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (XS), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S). Suitable for small breeds like Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.',
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (XS), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S).</strong> Suitable for <strong>small breeds like Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.</strong>',
     originalPrice: 50.35,
     discountedPrice: 45.32,
     discountPercent: 10,
@@ -40,7 +40,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_medium',
     name: 'Puppy Playtime Starter Kit – M',
-    description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (M), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M). Suitable for medium breeds like Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.',
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (M), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M)</strong>. Suitable for <strong>medium-sized breeds like Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.',
     originalPrice: 64.35,
     discountedPrice: 57.92,
     discountPercent: 10,
@@ -56,7 +56,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_large',
     name: 'Puppy Playtime Starter Kit – L',
-    description: 'A set of toys specially selected to help puppies engage in safe and fun playtime activities. Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound. Suitable for large breeds like Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.',
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound</strong>. Suitable for <strong>large breeds like Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.</strong>',
     originalPrice: 76.25,
     discountedPrice: 68.63,
     discountPercent: 10,
