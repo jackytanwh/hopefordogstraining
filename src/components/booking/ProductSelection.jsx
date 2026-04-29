@@ -275,9 +275,36 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                   }`}
                 >
                   <div className="space-y-3">
+                    {/* Mobile: images scrollable row at top */}
+                    {hasImages && (
+                      <div className="md:hidden">
+                        <div className="flex gap-2 overflow-x-auto pb-1">
+                          {product.imageUrls.map((imageUrl, index) => (
+                            <button
+                              key={index}
+                              type="button"
+                              onClick={() => handleImageClick(product, index)}
+                              className="relative flex-shrink-0 rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 group"
+                            >
+                              <img
+                                src={imageUrl}
+                                alt={`${product.name} ${index + 1}`}
+                                className="w-24 h-24 object-contain bg-white rounded-lg transition-transform group-hover:scale-105"
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
+                                <Maximize2 className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">Tap to zoom</p>
+                      </div>
+                    )}
+
+                    {/* Desktop: side-by-side layout */}
                     <div className="flex items-start gap-4">
                       {hasImages && (
-                        <div className="flex-shrink-0 space-y-2">
+                        <div className="hidden md:flex flex-shrink-0 flex-col space-y-2">
                           <button
                             type="button"
                             onClick={() => handleImageClick(product, 0)}
@@ -286,7 +313,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
                             <img
                               src={product.imageUrls[0]}
                               alt={product.name}
-                              className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-lg bg-white transition-transform group-hover:scale-105"
+                              className="w-24 h-24 object-contain rounded-lg bg-white transition-transform group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
                               <Maximize2 className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
