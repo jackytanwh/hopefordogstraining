@@ -523,7 +523,7 @@ export default function BookingCalendar() {
                     <div>
                       <h3 className="font-semibold text-sm text-slate-900 mb-2">Bookings</h3>
                       <div className="space-y-3">
-                        {selectedDateBookings.map((booking, idx) => (
+                        {[...selectedDateBookings].sort((a, b) => (a.session?.start_time || '').localeCompare(b.session?.start_time || '')).map((booking, idx) => (
                           <div key={idx} className="border border-slate-200 rounded-lg p-3 space-y-2">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
