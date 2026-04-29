@@ -382,8 +382,8 @@ export default function BookingCalendar() {
 
                 {/* Calendar days */}
                 {calendarDays.map(day => {
-                  const dayBookings = getBookingsForDate(day);
-                  const dayBlocks = getBlockedSlotsForDate(day);
+                  const dayBookings = getBookingsForDate(day).sort((a, b) => (a.session?.start_time || '').localeCompare(b.session?.start_time || ''));
+                  const dayBlocks = getBlockedSlotsForDate(day).sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
                   const isCurrentMonth = isSameMonth(day, currentMonth);
                   const isToday = isSameDay(day, new Date());
                   const isSelected = selectedDate && isSameDay(day, selectedDate);
