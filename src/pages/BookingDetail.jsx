@@ -995,11 +995,11 @@ export default function BookingDetail() {
                   <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <p className={`font-medium text-sm ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
-                        <p className={`text-sm mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
+                        <p className={`font-semibold text-base ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
+                        <p className={`text-base mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
                           {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
                         </p>
-                        <p className={`text-sm font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
+                        <p className={`text-base font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
                           {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
                         </p>
                       </div>
