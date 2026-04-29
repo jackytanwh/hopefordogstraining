@@ -412,8 +412,16 @@ export default function BookingCalendar() {
                         {format(day, 'd')}
                       </div>
                       {dayBlocks.length > 0 && !hasFullDayBlock && (
-                        <div className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded mb-1">
-                          {dayBlocks.length} blocked
+                        <div className="space-y-0.5 mb-1">
+                          {dayBlocks.slice(0, 2).map((block, idx) => (
+                            <div key={idx} className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded truncate">
+                              <Ban className="w-2.5 h-2.5 inline mr-0.5" />
+                              {block.start_time} - {block.end_time}
+                            </div>
+                          ))}
+                          {dayBlocks.length > 2 && (
+                            <div className="text-xs text-amber-700">+{dayBlocks.length - 2} more</div>
+                          )}
                         </div>
                       )}
                       {dayBookings.length > 0 && !hasFullDayBlock && (
