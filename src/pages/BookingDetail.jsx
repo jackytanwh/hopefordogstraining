@@ -1213,17 +1213,17 @@ export default function BookingDetail() {
                         <h4 className="font-semibold text-slate-900 mb-3">
                           {booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'kinder_puppy_in_home' ? 'Puppy' : 'Dog'} {idx + 1}
                         </h4>
-                        <div className="grid grid-cols-2 gap-4 text-base">
+                        <div className="grid md:grid-cols-2 gap-4 text-base">
                           <div><p className="text-slate-600">Name</p><p className="font-medium">{getFurkidField(furkid, 'furkidName')}</p></div>
                           {getFurkidField(furkid, 'furkidAge') !== 'N/A' && <div><p className="text-slate-600">Age</p><p className="font-medium">{getFurkidField(furkid, 'furkidAge')}</p></div>}
                           {getFurkidField(furkid, 'furkidBreed') !== 'N/A' && <div><p className="text-slate-600">Breed</p><p className="font-medium">{getFurkidField(furkid, 'furkidBreed')}</p></div>}
                           <div><p className="text-slate-600">Gender</p><p className="font-medium capitalize">{getFurkidField(furkid, 'furkidGender')}</p></div>
                           <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{furkid.furkidSterilised || furkid.furkid_sterilised ? 'Yes' : 'No'}</p></div>
                           <div><p className="text-slate-600">Adopted</p><p className="font-medium">{furkid.isAdopted || furkid.is_adopted ? 'Yes' : 'No'}</p></div>
-                          {getFurkidField(furkid, 'furkidDiet') !== 'N/A' && <div><p className="text-slate-600">Diet</p><p className="font-medium">{getFurkidField(furkid, 'furkidDiet')}</p></div>}
-                          {getFurkidField(furkid, 'furkidSleepArea') !== 'N/A' && <div><p className="text-slate-600">Sleep Area</p><p className="font-medium">{getFurkidField(furkid, 'furkidSleepArea')}</p></div>}
+                          {getFurkidField(furkid, 'furkidDiet') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{getFurkidField(furkid, 'furkidDiet')}</p></div>}
+                          {getFurkidField(furkid, 'furkidSleepArea') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Sleep Area</p><p className="font-medium">{getFurkidField(furkid, 'furkidSleepArea')}</p></div>}
                           <div><p className="text-slate-600">Furkid's IG</p><p className="font-medium">{furkid.furkidInstagram || furkid.furkid_instagram || 'N/A'}</p></div>
-                          <div><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{furkid.enrolmentReason || furkid.enrolment_reason || 'N/A'}</p></div>
+                          <div className="md:col-span-2"><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{furkid.enrolmentReason || furkid.enrolment_reason || 'N/A'}</p></div>
                         </div>
                         {(furkid.furkidPhotoUrl || furkid.furkid_photo_url) && (
                           <div className="mt-4">
@@ -1235,7 +1235,7 @@ export default function BookingDetail() {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-4 text-base">
+                  <div className="grid md:grid-cols-2 gap-4 text-base">
                     <div><p className="text-slate-600">Name</p><p className="font-medium">{booking.furkid_name || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Age</p><p className="font-medium">{booking.furkid_age || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Breed</p><p className="font-medium">{booking.furkid_breed || 'N/A'}</p></div>
@@ -1244,13 +1244,13 @@ export default function BookingDetail() {
                     <div><p className="text-slate-600">Adopted</p><p className="font-medium">{booking.is_adopted === true ? 'Yes' : booking.is_adopted === false ? 'No' : 'N/A'}</p></div>
                     <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family || 'N/A'}</p></div>
                     <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{booking.first_time_owner === true ? 'Yes' : booking.first_time_owner === false ? 'No' : 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Diet</p><p className="font-medium">{booking.furkid_diet || 'N/A'}</p></div>
+                    <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{booking.furkid_diet || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Sleeps At Night</p><p className="font-medium">{booking.furkid_sleep_area || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Furkid's IG</p><p className="font-medium">{booking.furkid_instagram || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{booking.enrolment_reason || 'N/A'}</p></div>
+                    <div className="md:col-span-2"><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{booking.enrolment_reason || 'N/A'}</p></div>
                     {booking.furkid_photo_url && (
-                      <div>
+                      <div className="md:col-span-2">
                         <p className="text-slate-600 text-sm mb-2">Photo</p>
                         <img src={booking.furkid_photo_url} alt={booking.furkid_name} className="rounded-lg w-32 h-32 object-cover" />
                       </div>
