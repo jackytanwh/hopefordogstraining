@@ -1387,6 +1387,7 @@ export default function BookingDetail() {
                     </div>
                     <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{booking.furkid_sterilised === true ? 'Yes' : booking.furkid_sterilised === false ? 'No' : 'N/A'}</p></div>
                     <div><p className="text-slate-600">Adopted</p><p className="font-medium">{booking.is_adopted === true ? 'Yes' : booking.is_adopted === false ? 'No' : 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Acquired From</p><p className="font-medium">{booking.furkid_acquired_from || 'N/A'}</p></div>
                     <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family || 'N/A'}</p></div>
                     <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{booking.first_time_owner === true ? 'Yes' : booking.first_time_owner === false ? 'No' : 'N/A'}</p></div>
                     {[
