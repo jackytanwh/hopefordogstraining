@@ -444,7 +444,17 @@ export default function BookingDetail() {
   const handleEditFurkidStart = () => {
     const isFYOGBooking = booking && (booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'basic_manners_fyog' || booking.service_type === 'basic_manners_group_class' || booking.service_type === 'group_class_basic_manners' || (booking.clients && booking.clients.length > 0) || (booking.furkids && booking.furkids.length > 0));
     if (isFYOGBooking && booking.furkids && booking.furkids.length > 0) {
-      setFurkidEdits({ furkids: booking.furkids.map(f => ({ ...f })) });
+      setFurkidEdits({ furkids: booking.furkids.map(f => ({
+        ...f,
+        furkid_name: f.furkid_name || f.furkidName || '',
+        furkid_age: f.furkid_age || f.furkidAge || '',
+        furkid_breed: f.furkid_breed || f.furkidBreed || '',
+        furkid_gender: f.furkid_gender || f.furkidGender || '',
+        furkid_diet: f.furkid_diet || f.furkidDiet || '',
+        furkid_sleep_area: f.furkid_sleep_area || f.furkidSleepArea || '',
+        furkid_instagram: f.furkid_instagram || f.furkidInstagram || '',
+        enrolment_reason: f.enrolment_reason || f.enrolmentReason || '',
+      })) });
     } else {
       setFurkidEdits({
         furkid_name: booking.furkid_name || '',
@@ -1268,31 +1278,81 @@ export default function BookingDetail() {
               <CardContent className="p-6">
                 {isFYOG && booking.furkids && booking.furkids.length > 0 ? (
                   <div className="space-y-4">
-                    {booking.furkids.map((furkid, idx) => (
-                      <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
-                        <h4 className="font-semibold text-slate-900 mb-3">
-                          {booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'kinder_puppy_in_home' ? 'Puppy' : 'Dog'} {idx + 1}
-                        </h4>
-                        <div className="grid md:grid-cols-2 gap-4 text-base">
-                          <div><p className="text-slate-600">Name</p><p className="font-medium">{getFurkidField(furkid, 'furkidName')}</p></div>
-                          {getFurkidField(furkid, 'furkidAge') !== 'N/A' && <div><p className="text-slate-600">Age</p><p className="font-medium">{getFurkidField(furkid, 'furkidAge')}</p></div>}
-                          {getFurkidField(furkid, 'furkidBreed') !== 'N/A' && <div><p className="text-slate-600">Breed</p><p className="font-medium">{getFurkidField(furkid, 'furkidBreed')}</p></div>}
-                          <div><p className="text-slate-600">Gender</p><p className="font-medium capitalize">{getFurkidField(furkid, 'furkidGender')}</p></div>
-                          <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{furkid.furkidSterilised || furkid.furkid_sterilised ? 'Yes' : 'No'}</p></div>
-                          <div><p className="text-slate-600">Adopted</p><p className="font-medium">{furkid.isAdopted || furkid.is_adopted ? 'Yes' : 'No'}</p></div>
-                          {getFurkidField(furkid, 'furkidDiet') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{getFurkidField(furkid, 'furkidDiet')}</p></div>}
-                          {getFurkidField(furkid, 'furkidSleepArea') !== 'N/A' && <div className="md:col-span-2"><p className="text-slate-600">Sleep Area</p><p className="font-medium">{getFurkidField(furkid, 'furkidSleepArea')}</p></div>}
-                          <div><p className="text-slate-600">Furkid's IG</p><p className="font-medium">{furkid.furkidInstagram || furkid.furkid_instagram || 'N/A'}</p></div>
-                          <div className="md:col-span-2"><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{furkid.enrolmentReason || furkid.enrolment_reason || 'N/A'}</p></div>
-                        </div>
-                        {(furkid.furkidPhotoUrl || furkid.furkid_photo_url) && (
-                          <div className="mt-4">
-                            <p className="text-slate-600 text-sm mb-2">Photo</p>
-                            <img src={furkid.furkidPhotoUrl || furkid.furkid_photo_url} alt={getFurkidField(furkid, 'furkidName')} className="rounded-lg w-32 h-32 object-cover" />
+                    {(editingFurkid ? furkidEdits.furkids : booking.furkids)?.map((furkid, idx) => {
+                      const origFurkid = booking.furkids[idx] || {};
+                      return (
+                        <div key={idx} className={`${idx > 0 ? 'pt-4 border-t border-slate-200' : ''}`}>
+                          <h4 className="font-semibold text-slate-900 mb-3">
+                            {booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'kinder_puppy_in_home' ? 'Puppy' : 'Dog'} {idx + 1}
+                          </h4>
+                          <div className="grid md:grid-cols-2 gap-4 text-base">
+                            {[
+                              { field: 'furkid_name', label: 'Name' },
+                              { field: 'furkid_age', label: 'Age' },
+                              { field: 'furkid_breed', label: 'Breed' },
+                              { field: 'furkid_instagram', label: "Furkid's IG" },
+                            ].map(({ field, label }) => (
+                              <div key={field}>
+                                <p className="text-slate-600 mb-1">{label}</p>
+                                {editingFurkid ? (
+                                  <Input value={furkid[field] ?? ''} onChange={e => {
+                                    const updated = [...(furkidEdits.furkids || [])];
+                                    updated[idx] = { ...updated[idx], [field]: e.target.value };
+                                    setFurkidEdits(prev => ({ ...prev, furkids: updated }));
+                                  }} />
+                                ) : (
+                                  <p className="font-medium">{getFurkidField(origFurkid, field.replace(/_([a-z])/g, (_, l) => l.toUpperCase())) || 'N/A'}</p>
+                                )}
+                              </div>
+                            ))}
+                            <div>
+                              <p className="text-slate-600 mb-1">Gender</p>
+                              {editingFurkid ? (
+                                <Select value={furkid.furkid_gender || ''} onValueChange={val => {
+                                  const updated = [...(furkidEdits.furkids || [])];
+                                  updated[idx] = { ...updated[idx], furkid_gender: val };
+                                  setFurkidEdits(prev => ({ ...prev, furkids: updated }));
+                                }}>
+                                  <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="boy">Boy</SelectItem>
+                                    <SelectItem value="girl">Girl</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <p className="font-medium capitalize">{getFurkidField(origFurkid, 'furkidGender')}</p>
+                              )}
+                            </div>
+                            <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{origFurkid.furkidSterilised || origFurkid.furkid_sterilised ? 'Yes' : 'No'}</p></div>
+                            <div><p className="text-slate-600">Adopted</p><p className="font-medium">{origFurkid.isAdopted || origFurkid.is_adopted ? 'Yes' : 'No'}</p></div>
+                            {[
+                              { field: 'furkid_diet', label: 'Diet', span: true },
+                              { field: 'furkid_sleep_area', label: 'Sleep Area', span: true },
+                              { field: 'enrolment_reason', label: 'Reason for Enrolment', span: true },
+                            ].map(({ field, label, span }) => (
+                              <div key={field} className={span ? 'md:col-span-2' : ''}>
+                                <p className="text-slate-600 mb-1">{label}</p>
+                                {editingFurkid ? (
+                                  <Input value={furkid[field] ?? ''} onChange={e => {
+                                    const updated = [...(furkidEdits.furkids || [])];
+                                    updated[idx] = { ...updated[idx], [field]: e.target.value };
+                                    setFurkidEdits(prev => ({ ...prev, furkids: updated }));
+                                  }} />
+                                ) : (
+                                  <p className="font-medium">{origFurkid[field] || origFurkid[field.replace(/_([a-z])/g, (_, l) => l.toUpperCase())] || 'N/A'}</p>
+                                )}
+                              </div>
+                            ))}
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {(origFurkid.furkidPhotoUrl || origFurkid.furkid_photo_url) && (
+                            <div className="mt-4">
+                              <p className="text-slate-600 text-sm mb-2">Photo</p>
+                              <img src={origFurkid.furkidPhotoUrl || origFurkid.furkid_photo_url} alt={getFurkidField(origFurkid, 'furkidName')} className="rounded-lg w-32 h-32 object-cover" />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="grid md:grid-cols-2 gap-4 text-base">
