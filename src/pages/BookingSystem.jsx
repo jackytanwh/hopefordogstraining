@@ -32,7 +32,7 @@ const services = [
   {
     id: "adore_hdb_approval",
     name: "ADORE/HDB Approval Program",
-    price: 520,
+    price: 480,
     duration: 0.75,
     sessions: 4,
     minParticipants: 1,
