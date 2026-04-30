@@ -24,9 +24,9 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_small',
     name: 'Puppy Playtime Starter Kit – S',
-    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (XS), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S).</strong> Suitable for small breeds like <strong>Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.</strong>',
-    originalPrice: 50.35,
-    discountedPrice: 45.32,
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Lion Plush Friendz Squeaker, Suppa Puppa Racoon Squeaker/Crinkle, Wooden Chew (S), GiGwi Ball w/Squeaker (S), and GiGwi Bulb Rubber Treats Dispenser (S).</strong> Suitable for small breeds like <strong>Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.</strong>',
+    originalPrice: 51.95,
+    discountedPrice: 46.80,
     discountPercent: 10,
     showEcoLabel: false,
     imageUrls: [
