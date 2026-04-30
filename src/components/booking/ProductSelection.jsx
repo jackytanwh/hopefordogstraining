@@ -40,9 +40,9 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_medium',
     name: 'Puppy Playtime Starter Kit – M',
-    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (M), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M).</strong> Suitable for medium-sized breeds like <strong>Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.</strong>',
-    originalPrice: 64.35,
-    discountedPrice: 57.92,
+    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (S), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M).</strong> Suitable for medium-sized breeds like <strong>Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.</strong>',
+    originalPrice: 62.75,
+    discountedPrice: 56.50,
     discountPercent: 10,
     showEcoLabel: false,
     imageUrls: [
