@@ -2,14 +2,27 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { format, parseISO } from "date-fns";
-import { Users, Trash2 } from "lucide-react";
+import { Users, Trash2, Edit2 } from "lucide-react";
 
 export default function ClientContacts() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
+  const [editingLead, setEditingLead] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    base44.entities.LeadInquiry.list('-created_date').then(data => {
+      setLeads(data);
+      setLoading(false);
+    });
+  }, []);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -18,12 +31,26 @@ export default function ClientContacts() {
     setDeleteId(null);
   };
 
-  useEffect(() => {
-    base44.entities.LeadInquiry.list('-created_date').then(data => {
-      setLeads(data);
-      setLoading(false);
+  const handleEditOpen = (lead) => {
+    setEditingLead(lead);
+    setEditForm({
+      client_name: lead.client_name || '',
+      email_address: lead.email_address || '',
+      mobile_number: lead.mobile_number || '',
+      furkid_name: lead.furkid_name || '',
+      dog_dob: lead.dog_dob || '',
+      dog_age: lead.dog_age || '',
+      last_program: lead.last_program || '',
     });
-  }, []);
+  };
+
+  const handleEditSave = async () => {
+    setSaving(true);
+    const updated = await base44.entities.LeadInquiry.update(editingLead.id, editForm);
+    setLeads(prev => prev.map(l => l.id === editingLead.id ? { ...l, ...editForm } : l));
+    setEditingLead(null);
+    setSaving(false);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -57,7 +84,7 @@ export default function ClientContacts() {
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Last Program</th>
                   <th className="text-left px-6 py-3 font-semibold text-slate-700">Submitted</th>
                   <th className="px-6 py-3"></th>
-                  </tr>
+                </tr>
               </thead>
               <tbody>
                 {leads.map(lead => (
@@ -72,12 +99,17 @@ export default function ClientContacts() {
                     <td className="px-6 py-4 text-slate-600">{lead.dog_age || '—'}</td>
                     <td className="px-6 py-4 text-slate-600">{lead.last_program ? lead.last_program.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '—'}</td>
                     <td className="px-6 py-4 text-slate-500">
-                     {lead.created_date ? format(new Date(lead.created_date), 'dd MMM yyyy') : '—'}
+                      {lead.created_date ? format(new Date(lead.created_date), 'dd MMM yyyy') : '—'}
                     </td>
                     <td className="px-6 py-4">
-                      <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDeleteId(lead.id)}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button size="sm" variant="ghost" className="text-slate-600 hover:text-slate-800 hover:bg-slate-100" onClick={() => handleEditOpen(lead)}>
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDeleteId(lead.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -86,6 +118,39 @@ export default function ClientContacts() {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Dialog */}
+      <Dialog open={!!editingLead} onOpenChange={(open) => !open && setEditingLead(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edit Contact</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-2">
+            {[
+              { field: 'client_name', label: 'Client Name' },
+              { field: 'email_address', label: 'Email' },
+              { field: 'mobile_number', label: 'Mobile' },
+              { field: 'furkid_name', label: "Furkid's Name" },
+              { field: 'dog_dob', label: "Furkid's DOB", type: 'date' },
+              { field: 'dog_age', label: 'Dog Age' },
+              { field: 'last_program', label: 'Last Program' },
+            ].map(({ field, label, type }) => (
+              <div key={field} className={field === 'email_address' || field === 'last_program' ? 'col-span-2' : ''}>
+                <Label className="text-sm text-slate-600 mb-1">{label}</Label>
+                <Input
+                  type={type || 'text'}
+                  value={editForm[field] || ''}
+                  onChange={e => setEditForm(prev => ({ ...prev, [field]: e.target.value }))}
+                />
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingLead(null)}>Cancel</Button>
+            <Button onClick={handleEditSave} disabled={saving}>{saving ? 'Saving...' : 'Save'}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>
