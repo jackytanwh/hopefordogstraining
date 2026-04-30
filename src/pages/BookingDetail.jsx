@@ -59,6 +59,9 @@ export default function BookingDetail() {
   const [editingClient, setEditingClient] = useState(false);
   const [clientEdits, setClientEdits] = useState({});
   const [savingClient, setSavingClient] = useState(false);
+  const [editingFurkid, setEditingFurkid] = useState(false);
+  const [furkidEdits, setFurkidEdits] = useState({});
+  const [savingFurkid, setSavingFurkid] = useState(false);
   const [editingSessions, setEditingSessions] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
@@ -435,6 +438,51 @@ export default function BookingDetail() {
       console.error('Error saving client info:', error);
     } finally {
       setSavingClient(false);
+    }
+  };
+
+  const handleEditFurkidStart = () => {
+    const isFYOGBooking = booking && (booking.service_type === 'kinder_puppy_fyog' || booking.service_type === 'basic_manners_fyog' || booking.service_type === 'basic_manners_group_class' || booking.service_type === 'group_class_basic_manners' || (booking.clients && booking.clients.length > 0) || (booking.furkids && booking.furkids.length > 0));
+    if (isFYOGBooking && booking.furkids && booking.furkids.length > 0) {
+      setFurkidEdits({ furkids: booking.furkids.map(f => ({ ...f })) });
+    } else {
+      setFurkidEdits({
+        furkid_name: booking.furkid_name || '',
+        furkid_age: booking.furkid_age || '',
+        furkid_breed: booking.furkid_breed || '',
+        furkid_gender: booking.furkid_gender || '',
+        furkid_diet: booking.furkid_diet || '',
+        furkid_sleep_area: booking.furkid_sleep_area || '',
+        furkid_instagram: booking.furkid_instagram || '',
+        enrolment_reason: booking.enrolment_reason || '',
+      });
+    }
+    setEditingFurkid(true);
+  };
+
+  const handleSaveFurkidInfo = async () => {
+    setSavingFurkid(true);
+    try {
+      if (furkidEdits.furkids) {
+        await base44.entities.Booking.update(bookingId, { furkids: furkidEdits.furkids });
+      } else {
+        await base44.entities.Booking.update(bookingId, {
+          furkid_name: furkidEdits.furkid_name,
+          furkid_age: furkidEdits.furkid_age,
+          furkid_breed: furkidEdits.furkid_breed,
+          furkid_gender: furkidEdits.furkid_gender,
+          furkid_diet: furkidEdits.furkid_diet,
+          furkid_sleep_area: furkidEdits.furkid_sleep_area,
+          furkid_instagram: furkidEdits.furkid_instagram,
+          enrolment_reason: furkidEdits.enrolment_reason,
+        });
+      }
+      await loadBooking();
+      setEditingFurkid(false);
+    } catch (error) {
+      console.error('Error saving furkid info:', error);
+    } finally {
+      setSavingFurkid(false);
     }
   };
 
@@ -1196,9 +1244,25 @@ export default function BookingDetail() {
             {/* Furkid Information */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center gap-2">
-                  <PawPrint className="w-5 h-5" />
-                  Furkid's Information
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <PawPrint className="w-5 h-5" />
+                    Furkid's Information
+                  </div>
+                  {!editingFurkid ? (
+                    <Button size="sm" variant="outline" onClick={handleEditFurkidStart}>
+                      <Edit2 className="w-4 h-4 mr-1" /> Edit
+                    </Button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => setEditingFurkid(false)}>
+                        <X className="w-4 h-4 mr-1" /> Cancel
+                      </Button>
+                      <Button size="sm" onClick={handleSaveFurkidInfo} disabled={savingFurkid}>
+                        <Save className="w-4 h-4 mr-1" /> {savingFurkid ? 'Saving...' : 'Save'}
+                      </Button>
+                    </div>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -1232,19 +1296,61 @@ export default function BookingDetail() {
                   </div>
                 ) : (
                   <div className="grid md:grid-cols-2 gap-4 text-base">
-                    <div><p className="text-slate-600">Name</p><p className="font-medium">{booking.furkid_name || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Age</p><p className="font-medium">{booking.furkid_age || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Breed</p><p className="font-medium">{booking.furkid_breed || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Gender</p><p className="font-medium capitalize">{booking.furkid_gender || 'N/A'}</p></div>
+                    {[
+                      { field: 'furkid_name', label: 'Name' },
+                      { field: 'furkid_age', label: 'Age' },
+                      { field: 'furkid_breed', label: 'Breed' },
+                      { field: 'furkid_instagram', label: "Furkid's IG" },
+                    ].map(({ field, label }) => (
+                      <div key={field}>
+                        <p className="text-slate-600 mb-1">{label}</p>
+                        {editingFurkid ? (
+                          <Input value={furkidEdits[field] ?? ''} onChange={e => setFurkidEdits(prev => ({ ...prev, [field]: e.target.value }))} />
+                        ) : (
+                          <p className="font-medium">{booking[field] || 'N/A'}</p>
+                        )}
+                      </div>
+                    ))}
+                    <div>
+                      <p className="text-slate-600 mb-1">Gender</p>
+                      {editingFurkid ? (
+                        <Select value={furkidEdits.furkid_gender || ''} onValueChange={val => setFurkidEdits(prev => ({ ...prev, furkid_gender: val }))}>
+                          <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="boy">Boy</SelectItem>
+                            <SelectItem value="girl">Girl</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <p className="font-medium capitalize">{booking.furkid_gender || 'N/A'}</p>
+                      )}
+                    </div>
                     <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{booking.furkid_sterilised === true ? 'Yes' : booking.furkid_sterilised === false ? 'No' : 'N/A'}</p></div>
                     <div><p className="text-slate-600">Adopted</p><p className="font-medium">{booking.is_adopted === true ? 'Yes' : booking.is_adopted === false ? 'No' : 'N/A'}</p></div>
                     <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family || 'N/A'}</p></div>
                     <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{booking.first_time_owner === true ? 'Yes' : booking.first_time_owner === false ? 'No' : 'N/A'}</p></div>
-                    <div className="md:col-span-2"><p className="text-slate-600">Diet</p><p className="font-medium">{booking.furkid_diet || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Sleeps At Night</p><p className="font-medium">{booking.furkid_sleep_area || 'N/A'}</p></div>
+                    {[
+                      { field: 'furkid_diet', label: 'Diet', span: true },
+                      { field: 'furkid_sleep_area', label: 'Sleeps At Night' },
+                    ].map(({ field, label, span }) => (
+                      <div key={field} className={span ? 'md:col-span-2' : ''}>
+                        <p className="text-slate-600 mb-1">{label}</p>
+                        {editingFurkid ? (
+                          <Input value={furkidEdits[field] ?? ''} onChange={e => setFurkidEdits(prev => ({ ...prev, [field]: e.target.value }))} />
+                        ) : (
+                          <p className="font-medium">{booking[field] || 'N/A'}</p>
+                        )}
+                      </div>
+                    ))}
                     <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Furkid's IG</p><p className="font-medium">{booking.furkid_instagram || 'N/A'}</p></div>
-                    <div className="md:col-span-2"><p className="text-slate-600">Reason for Enrolment</p><p className="font-medium">{booking.enrolment_reason || 'N/A'}</p></div>
+                    <div className="md:col-span-2">
+                      <p className="text-slate-600 mb-1">Reason for Enrolment</p>
+                      {editingFurkid ? (
+                        <Input value={furkidEdits.enrolment_reason ?? ''} onChange={e => setFurkidEdits(prev => ({ ...prev, enrolment_reason: e.target.value }))} />
+                      ) : (
+                        <p className="font-medium">{booking.enrolment_reason || 'N/A'}</p>
+                      )}
+                    </div>
                     {booking.furkid_photo_url && (
                       <div className="md:col-span-2">
                         <p className="text-slate-600 text-sm mb-2">Photo</p>
