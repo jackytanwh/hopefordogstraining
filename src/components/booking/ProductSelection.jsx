@@ -58,7 +58,7 @@ const PRODUCTS = [
     name: 'Puppy Playtime Starter Kit – L',
     description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound.</strong> Suitable for large breeds like <strong>Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.</strong>',
     originalPrice: 76.25,
-    discountedPrice: 68.63,
+    discountedPrice: 68.60,
     discountPercent: 10,
     showEcoLabel: false,
     imageUrls: [
