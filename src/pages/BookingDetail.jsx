@@ -63,6 +63,7 @@ export default function BookingDetail() {
   const [furkidEdits, setFurkidEdits] = useState({});
   const [savingFurkid, setSavingFurkid] = useState(false);
   const [editingSessions, setEditingSessions] = useState([]);
+  const [mobileActiveTab, setMobileActiveTab] = useState('status');
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
   const [groupSchedule, setGroupSchedule] = useState(null);
@@ -929,155 +930,165 @@ export default function BookingDetail() {
           </Button>
         </div>
 
-        {/* Combined Status + Pricing card for mobile only */}
+        {/* Mobile-only: Tabbed Status + Session Schedule */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
-          <CardHeader className="border-b border-slate-100">
-            <CardTitle className="flex items-center justify-between">
-              <span>Booking Status</span>
-              <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border`}>
-                {booking.booking_status}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <div className="flex gap-2">
-              <Select value={booking.booking_status} onValueChange={handleStatusChange} disabled={saving}>
-                <SelectTrigger className="text-base">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="confirmed">Confirmed</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {booking.confirmation_date && (
-              <div className="pt-3 border-t border-slate-200">
-                <p className="text-base text-slate-600">Confirmed on</p>
-                <p className="font-medium text-slate-900 text-base">
-                  {format(new Date(booking.confirmation_date), 'EEEE, MMM d, yyyy')} at {format(new Date(booking.confirmation_date), 'h:mm a')}
-                </p>
-              </div>
-            )}
-            <div className="pt-4 border-t border-slate-200">
-              <div className="flex items-center gap-2 mb-3">
-                <DollarSign className="w-5 h-5" />
-                <span className="font-semibold text-slate-900">Pricing</span>
-              </div>
-              <div className="space-y-2 text-base">
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Base Price:</span>
-                  <span className="font-medium">${booking.base_price?.toFixed(2)}</span>
-                </div>
-                {booking.adoption_discount > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Adoption Discount:</span>
-                    <span className="font-medium">-${booking.adoption_discount?.toFixed(2)}</span>
-                  </div>
-                )}
-                {booking.weekend_surcharge > 0 && (
-                  <div className="flex justify-between text-orange-600">
-                    <span>Weekend Surcharge:</span>
-                    <span className="font-medium">+${booking.weekend_surcharge?.toFixed(2)}</span>
-                  </div>
-                )}
-                {booking.total_sentosa_surcharge > 0 && (
-                  <div className="flex justify-between text-orange-600">
-                    <span>Sentosa Surcharge:</span>
-                    <span className="font-medium">+${booking.total_sentosa_surcharge?.toFixed(2)}</span>
-                  </div>
-                )}
-                {booking.product_selections && booking.product_selections.length > 0 && (
-                  <>
-                    <div className="pt-2 mt-2 border-t border-slate-200">
-                      <p className="font-medium text-slate-900 mb-2 flex items-center gap-2">
-                        <Package className="w-4 h-4" />
-                        Products:
-                      </p>
-                      <div className="space-y-1.5 pl-6">
-                        {booking.product_selections.map((product, idx) => (
-                          <div key={idx} className="flex justify-between text-sm">
-                            <span className="text-slate-600">{product.product_name} × {product.quantity}</span>
-                            <span className="font-medium text-blue-600">${(product.discounted_price * product.quantity).toFixed(2)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex justify-between text-blue-700 font-semibold pt-1">
-                      <span>Products Subtotal:</span>
-                      <span>${booking.products_total?.toFixed(2)}</span>
-                    </div>
-                  </>
-                )}
-                <div className="pt-2 border-t border-slate-200 flex justify-between">
-                  <span className="font-semibold">Total:</span>
-                  <span className="font-bold text-xl text-blue-600">${booking.total_price?.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Tab Toggle */}
+          <div className="flex border-b border-slate-200">
+            <button
+              onClick={() => setMobileActiveTab('status')}
+              className={`flex-1 py-3 text-sm font-medium transition-colors ${mobileActiveTab === 'status' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Booking Status
+            </button>
+            <button
+              onClick={() => setMobileActiveTab('schedule')}
+              className={`flex-1 py-3 text-sm font-medium transition-colors ${mobileActiveTab === 'schedule' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Session Schedule
+            </button>
+          </div>
 
-        {/* Mobile-only: Session Schedule */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
-          <CardHeader className="border-b border-slate-100">
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                Session Schedule
-              </CardTitle>
-              <Button size="sm" variant="outline" onClick={handleOpenReschedule} className="flex items-center gap-2">
-                <Edit2 className="w-4 h-4" />
-                Reschedule
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="space-y-3">
-              {booking.session_dates?.map((session, idx) => {
-                const isGroupClass = booking.service_type === 'basic_manners_group_class';
-                const wasRescheduled = Boolean(
-                  session.was_rescheduled ||
-                  session.wasRescheduled ||
-                  session.rescheduled ||
-                  session.auto_adjusted
-                );
-                const isCancelled = Boolean(session.session_cancelled);
-                return (
-                  <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <p className={`font-semibold text-base ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
-                        <p className={`text-base mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
-                          {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
-                        </p>
-                        <p className={`text-base font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
-                          {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        {wasRescheduled && !isCancelled && (
-                          <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
-                            <RefreshCw className="w-3 h-3" />
-                            {isGroupClass ? 'Rescheduled' : 'Adjusted'}
-                                     </Badge>
-                                   )}
-                                   {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
-                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
-                      </div>
-                    </div>
-                    {session.completed && !isCancelled && (
-                      <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>
-                    )}
+          {/* Status Tab */}
+          {mobileActiveTab === 'status' && (
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border`}>
+                  {booking.booking_status}
+                </Badge>
+              </div>
+              <div className="flex gap-2">
+                <Select value={booking.booking_status} onValueChange={handleStatusChange} disabled={saving}>
+                  <SelectTrigger className="text-base">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {booking.confirmation_date && (
+                <div className="pt-3 border-t border-slate-200">
+                  <p className="text-base text-slate-600">Confirmed on</p>
+                  <p className="font-medium text-slate-900 text-base">
+                    {format(new Date(booking.confirmation_date), 'EEEE, MMM d, yyyy')} at {format(new Date(booking.confirmation_date), 'h:mm a')}
+                  </p>
+                </div>
+              )}
+              <div className="pt-4 border-t border-slate-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <DollarSign className="w-5 h-5" />
+                  <span className="font-semibold text-slate-900">Pricing</span>
+                </div>
+                <div className="space-y-2 text-base">
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Base Price:</span>
+                    <span className="font-medium">${booking.base_price?.toFixed(2)}</span>
                   </div>
-                );
-              })}
-            </div>
-          </CardContent>
+                  {booking.adoption_discount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Adoption Discount:</span>
+                      <span className="font-medium">-${booking.adoption_discount?.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {booking.weekend_surcharge > 0 && (
+                    <div className="flex justify-between text-orange-600">
+                      <span>Weekend Surcharge:</span>
+                      <span className="font-medium">+${booking.weekend_surcharge?.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {booking.total_sentosa_surcharge > 0 && (
+                    <div className="flex justify-between text-orange-600">
+                      <span>Sentosa Surcharge:</span>
+                      <span className="font-medium">+${booking.total_sentosa_surcharge?.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {booking.product_selections && booking.product_selections.length > 0 && (
+                    <>
+                      <div className="pt-2 mt-2 border-t border-slate-200">
+                        <p className="font-medium text-slate-900 mb-2 flex items-center gap-2">
+                          <Package className="w-4 h-4" />
+                          Products:
+                        </p>
+                        <div className="space-y-1.5 pl-6">
+                          {booking.product_selections.map((product, idx) => (
+                            <div key={idx} className="flex justify-between text-sm">
+                              <span className="text-slate-600">{product.product_name} × {product.quantity}</span>
+                              <span className="font-medium text-blue-600">${(product.discounted_price * product.quantity).toFixed(2)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-blue-700 font-semibold pt-1">
+                        <span>Products Subtotal:</span>
+                        <span>${booking.products_total?.toFixed(2)}</span>
+                      </div>
+                    </>
+                  )}
+                  <div className="pt-2 border-t border-slate-200 flex justify-between">
+                    <span className="font-semibold">Total:</span>
+                    <span className="font-bold text-xl text-blue-600">${booking.total_price?.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          )}
+
+          {/* Schedule Tab */}
+          {mobileActiveTab === 'schedule' && (
+            <CardContent className="p-6">
+              <div className="flex justify-end mb-4">
+                <Button size="sm" variant="outline" onClick={handleOpenReschedule} className="flex items-center gap-2">
+                  <Edit2 className="w-4 h-4" />
+                  Reschedule
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {booking.session_dates?.map((session, idx) => {
+                  const isGroupClass = booking.service_type === 'basic_manners_group_class';
+                  const wasRescheduled = Boolean(
+                    session.was_rescheduled ||
+                    session.wasRescheduled ||
+                    session.rescheduled ||
+                    session.auto_adjusted
+                  );
+                  const isCancelled = Boolean(session.session_cancelled);
+                  return (
+                    <div key={idx} className={`p-3 rounded-lg border ${isCancelled ? 'bg-red-50 border-red-200 opacity-70' : 'bg-slate-50 border-transparent'}`}>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className={`font-semibold text-base ${isCancelled ? 'line-through text-slate-400' : ''}`}>Session {session.session_number || idx + 1}</p>
+                          <p className={`text-base mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-slate-600'}`}>
+                            {format(parseISO(session.date), 'EEEE, MMM d, yyyy')}
+                          </p>
+                          <p className={`text-base font-medium mt-1 ${isCancelled ? 'line-through text-slate-400' : 'text-blue-600'}`}>
+                            {session.start_time}{session.end_time ? ` - ${session.end_time}` : ''}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          {wasRescheduled && !isCancelled && (
+                            <Badge variant="secondary" className="bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 text-xs whitespace-nowrap">
+                              <RefreshCw className="w-3 h-3" />
+                              {isGroupClass ? 'Rescheduled' : 'Adjusted'}
+                            </Badge>
+                          )}
+                          {isCancelled && <Badge variant="secondary" className="bg-red-100 text-red-800 border border-red-300 text-xs">Cancelled</Badge>}
+                          <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteSession(idx)} title="Delete session">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+                      {session.completed && !isCancelled && (
+                        <Badge className="mt-2 bg-green-100 text-green-800">Completed</Badge>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          )}
         </Card>
 
         {/* Mobile-only: Admin Notes */}
