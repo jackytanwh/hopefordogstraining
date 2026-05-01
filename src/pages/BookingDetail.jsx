@@ -1822,7 +1822,7 @@ export default function BookingDetail() {
                         </p>
                         <div className="space-y-1.5 pl-6">
                           {booking.product_selections.map((product, idx) => (
-                            <div key={idx} className="flex justify-between text-xs">
+                            <div key={idx} className="flex justify-between text-sm">
                               <span className="text-slate-600">
                                 {product.product_name} × {product.quantity}
                               </span>
