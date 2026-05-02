@@ -64,7 +64,7 @@ function buildReviewEmailHtml(clientName, furkidName, serviceName) {
       </div>
 
       <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 16px 0 0 0;">
-        Thank you for trusting us to be part of <strong>${furkidName}</strong>'s journey. We hope to see you again soon! 🐕
+        Thank you for trusting us to be part of <strong>${furkidName}</strong>'s journey. We hope to see you again soon! 
       </p>
 
       <p style="font-size: 15px; color: #1e293b; margin: 20px 0 0 0;">
