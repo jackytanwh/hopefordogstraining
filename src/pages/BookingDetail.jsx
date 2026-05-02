@@ -31,7 +31,8 @@ const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
   confirmed: "bg-green-100 text-green-800 border-green-200",
   completed: "bg-blue-100 text-blue-800 border-blue-200",
-  cancelled: "bg-red-100 text-red-800 border-red-200"
+  cancelled: "bg-red-100 text-red-800 border-red-200",
+  paused: "bg-purple-100 text-purple-800 border-purple-200"
 };
 
 const timeSlots = [
@@ -966,6 +967,7 @@ export default function BookingDetail() {
                     <SelectItem value="confirmed">Confirmed</SelectItem>
                     <SelectItem value="completed">Completed</SelectItem>
                     <SelectItem value="cancelled">Cancelled</SelectItem>
+                    <SelectItem value="paused">Paused</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1139,11 +1141,12 @@ export default function BookingDetail() {
                       <SelectItem value="confirmed">Confirmed</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
                       <SelectItem value="cancelled">Cancelled</SelectItem>
+                      <SelectItem value="paused">Paused</SelectItem>
                     </SelectContent>
-                  </Select>
-                </div>
-                
-                {booking.confirmation_date && (
+                    </Select>
+                    </div>
+
+                    {booking.confirmation_date && (
                   <div className="pt-3 border-t border-slate-200">
                     <p className="text-sm text-slate-600">Confirmed on</p>
                     <p className="font-medium text-slate-900">

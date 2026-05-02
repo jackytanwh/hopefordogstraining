@@ -99,12 +99,11 @@ Deno.serve(async (req) => {
 
     console.log(`🔍 Checking bookings with sessions on ${tomorrowStr}`);
 
-    // Get all confirmed bookings
-    const bookings = await base44.asServiceRole.entities.Booking.filter({
-      booking_status: 'confirmed'
-    });
+    // Get all confirmed bookings (exclude paused)
+    const allBookings = await base44.asServiceRole.entities.Booking.filter({});
+    const bookings = allBookings.filter(b => b.booking_status === 'confirmed');
 
-    console.log(`📋 Found ${bookings.length} confirmed bookings to check`);
+    console.log(`📋 Found ${bookings.length} confirmed bookings to check (paused bookings excluded)`);
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const RESEND_FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL");
