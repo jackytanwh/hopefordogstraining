@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
 
     // Get all confirmed bookings
     const allBookings = await base44.asServiceRole.entities.Booking.filter({});
-    const confirmedBookings = allBookings.filter(b => b.booking_status === 'confirmed');
+    const confirmedBookings = allBookings.filter(b => b.booking_status === 'confirmed' && b.booking_status !== 'paused');
 
     console.log(`📋 Found ${confirmedBookings.length} confirmed bookings to check`);
 
