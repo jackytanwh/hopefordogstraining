@@ -1402,8 +1402,8 @@ export default function BookingDetail() {
                     <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{booking.furkid_sterilised === true ? 'Yes' : booking.furkid_sterilised === false ? 'No' : 'N/A'}</p></div>
                     <div><p className="text-slate-600">Adopted</p><p className="font-medium">{booking.is_adopted === true ? 'Yes' : booking.is_adopted === false ? 'No' : 'N/A'}</p></div>
                     <div><p className="text-slate-600">Acquired From</p><p className="font-medium">{booking.furkid_acquired_from || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family || 'N/A'}</p></div>
-                    <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{booking.first_time_owner === true ? 'Yes' : booking.first_time_owner === false ? 'No' : 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{booking.furkid_joined_family || booking.furkidJoinedFamily || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{(booking.first_time_owner === true || booking.firstTimeOwner === true) ? 'Yes' : (booking.first_time_owner === false || booking.firstTimeOwner === false) ? 'No' : 'N/A'}</p></div>
                     {[
                       { field: 'furkid_diet', label: 'Diet', span: true },
                       { field: 'furkid_sleep_area', label: 'Sleeps At Night' },
@@ -1417,7 +1417,7 @@ export default function BookingDetail() {
                         )}
                       </div>
                     ))}
-                    <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency || booking.walkingFrequency || 'N/A'}</p></div>
                     <div className="md:col-span-2">
                       <p className="text-slate-600 mb-1">Reason for Enrolment</p>
                       {editingFurkid ? (
