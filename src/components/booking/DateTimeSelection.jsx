@@ -151,11 +151,13 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
         if (block.start_time && block.end_time) {
           const blockStart = timeToMinutes(block.start_time);
           const blockEnd = timeToMinutes(block.end_time);
+          // Use actual session end (no buffer) when checking against blocked slots
+          const sessionEndMinutes = startMinutes + sessionDurationMinutes;
           
           if (
             (startMinutes >= blockStart && startMinutes < blockEnd) ||
-            (endMinutes > blockStart && endMinutes <= blockEnd) ||
-            (startMinutes <= blockStart && endMinutes >= blockEnd)
+            (sessionEndMinutes > blockStart && sessionEndMinutes <= blockEnd) ||
+            (startMinutes <= blockStart && sessionEndMinutes >= blockEnd)
           ) {
             return true;
           }
@@ -178,23 +180,27 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
   const isDateDisabled = (date) => {
     if (date < minDate) return true;
     
-    // Check if the entire day is blocked
     const dateString = format(date, 'yyyy-MM-dd');
+
+    // Check if the entire day is blocked
     const isDayBlocked = blockedSlots.some(block => block.date === dateString && block.is_full_day);
     if (isDayBlocked) return true;
 
     if (isWeekdaysOnly) {
       const dayOfWeek = date.getDay();
-      return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
+      return dayOfWeek === 0 || dayOfWeek === 6;
     }
     
     const dayOfWeek = date.getDay();
-    if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday to Friday
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
       const bookingCount = dailyBookingCounts[dateString] || 0;
-      if (bookingCount >= 3) {
-        return true;
-      }
+      if (bookingCount >= 3) return true;
     }
+
+    // Check if ALL available time slots on this day are blocked/booked
+    const baseSlots = dayOfWeek === 0 ? sundayTimeSlots : timeSlots;
+    const availableSlots = baseSlots.filter(slot => !isTimeSlotBooked(date, slot));
+    if (availableSlots.length === 0) return true;
     
     return false;
   };
