@@ -895,27 +895,24 @@ export default function BookingDetail() {
     <>
       <div className="p-6 md:p-8 space-y-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => navigate(createPageUrl("AdminBookings"))}
-            >
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            <Button variant="outline" size="icon" onClick={() => navigate(createPageUrl("AdminBookings"))} className="shrink-0">
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-3xl font-bold text-slate-900">Booking Details</h1>
               <p className="text-slate-600 mt-1">{booking.service_name}</p>
+              <Button variant="outline" onClick={() => setShowResendConfirm(true)} className="flex items-center gap-2 mt-2 lg:hidden">
+                <Mail className="w-4 h-4" />Resend Email
+              </Button>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="hidden lg:flex gap-2">
             <Button variant="outline" onClick={() => setShowResendConfirm(true)} className="flex items-center gap-2">
-              <Mail className="w-4 h-4" />
-              Resend Email
+              <Mail className="w-4 h-4" />Resend Email
             </Button>
-            <Button variant="outline" onClick={() => setShowDeleteConfirm(true)} className="text-red-600 border-red-200 hover:bg-red-50 hidden lg:flex">
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete Booking
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(true)} className="text-red-600 border-red-200 hover:bg-red-50">
+              <Trash2 className="w-4 h-4 mr-2" />Delete Booking
             </Button>
           </div>
         </div>
