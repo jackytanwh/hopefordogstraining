@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban, MessageCircle, Copy } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban, MessageCircle, Copy, Mail } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import BehaviouralModificationDetails from "../components/booking/BehaviouralModificationDetails";
 import CanineAssessmentDetails from "../components/booking/CanineAssessmentDetails";
@@ -27,24 +27,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-const statusColors = {
-  pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  confirmed: "bg-green-100 text-green-800 border-green-200",
-  completed: "bg-blue-100 text-blue-800 border-blue-200",
-  cancelled: "bg-red-100 text-red-800 border-red-200",
-  paused: "bg-purple-100 text-purple-800 border-purple-200"
-};
+const statusColors = { pending: "bg-yellow-100 text-yellow-800 border-yellow-200", confirmed: "bg-green-100 text-green-800 border-green-200", completed: "bg-blue-100 text-blue-800 border-blue-200", cancelled: "bg-red-100 text-red-800 border-red-200", paused: "bg-purple-100 text-purple-800 border-purple-200" };
 
-const timeSlots = [
-  "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
-  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
-  "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00"
-];
-
-const sundayTimeSlots = [
-  "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
-  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30"
-];
+const timeSlots = ["10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00"];
+const sundayTimeSlots = ["10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30"];
 
 export default function BookingDetail() {
   const navigate = useNavigate();
@@ -68,6 +54,8 @@ export default function BookingDetail() {
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
   const [groupSchedule, setGroupSchedule] = useState(null);
+  const [showResendConfirm, setShowResendConfirm] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const loadBooking = useCallback(async () => {
     if (!bookingId) {
@@ -80,11 +68,6 @@ export default function BookingDetail() {
       const bookingsData = await base44.entities.Booking.list();
       
       const foundBooking = bookingsData.find(b => b.id === bookingId);
-      
-      // Debug: Log session dates to check for was_rescheduled property
-      if (foundBooking?.session_dates) {
-        console.log('Session dates:', JSON.stringify(foundBooking.session_dates, null, 2));
-      }
       
       setBooking(foundBooking);
       setAdminNotes(foundBooking?.admin_notes || '');
@@ -368,16 +351,20 @@ export default function BookingDetail() {
     }
   };
 
-  const handleDeleteSession = async (idx) => {
-    const updated = (booking.session_dates || []).filter((_, i) => i !== idx);
-    await base44.entities.Booking.update(bookingId, { session_dates: updated });
-    await loadBooking();
+  const handleResendConfirmationEmail = async () => {
+    setResending(true);
+    try {
+      await base44.functions.invoke('sendBookingConfirmation', { booking });
+    } catch (error) {
+      console.error('Error resending confirmation email:', error);
+    } finally {
+      setResending(false);
+      setShowResendConfirm(false);
+    }
   };
 
-  const handleToggleCancelSession = async (idx) => {
-    const updated = (booking.session_dates || []).map((s, i) =>
-      i === idx ? { ...s, session_cancelled: !s.session_cancelled } : s
-    );
+  const handleDeleteSession = async (idx) => {
+    const updated = (booking.session_dates || []).filter((_, i) => i !== idx);
     await base44.entities.Booking.update(bookingId, { session_dates: updated });
     await loadBooking();
   };
@@ -921,14 +908,16 @@ export default function BookingDetail() {
               <p className="text-slate-600 mt-1">{booking.service_name}</p>
             </div>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => setShowDeleteConfirm(true)}
-            className="text-red-600 border-red-200 hover:bg-red-50 hidden lg:flex"
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Delete Booking
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowResendConfirm(true)} className="hidden lg:flex items-center gap-2">
+              <Mail className="w-4 h-4" />
+              Resend Email
+            </Button>
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(true)} className="text-red-600 border-red-200 hover:bg-red-50 hidden lg:flex">
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete Booking
+            </Button>
+          </div>
         </div>
 
         {/* Mobile-only: Tabbed Status + Session Schedule */}
@@ -1979,19 +1968,27 @@ export default function BookingDetail() {
         </DialogContent>
       </Dialog>
 
+      <AlertDialog open={showResendConfirm} onOpenChange={setShowResendConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Resend Confirmation Email</AlertDialogTitle>
+            <AlertDialogDescription>This will resend the booking confirmation email to the client. Are you sure?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleResendConfirmationEmail} disabled={resending}>{resending ? 'Sending...' : 'Send Email'}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Booking</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this booking? This action cannot be undone.
-            </AlertDialogDescription>
+            <AlertDialogDescription>Are you sure you want to delete this booking? This action cannot be undone.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-              Delete Booking
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Delete Booking</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
