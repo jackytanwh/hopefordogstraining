@@ -178,22 +178,29 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
   const isDateDisabled = (date) => {
     if (date < minDate) return true;
     
-    // Check if the entire day is blocked
     const dateString = format(date, 'yyyy-MM-dd');
+
+    // Check if the entire day is blocked
     const isDayBlocked = blockedSlots.some(block => block.date === dateString && block.is_full_day);
     if (isDayBlocked) return true;
 
     if (isWeekdaysOnly) {
       const dayOfWeek = date.getDay();
-      return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
+      return dayOfWeek === 0 || dayOfWeek === 6;
     }
     
     const dayOfWeek = date.getDay();
-    if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday to Friday
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
       const bookingCount = dailyBookingCounts[dateString] || 0;
-      if (bookingCount >= 3) {
-        return true;
-      }
+      if (bookingCount >= 3) return true;
+    }
+
+    // Disable date if all time slots are blocked (partial-day blocks cover everything)
+    const hasPartialBlock = blockedSlots.some(block => block.date === dateString && !block.is_full_day && block.start_time && block.end_time);
+    if (hasPartialBlock) {
+      const baseSlots = date.getDay() === 0 ? sundayTimeSlots : timeSlots;
+      const allBlocked = baseSlots.every(slot => isTimeSlotBooked(date, slot));
+      if (allBlocked) return true;
     }
     
     return false;
