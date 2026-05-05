@@ -550,7 +550,7 @@ export default function BookingCalendar() {
                                <p className="font-semibold text-blue-600">
                                  {booking.session.start_time} - {addBufferToTime(booking.session.end_time, 1)}
                                </p>
-                               <p className="text-xs text-slate-400">(incl. 1hr buffer)</p>
+
                             </div>
 
                             <Link to={createPageUrl(`BookingDetail?id=${booking.id}`)}>
