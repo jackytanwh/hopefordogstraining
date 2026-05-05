@@ -909,7 +909,7 @@ export default function BookingDetail() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowResendConfirm(true)} className="hidden lg:flex items-center gap-2">
+            <Button variant="outline" onClick={() => setShowResendConfirm(true)} className="flex items-center gap-2">
               <Mail className="w-4 h-4" />
               Resend Email
             </Button>
