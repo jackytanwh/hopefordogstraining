@@ -34,7 +34,7 @@ function buildPromoSection() {
     + '<p style="font-size: 16px; font-weight: 700; color: #166534; margin: 0 0 8px 0;">&#127873; A special gift for you!</p>'
     + '<p style="font-size: 14px; color: #15803d; line-height: 1.6; margin: 0 0 16px 0;">As a thank you for completing the Kinder Puppy Program, here\'s an exclusive discount code for your next booking with us:</p>'
     + '<div style="display: inline-block; background: white; border: 2px dashed #22c55e; border-radius: 8px; padding: 12px 24px; margin-bottom: 12px;">'
-    + '<span style="font-size: 22px; font-weight: 800; letter-spacing: 3px; color: #16a34a;">PAWGRESS10</span>'
+    + '<span style="font-size: 18px; font-weight: 800; letter-spacing: 0px; color: #16a34a;">PAWGRESS10</span>'
     + '</div>'
     + '<p style="font-size: 13px; color: #15803d; margin: 0;">Use this code when booking your next program to enjoy a discount!</p>'
     + '</div>';
@@ -44,10 +44,10 @@ function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy
   const promoHtml = isKinderPuppy ? buildPromoSection() : '';
 
   return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">'
-    + '<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">'
+    + '<div style="background: linear-gradient(135deg, #ffe990 0%, #fde172 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">'
     + '<img src="https://media.base44.com/images/public/690f36a014bb3e1119479c64/981c2d0c1_DogLogonewSmallCustom.png" alt="Hopefordogs" style="height: 60px; width: auto; object-fit: contain; margin-bottom: 16px;" />'
-    + '<h1 style="margin: 0 0 8px 0; font-size: 24px; color: white; font-weight: 700;">&#127881; Congratulations!</h1>'
-    + '<p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 15px;">' + serviceName + ' \u2013 Completed</p>'
+    + '<h1 style="margin: 0 0 8px 0; font-size: 24px; color: #1b1b42; font-weight: 700;">&#127881; Congratulations!</h1>'
+    + '<p style="margin: 0; color: #1b1b42; font-size: 15px;">' + serviceName + ' \u2013 Completed</p>'
     + '</div>'
     + '<div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">'
     + '<p style="font-size: 16px; color: #1e293b; margin: 0 0 16px 0;">Hello <strong>' + clientName + '</strong> and <strong>' + furkidName + '</strong>,</p>'
