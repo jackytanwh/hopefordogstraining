@@ -346,7 +346,7 @@ export default function AdminBookings() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-6">
                     <div>
                       <p className="text-base font-semibold text-slate-900 mb-1">Client</p>
                       <p className="text-base text-slate-700">{clientName}</p>
