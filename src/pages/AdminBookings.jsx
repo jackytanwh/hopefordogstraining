@@ -385,19 +385,7 @@ export default function AdminBookings() {
                           </Button>
                         </>
                       )}
-                      {booking.booking_status === 'confirmed' && (
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            if (confirm('Are you sure you want to mark this booking as completed?')) {
-                              handleStatusChange(booking.id, 'completed');
-                            }
-                          }}
-                          className="bg-blue-600 hover:bg-blue-700"
-                        >
-                          Mark as Completed
-                        </Button>
-                      )}
+
                     </div>
                     <Link to={createPageUrl(`BookingDetail?id=${booking.id}`)}>
                       <Button size="sm" variant="outline">
