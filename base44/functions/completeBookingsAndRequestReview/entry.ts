@@ -34,10 +34,10 @@ function buildPromoSection() {
     + '<p style="font-size: 16px; font-weight: 700; color: #166534; margin: 0 0 8px 0;">&#127873; A special gift for you!</p>'
     + '<p style="font-size: 14px; color: #15803d; line-height: 1.6; margin: 0 0 16px 0;">As a thank you for completing the Kinder Puppy Program, here\'s an exclusive discount code for your next booking with us:</p>'
     + '<div style="display: inline-block; background: white; border: 2px dashed #22c55e; border-radius: 8px; padding: 12px 24px; margin-bottom: 12px;">'
-    + '<span style="font-size: 18px; font-weight: 800; letter-spacing: 0px; color: #16a34a;">PAWGRESS10</span>'
+    + '<span style="font-size: 16px; font-weight: 600; letter-spacing: 0px; color: #16a34a;">PAWGRESS10</span>'
     + '</div>'
     + '<p style="font-size: 13px; color: #15803d; margin: 0 0 16px 0;">Use this code when enrolling for the Basic Manners Program too!</p>'
-    + '<a href="https://www.hopefordogs.sg/basic-manners-program/" target="_blank" style="display: inline-block; background: #16a34a; color: white; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 28px; border-radius: 8px;">Enrol</a>'
+    + '<a href="https://www.hopefordogs.sg/basic-manners-program/" target="_blank" style="display: inline-block; background: #16a34a; color: white; font-size: 16px; font-weight: 700; text-decoration: none; padding: 12px 28px; border-radius: 8px;">Enrol</a>'
     + '</div>';
 }
 
