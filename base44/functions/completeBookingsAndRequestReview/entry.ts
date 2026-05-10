@@ -56,7 +56,7 @@ function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy
     + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Your commitment and dedication have made all the difference \u2014 keep up the amazing work!</p>'
     + promoHtml
     + '<div style="background: #fefce8; border: 1px solid #fde68a; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;">'
-    + '<p style="font-size: 16px; font-weight: 700; color: #92400e; margin: 0 0 8px 0;">&#11088; We\'d love your feedback!</p>'
+    + '<p style="font-size: 16px; font-weight: 700; color: #92400e; margin: 0 0 8px 0;">We\'d love your feedback!</p>'
     + '<p style="font-size: 14px; color: #78350f; line-height: 1.6; margin: 0 0 20px 0;">If you\'ve enjoyed training with us, a review would mean the world to our small team. It takes less than a minute and helps other furkid families find us!</p>'
     + '<a href="https://g.page/r/CSi2srpL-Sw7EBM/review" target="_blank" style="display: inline-block; background: #f59e0b; color: white; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 28px; border-radius: 8px;">&#11088; Leave us a Google Review</a>'
     + '</div>'
