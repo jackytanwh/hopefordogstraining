@@ -1,0 +1,1044 @@
+{
+  "name": "Client",
+  "type": "object",
+  "properties": {
+    "client_name": {
+      "type": "string",
+      "description": "Client's full name"
+    },
+    "mobile_number": {
+      "type": "string",
+      "description": "Client's mobile phone phone number in E.164 format",
+      "pattern": "^\\+[1-9]\\d{1,14}$"
+    },
+    "dog_name": {
+      "type": "string",
+      "description": "Name of the dog"
+    },
+    "dog_age": {
+      "type": "string",
+      "description": "Age of the dog"
+    },
+    "breed": {
+      "type": "string",
+      "description": "Dog breed"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "boy",
+        "girl"
+      ],
+      "description": "Dog's gender"
+    },
+    "food_allergy": {
+      "type": "boolean",
+      "description": "Does the dog have any food allergies? (for Basic Manners In-Home Program)",
+      "default": false
+    },
+    "diet": {
+      "type": "string",
+      "description": "Dog's diet information (for Kinder Puppy, Basic Manners In-Home, Basic Manners Group Program and Basic Manners FYOG)"
+    },
+    "sleep_area": {
+      "type": "string",
+      "description": "Where the dog sleeps (for Basic Manners Group Program and Basic Manners FYOG)"
+    },
+    "program": {
+      "type": "string",
+      "enum": [
+        "kinder_puppy",
+        "basic_manners",
+        "basic_manners_group",
+        "basic_manners_fyog",
+        "behavioural_modification"
+      ],
+      "default": "kinder_puppy",
+      "description": "The training program the client is enrolled in"
+    },
+    "fyog_group": {
+      "type": "string",
+      "description": "Group identifier for Basic Manners FYOG clients (e.g., 'Group 1', 'Group 2')"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Program start date (Week 1) for Kinder Puppy and Basic Manners In-Home programs"
+    },
+    "kinder_puppy_items_given": {
+      "type": "object",
+      "description": "Items given to Kinder Puppy clients",
+      "properties": {
+        "treat_pouch": {
+          "type": "boolean",
+          "default": false,
+          "description": "Treat Pouch given to client"
+        },
+        "mat": {
+          "type": "boolean",
+          "default": false,
+          "description": "Mat given to client"
+        },
+        "lick_mat": {
+          "type": "boolean",
+          "default": false,
+          "description": "Lick Mat given to client"
+        },
+        "cup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Cup given to client"
+        },
+        "dropper": {
+          "type": "boolean",
+          "default": false,
+          "description": "Dropper given to client"
+        }
+      }
+    },
+    "basic_manners_items_given": {
+      "type": "object",
+      "description": "Items given to Basic Manners In-Home clients",
+      "properties": {
+        "treat_pouch": {
+          "type": "boolean",
+          "default": false,
+          "description": "Treat Pouch given to client"
+        },
+        "clicker": {
+          "type": "boolean",
+          "default": false,
+          "description": "Clicker given to client"
+        },
+        "whistle": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whistle given to client"
+        },
+        "mat": {
+          "type": "boolean",
+          "default": false,
+          "description": "Mat given to client"
+        },
+        "leash": {
+          "type": "boolean",
+          "default": false,
+          "description": "Leash given to client"
+        }
+      }
+    },
+    "basic_manners_group_dates": {
+      "type": "object",
+      "description": "Tracking dates for Basic Manners Group Program (7 weeks)",
+      "properties": {
+        "commencement_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Program commencement date (Week 1)"
+        },
+        "week2_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 2 session date"
+        },
+        "week3_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 3 session date"
+        },
+        "week4_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 4 session date"
+        },
+        "week5_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 5 session date"
+        },
+        "week6_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 6 session date"
+        },
+        "week7_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 7 session date"
+        }
+      }
+    },
+    "basic_manners_fyog_dates": {
+      "type": "object",
+      "description": "Tracking dates for Basic Manners FYOG Program (7 weeks)",
+      "properties": {
+        "commencement_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Program commencement date (Week 1)"
+        },
+        "week2_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 2 session date"
+        },
+        "week3_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 3 session date"
+        },
+        "week4_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 4 session date"
+        },
+        "week5_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 5 session date"
+        },
+        "week6_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 6 session date"
+        },
+        "week7_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Week 7 session date"
+        }
+      }
+    },
+    "primary_concerns": {
+      "type": "string",
+      "description": "Primary concerns the client has about their dog"
+    },
+    "instructions_for_clients": {
+      "type": "string",
+      "description": "Training instructions for the client"
+    },
+    "initial_consultation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the initial consultation"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date for follow-up consultation"
+    },
+    "second_consultation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date for second consultation"
+    },
+    "additional_instructions": {
+      "type": "string",
+      "description": "Additional training instructions"
+    },
+    "remarks": {
+      "type": "string",
+      "description": "General remarks about the client and training"
+    },
+    "training_status": {
+      "type": "string",
+      "enum": [
+        "initial",
+        "follow_up",
+        "in_progress",
+        "completed",
+        "paused"
+      ],
+      "default": "initial",
+      "description": "Current training status"
+    },
+    "training_notes": {
+      "type": "array",
+      "description": "Progress notes from training sessions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "kinder_puppy_progress": {
+      "type": "object",
+      "description": "Tracking completion of Kinder Puppy curriculum items",
+      "properties": {
+        "week1": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "intro_theory": {
+              "type": "boolean",
+              "default": false
+            },
+            "name_recognition": {
+              "type": "boolean",
+              "default": false
+            },
+            "leash_collar": {
+              "type": "boolean",
+              "default": false
+            },
+            "intro_walks": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_cue_part1": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week2": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "intro_walks_advanced": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_cue_part2": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_exercise": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_cue_part1": {
+              "type": "boolean",
+              "default": false
+            },
+            "chin_rest_part1": {
+              "type": "boolean",
+              "default": false
+            },
+            "handling_grooming": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week3": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "down_cue_part2": {
+              "type": "boolean",
+              "default": false
+            },
+            "chin_rest_part2": {
+              "type": "boolean",
+              "default": false
+            },
+            "grooming_tools": {
+              "type": "boolean",
+              "default": false
+            },
+            "dental_cleaning_part1": {
+              "type": "boolean",
+              "default": false
+            },
+            "cone_muzzle_part1": {
+              "type": "boolean",
+              "default": false
+            },
+            "showering": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week4": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "dental_cleaning_part2": {
+              "type": "boolean",
+              "default": false
+            },
+            "novelty_objects": {
+              "type": "boolean",
+              "default": false
+            },
+            "scary_sounds": {
+              "type": "boolean",
+              "default": false
+            },
+            "cone_muzzle_part2": {
+              "type": "boolean",
+              "default": false
+            },
+            "household_appliances": {
+              "type": "boolean",
+              "default": false
+            },
+            "vet_visit": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "basic_manners_progress": {
+      "type": "object",
+      "description": "Tracking completion of Basic Manners In-Home curriculum items",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Program start date"
+        },
+        "week1": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "check_in_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_lure": {
+              "type": "boolean",
+              "default": false
+            },
+            "scatter_feeding": {
+              "type": "boolean",
+              "default": false
+            },
+            "body_language_theory": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week2": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_verbal": {
+              "type": "boolean",
+              "default": false
+            },
+            "check_in_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_lure": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week3": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_stay_distraction": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_verbal": {
+              "type": "boolean",
+              "default": false
+            },
+            "anchor_cue_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_duration": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_1": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week4": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_3": {
+              "type": "boolean",
+              "default": false
+            },
+            "anchor_cue_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_distance": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_2": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week5": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_4": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_distractions": {
+              "type": "boolean",
+              "default": false
+            },
+            "double_recall_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_3": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week6": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_5": {
+              "type": "boolean",
+              "default": false
+            },
+            "double_recall_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit_distance": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_proof": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "basic_manners_group_progress": {
+      "type": "object",
+      "description": "Tracking completion of Basic Manners Group curriculum items",
+      "properties": {
+        "week1": {
+          "type": "object",
+          "properties": {
+            "lets_go_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_lure": {
+              "type": "boolean",
+              "default": false
+            },
+            "body_language": {
+              "type": "boolean",
+              "default": false
+            },
+            "check_in_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "discussion": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week2": {
+          "type": "object",
+          "properties": {
+            "pattern_game_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_verbal": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_lure": {
+              "type": "boolean",
+              "default": false
+            },
+            "check_in_proof": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week3": {
+          "type": "object",
+          "properties": {
+            "pattern_game_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_uturn": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_verbal": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_duration": {
+              "type": "boolean",
+              "default": false
+            },
+            "anchor_cue_1": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week4": {
+          "type": "object",
+          "properties": {
+            "pattern_game_3": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_pace": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_distance": {
+              "type": "boolean",
+              "default": false
+            },
+            "anchor_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "say_hello": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week5": {
+          "type": "object",
+          "properties": {
+            "pattern_game_4": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_distractions": {
+              "type": "boolean",
+              "default": false
+            },
+            "double_recall": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit_5m": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "say_hello_2": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week6": {
+          "type": "object",
+          "properties": {
+            "lets_go_pattern_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "double_recall_var": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit_10m": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_3": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week7": {
+          "type": "object",
+          "properties": {
+            "pattern_game_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_final": {
+              "type": "boolean",
+              "default": false
+            },
+            "triangle_success": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit_final": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_final": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "basic_manners_fyog_progress": {
+      "type": "object",
+      "description": "Tracking completion of Basic Manners FYOG curriculum items",
+      "properties": {
+        "week1": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "lets_go_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_lure": {
+              "type": "boolean",
+              "default": false
+            },
+            "body_language": {
+              "type": "boolean",
+              "default": false
+            },
+            "check_in_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "discussion": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week2": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "sit_verbal": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_lure": {
+              "type": "boolean",
+              "default": false
+            },
+            "check_in_proof": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week3": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_uturn": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_verbal": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_duration": {
+              "type": "boolean",
+              "default": false
+            },
+            "anchor_cue_1": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week4": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_3": {
+              "type": "boolean",
+              "default": false
+            },
+            "lets_go_pace": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_distance": {
+              "type": "boolean",
+              "default": false
+            },
+            "anchor_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_1": {
+              "type": "boolean",
+              "default": false
+            },
+            "say_hello": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week5": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_4": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_distractions": {
+              "type": "boolean",
+              "default": false
+            },
+            "double_recall": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit_5m": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_2": {
+              "type": "boolean",
+              "default": false
+            },
+            "say_hello_2": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week6": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "lets_go_pattern_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "double_recall_var": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit_10m": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_3": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "week7": {
+          "type": "object",
+          "properties": {
+            "week_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "pattern_game_proof": {
+              "type": "boolean",
+              "default": false
+            },
+            "down_stay_final": {
+              "type": "boolean",
+              "default": false
+            },
+            "triangle_success": {
+              "type": "boolean",
+              "default": false
+            },
+            "recall_sit_final": {
+              "type": "boolean",
+              "default": false
+            },
+            "leave_it_final": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "client_name",
+    "mobile_number",
+    "dog_name",
+    "program"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -421,34 +421,26 @@ export default function BookingCalendar() {
                         {format(day, 'd')}
                       </div>
                       {dayBlocks.length > 0 && !hasFullDayBlock && (
-                        <div className="space-y-0.5 mb-1">
-                          {dayBlocks.slice(0, 2).map((block, idx) => (
-                            <div key={idx} className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded truncate">
-                              <Ban className="w-2.5 h-2.5 inline mr-0.5" />
-                              {block.start_time} - {block.end_time}{block.reason ? ` · ${block.reason}` : ''}
-                            </div>
-                          ))}
-                          {dayBlocks.length > 2 && (
-                            <div className="text-xs text-amber-700">+{dayBlocks.length - 2} more</div>
-                          )}
+                      <div className="space-y-0.5 mb-1">
+                      {dayBlocks.map((block, idx) => (
+                        <div key={idx} className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded truncate">
+                          <Ban className="w-2.5 h-2.5 inline mr-0.5" />
+                          {block.start_time} - {block.end_time}{block.reason ? ` · ${block.reason}` : ''}
                         </div>
+                      ))}
+                      </div>
                       )}
                       {dayBookings.length > 0 && !hasFullDayBlock && (
-                       <div className="space-y-1">
-                         {dayBookings.slice(0, 2).map((booking, idx) => (
-                           <div
-                             key={idx}
-                             className={`text-xs px-1 py-0.5 rounded truncate ${programColors[booking.service_type] || "bg-blue-100 text-blue-800"}`}
-                           >
-                             {booking.session.start_time} - {getFurkidName(booking)}
-                           </div>
-                         ))}
-                          {dayBookings.length > 2 && (
-                            <div className="text-xs text-slate-500">
-                              +{dayBookings.length - 2} more
-                            </div>
-                          )}
-                        </div>
+                      <div className="space-y-1">
+                        {dayBookings.map((booking, idx) => (
+                          <div
+                            key={idx}
+                            className={`text-xs px-1 py-0.5 rounded truncate ${programColors[booking.service_type] || "bg-blue-100 text-blue-800"}`}
+                          >
+                            {booking.session.start_time} - {getFurkidName(booking)}
+                          </div>
+                        ))}
+                       </div>
                       )}
                       {hasFullDayBlock && (
                         <div className="text-xs text-amber-700 font-medium mt-1">

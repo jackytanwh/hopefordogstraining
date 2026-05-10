@@ -1,0 +1,82 @@
+{
+  "name": "Service",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the service"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "kinder_puppy_in_home",
+        "basic_manners_in_home",
+        "kinder_puppy_fyog",
+        "basic_manners_fyog",
+        "canine_assessment",
+        "behavioural_modification",
+        "on_demand_1_session",
+        "on_demand_2_sessions",
+        "on_demand_3_sessions"
+      ],
+      "description": "Type of service"
+    },
+    "price_per_participant": {
+      "type": "number",
+      "description": "Base price per dog/puppy"
+    },
+    "duration_hours": {
+      "type": "number",
+      "description": "Duration of each session in hours"
+    },
+    "number_of_sessions": {
+      "type": "integer",
+      "description": "Total number of sessions"
+    },
+    "min_participants": {
+      "type": "integer",
+      "description": "Minimum number of dogs/puppies"
+    },
+    "max_participants": {
+      "type": "integer",
+      "description": "Maximum number of dogs/puppies"
+    },
+    "buffer_hours": {
+      "type": "number",
+      "description": "Buffer time after session in hours",
+      "default": 1
+    },
+    "active": {
+      "type": "boolean",
+      "description": "Is this service currently available for booking",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "service_type",
+    "price_per_participant",
+    "duration_hours",
+    "number_of_sessions",
+    "min_participants",
+    "max_participants"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

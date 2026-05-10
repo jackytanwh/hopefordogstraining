@@ -1,0 +1,58 @@
+{
+  "name": "Settings",
+  "type": "object",
+  "properties": {
+    "setting_key": {
+      "type": "string",
+      "description": "Unique identifier for the setting (e.g., 'basic_manners_group_schedule')"
+    },
+    "setting_name": {
+      "type": "string",
+      "description": "Human-readable name of the setting"
+    },
+    "setting_value": {
+      "type": "object",
+      "description": "The actual setting value (flexible object structure)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of what this setting is for"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this setting was last updated"
+    }
+  },
+  "required": [
+    "setting_key",
+    "setting_name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

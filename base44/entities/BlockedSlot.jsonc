@@ -1,0 +1,49 @@
+{
+  "name": "BlockedSlot",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date that is blocked"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Start time in HH:mm format (leave empty to block entire day)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "End time in HH:mm format (leave empty to block entire day)"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for blocking this time slot"
+    },
+    "is_full_day": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this blocks the entire day"
+    }
+  },
+  "required": [
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

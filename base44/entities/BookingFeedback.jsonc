@@ -1,0 +1,74 @@
+{
+  "name": "BookingFeedback",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string",
+      "description": "ID of the related booking"
+    },
+    "overall_rating": {
+      "type": "integer",
+      "description": "Overall experience rating (1-5 stars)",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "ease_of_use": {
+      "type": "integer",
+      "description": "How easy was the booking process (1-5)",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "clarity_rating": {
+      "type": "integer",
+      "description": "How clear were the instructions (1-5)",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "time_taken": {
+      "type": "string",
+      "enum": [
+        "less_than_5",
+        "5_to_10",
+        "10_to_15",
+        "more_than_15"
+      ],
+      "description": "Time taken to complete the form"
+    },
+    "most_difficult_part": {
+      "type": "string",
+      "description": "What was the most difficult part of the booking process"
+    },
+    "suggestions": {
+      "type": "string",
+      "description": "Suggestions for improvement"
+    },
+    "would_recommend": {
+      "type": "boolean",
+      "description": "Would recommend our booking system to others"
+    },
+    "service_type": {
+      "type": "string",
+      "description": "Type of service booked"
+    }
+  },
+  "required": [
+    "overall_rating",
+    "ease_of_use"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
