@@ -297,7 +297,7 @@ export default function AdminBookings() {
       </Card>
 
       {/* Bookings List */}
-      <div className="grid gap-4">
+      <div>
         {loading ? (
           <div className="text-center py-12">
             <p className="text-slate-500">Loading bookings...</p>
@@ -314,90 +314,76 @@ export default function AdminBookings() {
             </p>
           </div>
         ) : (
-          filteredBookings.map((booking) => {
-            const clientName = getClientName(booking);
-            const clientEmail = getClientEmail(booking);
-            const clientMobile = getClientMobile(booking);
-            const furkidName = getFurkidName(booking);
-            const furkidBreed = getFurkidBreed(booking);
-            const furkidGender = getFurkidGender(booking);
-            
-            return (
-              <Card key={booking.id} className="shadow-lg hover:shadow-xl transition-all">
-                <CardHeader className="border-b border-slate-100 pb-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg">{booking.service_name}</CardTitle>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border`}>
-                          {booking.booking_status}
-                        </Badge>
-                        {booking.is_adopted && (
-                          <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
-                            Adopted (10% discount)
-                          </Badge>
-                        )}
-                      </div>
+          <div className="space-y-3">
+            {filteredBookings.map((booking) => {
+              const clientName = getClientName(booking);
+              const clientEmail = getClientEmail(booking);
+              const clientMobile = getClientMobile(booking);
+              const furkidName = getFurkidName(booking);
+              const furkidBreed = getFurkidBreed(booking);
+              const furkidGender = getFurkidGender(booking);
+              const firstSession = booking.session_dates?.[0];
+
+              return (
+                <div key={booking.id} className="flex items-center justify-between bg-white rounded-lg px-4 py-3 shadow-sm border border-slate-200 hover:shadow-md transition-all gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                      <p className="font-semibold text-slate-900">
+                        {clientName} <span className="text-slate-400 font-normal">·</span> {furkidName}
+                      </p>
+                      {booking.is_adopted && (
+                        <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 text-xs">Adopted</Badge>
+                      )}
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-xl text-blue-600">${booking.total_price?.toFixed(2)}</p>
-                      <p className="text-sm text-slate-500">Total</p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-2 gap-6">
-                    <div>
-                      <p className="text-base font-semibold text-slate-900 mb-1">Client</p>
-                      <p className="text-base text-slate-700">{clientName}</p>
-                      <p className="text-base text-slate-600">{clientEmail}</p>
-                      <p className="text-base text-slate-600">{clientMobile}</p>
-                    </div>
-                    <div>
-                      <p className="text-base font-semibold text-slate-900 mb-1">Furkid</p>
-                      <p className="text-base text-slate-700">{furkidName}</p>
-                      {furkidBreed && (
-                        <p className="text-base text-slate-600">{furkidBreed} • {furkidGender}</p>
+                    <p className="text-sm text-slate-600 truncate">{booking.service_name}</p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1">
+                      {furkidBreed && <span className="text-xs text-slate-500">{furkidBreed} · {furkidGender}</span>}
+                      <span className="text-xs text-slate-500">{clientEmail}</span>
+                      <span className="text-xs text-slate-500">{clientMobile}</span>
+                      {firstSession && (
+                        <span className="text-xs text-slate-500">
+                          Starts {format(parseISO(firstSession.date), "MMM d, yyyy")}
+                        </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
-                    <div className="flex gap-2">
-                      {booking.booking_status === 'pending' && (
-                        <>
-                          <Button
-                            size="sm"
-                            onClick={() => handleStatusChange(booking.id, 'confirmed')}
-                            className="bg-green-600 hover:bg-green-700"
-                          >
-                            <Check className="w-4 h-4 mr-1" />
-                            Confirm
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleStatusChange(booking.id, 'cancelled')}
-                            className="text-red-600 border-red-200 hover:bg-red-50"
-                          >
-                            <X className="w-4 h-4 mr-1" />
-                            Cancel
-                          </Button>
-                        </>
-                      )}
-
-                    </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-sm font-semibold text-blue-600 hidden sm:block">${booking.total_price?.toFixed(2)}</span>
+                    <Badge className={`${statusColors[booking.booking_status]} border text-xs`}>
+                      {booking.booking_status}
+                    </Badge>
+                    {booking.booking_status === 'pending' && (
+                      <>
+                        <Button
+                          size="sm"
+                          onClick={() => handleStatusChange(booking.id, 'confirmed')}
+                          className="bg-green-600 hover:bg-green-700 h-8 px-2"
+                        >
+                          <Check className="w-3.5 h-3.5 mr-1" />
+                          Confirm
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleStatusChange(booking.id, 'cancelled')}
+                          className="text-red-600 border-red-200 hover:bg-red-50 h-8 px-2"
+                        >
+                          <X className="w-3.5 h-3.5 mr-1" />
+                          Cancel
+                        </Button>
+                      </>
+                    )}
                     <Link to={createPageUrl(`BookingDetail?id=${booking.id}`)}>
-                      <Button size="sm" variant="outline">
-                        <Eye className="w-4 h-4 mr-1" />
-                        View Details
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0">
+                        <Eye className="w-4 h-4" />
                       </Button>
                     </Link>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>
