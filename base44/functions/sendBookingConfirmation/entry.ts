@@ -565,11 +565,11 @@ Deno.serve(async (req) => {
 
                     await resend.emails.send({
                         from: fromAddress,
-                        to: ['jacky@hopefordogs.sg'],
+                        to: [Deno.env.get("ADMIN_EMAIL")],
                         subject: adminSubject,
                         html: adminHtml,
                     });
-                    console.log('✅ Admin notification email sent to jacky@hopefordogs.sg');
+                    console.log('✅ Admin notification email sent to admin');
                 } catch (adminEmailErr) {
                     console.error('⚠️ Admin notification email failed:', adminEmailErr);
                 }

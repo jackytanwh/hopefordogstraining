@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
 
         await resend.emails.send({
             from: fromAddress,
-            to: ['jacky@hopefordogs.sg'],
+            to: [Deno.env.get("ADMIN_EMAIL")],
             subject,
             html,
         });
