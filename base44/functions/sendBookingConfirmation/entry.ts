@@ -394,6 +394,10 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+        if (user?.role !== 'admin') {
+            return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+        }
         const { booking } = await req.json();
 
         if (!booking) {
