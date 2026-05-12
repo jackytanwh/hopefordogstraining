@@ -1325,6 +1325,10 @@ export default function BookingDetail() {
                             </div>
                             <div><p className="text-slate-600">Sterilised</p><p className="font-medium">{origFurkid.furkidSterilised || origFurkid.furkid_sterilised ? 'Yes' : 'No'}</p></div>
                             <div><p className="text-slate-600">Adopted</p><p className="font-medium">{origFurkid.isAdopted || origFurkid.is_adopted ? 'Yes' : 'No'}</p></div>
+                            <div><p className="text-slate-600">Acquired From</p><p className="font-medium">{origFurkid.furkid_acquired_from || origFurkid.furkidAcquiredFrom || 'N/A'}</p></div>
+                            <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{origFurkid.furkid_joined_family || origFurkid.furkidJoinedFamily || 'N/A'}</p></div>
+                            <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{(origFurkid.first_time_owner === true || origFurkid.firstTimeOwner === true) ? 'Yes' : (origFurkid.first_time_owner === false || origFurkid.firstTimeOwner === false) ? 'No' : 'N/A'}</p></div>
+                            <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{origFurkid.walking_frequency || origFurkid.walkingFrequency || 'N/A'}</p></div>
                             {[
                               { field: 'furkid_diet', label: 'Diet', span: true },
                               { field: 'furkid_sleep_area', label: 'Sleep Area', span: true },
