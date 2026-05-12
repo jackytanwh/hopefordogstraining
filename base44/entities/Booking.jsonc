@@ -717,43 +717,22 @@
     "update": {
       "$or": [
         {
-          "created_by": "{{user.email}}"
-        },
-        {
           "data.client_email": "{{user.email}}"
         },
         {
           "data.clients.client_email": "{{user.email}}"
         },
         {
-          "user_condition": {
-            "role": "admin"
-          }
+          "data.clients.client_email": "{{user.email}}"
         }
       ]
     },
     "delete": {
       "$or": [
         {
-          "created_by": "{{user.email}}"
-        },
-        {
-          "data.client_email": "{{user.email}}"
-        },
-        {
-          "data.clients.client_email": "{{user.email}}"
-        },
-        {
           "user_condition": {
             "role": "admin"
           }
-        }
-      ]
-    },
-    "write": {
-      "$or": [
-        {
-          "created_by": "{{user.email}}"
         },
         {
           "data.client_email": "{{user.email}}"
