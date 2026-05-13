@@ -715,17 +715,9 @@
       ]
     },
     "update": {
-      "$or": [
-        {
-          "data.client_email": "{{user.email}}"
-        },
-        {
-          "data.clients.client_email": "{{user.email}}"
-        },
-        {
-          "data.clients.client_email": "{{user.email}}"
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
       "$or": [
