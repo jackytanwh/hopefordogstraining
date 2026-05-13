@@ -225,15 +225,8 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
         <p style="font-size: 14px; color: #7c2d12; margin: 0 0 4px 0;">Simply use the exclusive promo code: <strong>HOPEFORDOGS10</strong></p>
     </div>`;
 
-    // PAWGRESS10 discount code block (Kinder Puppy only)
+    // PAWGRESS10 discount code block removed
     let pawgressHtml = '';
-    if (config.pawgressCode) {
-        pawgressHtml = `
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-            <p style="font-size: 14px; color: #166534; margin: 0 0 6px 0;">🎓 Ready to take the next step? When <strong>${furkidName}</strong> completes the Kinder Puppy Program, continue the journey with our <strong>Basic Manners Program</strong>!</p>
-            <p style="font-size: 14px; color: #166534; margin: 0 0 4px 0;">Use the exclusive discount code below — valid for <strong>12 months</strong> from today: <strong>PAWGRESS10</strong></p>
-        </div>`;
-    }
 
     // PDF attachment link
     let pdfHtml = '';
