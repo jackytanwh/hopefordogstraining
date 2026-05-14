@@ -435,7 +435,7 @@ export default function BookingCalendar() {
                         {dayBookings.map((booking, idx) => (
                           <div
                             key={idx}
-                            className={`text-xs px-1 py-0.5 rounded truncate ${programColors[booking.service_type] || "bg-blue-100 text-blue-800"}`}
+                            className={`text-xs px-1 py-0.5 rounded truncate ${booking.booking_status === 'paused' ? 'bg-gray-200 text-gray-600' : (programColors[booking.service_type] || "bg-blue-100 text-blue-800")}`}
                           >
                             {booking.session.start_time} - {getFurkidName(booking)}
                           </div>
