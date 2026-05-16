@@ -391,7 +391,7 @@ Deno.serve(async (req) => {
         if (user?.role !== 'admin') {
             return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
         }
-        const { booking } = await req.json();
+        const { booking, clientOnly } = await req.json();
 
         if (!booking) {
             return Response.json({ error: 'No booking data provided' }, { status: 400 });
@@ -506,8 +506,10 @@ Deno.serve(async (req) => {
                     }
                 }
 
-                // --- Admin notification to jacky@hopefordogs.sg ---
-                try {
+                // --- Admin notification (skip when clientOnly resend) ---
+                if (clientOnly) {
+                    console.log('ℹ️ clientOnly mode — skipping admin notification email');
+                } else try {
                     const firstSession = booking.session_dates?.[0];
                     const startDate = firstSession ? formatDate(firstSession.date) : 'TBD';
                     const startDay = firstSession ? getDayOfWeek(firstSession.date) : '';

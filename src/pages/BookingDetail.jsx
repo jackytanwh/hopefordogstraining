@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban, MessageCircle, Copy, Mail } from "lucide-react";
+import { ArrowLeft, User, PawPrint, Calendar, DollarSign, Save, Trash2, FileText, RefreshCw, Edit2, Clock, Package, GraduationCap, X, Ban, MessageCircle, Copy, Mail, CheckCircle2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import BehaviouralModificationDetails from "../components/booking/BehaviouralModificationDetails";
 import CanineAssessmentDetails from "../components/booking/CanineAssessmentDetails";
@@ -56,7 +56,7 @@ export default function BookingDetail() {
   const [groupSchedule, setGroupSchedule] = useState(null);
   const [showResendConfirm, setShowResendConfirm] = useState(false);
   const [resending, setResending] = useState(false);
-
+  const [resendSuccess, setResendSuccess] = useState(false);
   const loadBooking = useCallback(async () => {
     if (!bookingId) {
       setLoading(false);
@@ -354,7 +354,9 @@ export default function BookingDetail() {
   const handleResendConfirmationEmail = async () => {
     setResending(true);
     try {
-      await base44.functions.invoke('sendBookingConfirmation', { booking });
+      await base44.functions.invoke('sendBookingConfirmation', { booking, clientOnly: true });
+      setResendSuccess(true);
+      setTimeout(() => setResendSuccess(false), 4000);
     } catch (error) {
       console.error('Error resending confirmation email:', error);
     } finally {
@@ -917,7 +919,7 @@ export default function BookingDetail() {
           </div>
         </div>
 
-        {/* Mobile-only: Tabbed Status + Session Schedule */}
+        {resendSuccess && <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm font-medium"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />Confirmation email sent to client successfully.</div>}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
           {/* Tab Toggle */}
           <div className="flex border-b border-slate-200">
