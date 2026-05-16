@@ -31,6 +31,10 @@
     "last_program": {
       "type": "string",
       "description": "Training program the client last enrolled in"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of the lead (e.g. 'zoho', 'booking')"
     }
   },
   "required": [

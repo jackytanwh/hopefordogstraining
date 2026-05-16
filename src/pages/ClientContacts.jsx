@@ -16,6 +16,7 @@ export default function ClientContacts() {
   const [editingLead, setEditingLead] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
 
   useEffect(() => {
     base44.entities.LeadInquiry.list('-created_date').then(data => {
@@ -23,6 +24,12 @@ export default function ClientContacts() {
       setLoading(false);
     });
   }, []);
+
+  const filteredLeads = activeTab === 'zoho'
+    ? leads.filter(l => l.source === 'zoho')
+    : activeTab === 'other'
+    ? leads.filter(l => l.source !== 'zoho')
+    : leads;
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -56,21 +63,37 @@ export default function ClientContacts() {
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Client Contacts</h1>
-        <p className="text-slate-600 mt-1">Automatically collected from bookings</p>
+        <p className="text-slate-600 mt-1">All client contacts and leads</p>
+      </div>
+
+      <div className="flex gap-2">
+        {[
+          { key: 'all', label: `All (${leads.length})` },
+          { key: 'zoho', label: `Zoho Contacts (${leads.filter(l => l.source === 'zoho').length})` },
+          { key: 'other', label: `Booking Leads (${leads.filter(l => l.source !== 'zoho').length})` },
+        ].map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab.key ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <Card className="shadow-lg border-0 bg-white/80">
         <CardHeader className="border-b border-slate-100">
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />
-            All Contacts ({leads.length})
+            {activeTab === 'zoho' ? 'Zoho Contacts' : activeTab === 'other' ? 'Booking Leads' : 'All Contacts'} ({filteredLeads.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
             <div className="p-8 text-center text-slate-500">Loading...</div>
-          ) : leads.length === 0 ? (
-            <div className="p-8 text-center text-slate-500">No leads yet.</div>
+          ) : filteredLeads.length === 0 ? (
+            <div className="p-8 text-center text-slate-500">No contacts found.</div>
           ) : (
             <table className="w-full text-sm">
               <thead className="bg-slate-50 border-b border-slate-100">
@@ -87,7 +110,7 @@ export default function ClientContacts() {
                 </tr>
               </thead>
               <tbody>
-                {leads.map(lead => (
+                {filteredLeads.map(lead => (
                   <tr key={lead.id} className="border-b border-slate-100 hover:bg-slate-50">
                     <td className="px-6 py-4 font-medium text-slate-900">{lead.client_name}</td>
                     <td className="px-6 py-4 text-slate-600">{lead.email_address}</td>
