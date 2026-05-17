@@ -9,6 +9,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import PromoCodes from './pages/PromoCodes';
+import Unsubscribe from './pages/Unsubscribe';
 import BookingSystem from './pages/BookingSystem';
 import BookingCalendar from './pages/BookingCalendar';
 import ClientContacts from './pages/ClientContacts';
@@ -72,6 +73,7 @@ const AuthenticatedApp = () => {
       ))}
       <Route path="/PromoCodes" element={<LayoutWrapper currentPageName="PromoCodes"><PromoCodes /></LayoutWrapper>} />
       <Route path="/ClientContacts" element={<LayoutWrapper currentPageName="ClientContacts"><ClientContacts /></LayoutWrapper>} />
+      <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

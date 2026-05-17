@@ -35,6 +35,11 @@
     "source": {
       "type": "string",
       "description": "Source of the lead (e.g. 'zoho', 'booking')"
+    },
+    "unsubscribed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the client has unsubscribed from marketing emails"
     }
   },
   "required": [
