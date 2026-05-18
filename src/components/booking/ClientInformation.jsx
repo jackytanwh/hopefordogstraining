@@ -18,7 +18,9 @@ export default function ClientInformation({ service, formData, setFormData, onNe
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount > 1;
   const isMultiClient = !isMultiEntryForm && (isKinderPuppyMulti || isFYOGMulti || isGroupClass);
   const numberOfClients = isMultiEntryForm ? 1 : (isFYOGMulti ? (fyogCount || 1) : isKinderPuppyMulti ? kinderPuppyCount : (isFYOG || isGroupClass) ? (formData.numberOfClients || 1) : 1);
-  const isHowDidYouKnowRequired = isBehaviouralModification;
+  const isKinderPuppyProgram = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
+  const isBasicMannersProgram = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
+  const isHowDidYouKnowRequired = isBehaviouralModification || isKinderPuppyProgram || isBasicMannersProgram;
 
   const checkSentosaPostalCode = (postalCode) => {
     if (!postalCode) return false;
@@ -127,7 +129,7 @@ export default function ClientInformation({ service, formData, setFormData, onNe
       }
     }
 
-    if (isBehaviouralModification && !formData.howDidYouKnow) {
+    if (isHowDidYouKnowRequired && !formData.howDidYouKnow) {
       newErrors.howDidYouKnow = 'Please let us know how you heard about us';
     }
 
@@ -330,12 +332,14 @@ export default function ClientInformation({ service, formData, setFormData, onNe
                 }
               }}
             >
-              {['Google', 'Facebook', 'Instagram', 'AVS website', 'Recommendation'].map(option => (
-                <div key={option} className="flex items-center space-x-2">
-                  <RadioGroupItem value={option} id={`know-${option}`} />
-                  <Label htmlFor={`know-${option}`} className="font-normal cursor-pointer">{option}</Label>
-                </div>
-              ))}
+              <div className="grid grid-cols-2 gap-2">
+                {['Recommendation', 'Google', 'Facebook', 'Instagram', 'AVS website'].map(option => (
+                  <div key={option} className="flex items-center space-x-2">
+                    <RadioGroupItem value={option} id={`know-${option}`} />
+                    <Label htmlFor={`know-${option}`} className="font-normal cursor-pointer">{option}</Label>
+                  </div>
+                ))}
+              </div>
             </RadioGroup>
             {errors.howDidYouKnow && (
               <p className="text-sm text-red-600">{errors.howDidYouKnow}</p>
