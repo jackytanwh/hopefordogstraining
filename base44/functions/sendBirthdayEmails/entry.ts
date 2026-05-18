@@ -7,7 +7,7 @@ function buildBirthdayEmailHtml(clientName, furkidName, unsubscribeUrl) {
         <div style="background: linear-gradient(135deg, #ffeffb 0%, #ffe5f8 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">
             <img src="https://media.base44.com/images/public/690f36a014bb3e1119479c64/981c2d0c1_DogLogonewSmallCustom.png" alt="Hopefordogs" style="height: 60px; width: auto; object-fit: contain; margin-bottom: 16px;" />
             <h1 style="margin: 0 0 8px 0; font-size: 26px; color: #e62994; font-weight: 700;">🎉 Happy Birthday!</h1>
-            <p style="margin: 0; color: #e62994; font-size: 15px;">A special treat for ${furkidName}</p>
+            <p style="margin: 0; color: #e62994; font-size: 15px;">Special treats for ${furkidName}</p>
         </div>
 
         <!-- Body -->
