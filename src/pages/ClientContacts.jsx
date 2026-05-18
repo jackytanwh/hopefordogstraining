@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { format, parseISO } from "date-fns";
-import { Users, Trash2, Edit2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Users, Trash2, Edit2, Search } from "lucide-react";
 
 export default function ClientContacts() {
   const [leads, setLeads] = useState([]);
@@ -17,6 +18,8 @@ export default function ClientContacts() {
   const [editForm, setEditForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('created_date_desc');
 
   useEffect(() => {
     base44.entities.LeadInquiry.list('-created_date').then(data => {
@@ -25,11 +28,25 @@ export default function ClientContacts() {
     });
   }, []);
 
-  const filteredLeads = activeTab === 'zoho'
-    ? leads.filter(l => l.source === 'zoho')
-    : activeTab === 'other'
-    ? leads.filter(l => l.source !== 'zoho')
-    : leads;
+  const filteredLeads = leads
+    .filter(l => {
+      const matchesTab = activeTab === 'zoho' ? l.source === 'zoho' : activeTab === 'other' ? l.source !== 'zoho' : true;
+      const q = search.toLowerCase();
+      const matchesSearch = !q || [l.client_name, l.email_address, l.mobile_number, l.furkid_name, l.last_program].some(v => v?.toLowerCase().includes(q));
+      return matchesTab && matchesSearch;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'client_name_asc': return (a.client_name || '').localeCompare(b.client_name || '');
+        case 'client_name_desc': return (b.client_name || '').localeCompare(a.client_name || '');
+        case 'furkid_name_asc': return (a.furkid_name || '').localeCompare(b.furkid_name || '');
+        case 'furkid_name_desc': return (b.furkid_name || '').localeCompare(a.furkid_name || '');
+        case 'dog_dob_asc': return (a.dog_dob || '').localeCompare(b.dog_dob || '');
+        case 'dog_dob_desc': return (b.dog_dob || '').localeCompare(a.dog_dob || '');
+        case 'created_date_asc': return new Date(a.created_date) - new Date(b.created_date);
+        case 'created_date_desc': default: return new Date(b.created_date) - new Date(a.created_date);
+      }
+    });
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -64,6 +81,34 @@ export default function ClientContacts() {
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Client Contacts</h1>
         <p className="text-slate-600 mt-1">All client contacts and leads</p>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search by name, email, furkid..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-slate-300"
+          />
+        </div>
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-52">
+            <SelectValue placeholder="Sort by..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="created_date_desc">Date Added (Newest)</SelectItem>
+            <SelectItem value="created_date_asc">Date Added (Oldest)</SelectItem>
+            <SelectItem value="client_name_asc">Client Name (A–Z)</SelectItem>
+            <SelectItem value="client_name_desc">Client Name (Z–A)</SelectItem>
+            <SelectItem value="furkid_name_asc">Furkid Name (A–Z)</SelectItem>
+            <SelectItem value="furkid_name_desc">Furkid Name (Z–A)</SelectItem>
+            <SelectItem value="dog_dob_asc">Furkid DOB (Oldest)</SelectItem>
+            <SelectItem value="dog_dob_desc">Furkid DOB (Newest)</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex gap-2">
