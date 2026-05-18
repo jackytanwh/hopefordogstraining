@@ -15,7 +15,8 @@ import {
   GraduationCap,
   HeartPulse,
   Calendar,
-  Clock
+  Clock,
+  BarChart2
 } from "lucide-react";
 import {
   Sidebar,
@@ -160,6 +161,15 @@ function InnerLayout({ children, currentPageName }) {
               <Link to="/ClientContacts" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
                 <Inbox className="w-4 h-4" />
                 <span className="text-base font-medium">Client Contacts</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={currentPageName === "ReportsStats"}>
+              <Link to="/ReportsStats" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5">
+                <BarChart2 className="w-4 h-4" />
+                <span className="text-base font-medium">Reports & Stats</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

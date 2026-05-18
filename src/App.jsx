@@ -13,6 +13,7 @@ import Unsubscribe from './pages/Unsubscribe';
 import BookingSystem from './pages/BookingSystem';
 import BookingCalendar from './pages/BookingCalendar';
 import ClientContacts from './pages/ClientContacts';
+import ReportsStats from './pages/ReportsStats';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -73,6 +74,7 @@ const AuthenticatedApp = () => {
       ))}
       <Route path="/PromoCodes" element={<LayoutWrapper currentPageName="PromoCodes"><PromoCodes /></LayoutWrapper>} />
       <Route path="/ClientContacts" element={<LayoutWrapper currentPageName="ClientContacts"><ClientContacts /></LayoutWrapper>} />
+      <Route path="/ReportsStats" element={<LayoutWrapper currentPageName="ReportsStats"><ReportsStats /></LayoutWrapper>} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
