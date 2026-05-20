@@ -32,15 +32,20 @@ function getFurkidName(booking) {
 function buildPromoSection(furkidName) {
   return '<div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;">'
     + '<p style="font-size: 16px; font-weight: 700; color: #166534; margin: 0 0 8px 0;">&#127873; A special gift for you!</p>'
-    + '<p style="font-size: 14px; color: #15803d; line-height: 1.6; margin: 0 0 16px 0;">Ready to take the next step with <strong>' + furkidName + '</strong>? Here\'s the exclusive promo code for the Basic Manners Program!</p>'
+    + '<p style="font-size: 14px; color: #15803d; line-height: 1.6; margin: 0 0 16px 0;">Ready to take the next step with <strong>' + furkidName + '</strong>? Here\'s an exclusive promo code if you wish to enrol for other programs!</p>'
     + '<div style="display: inline-block; background: white; border: 2px dashed #22c55e; border-radius: 8px; padding: 12px 24px; margin-bottom: 12px;">'
     + '<span style="font-size: 16px; font-weight: 600; letter-spacing: 0px; color: #16a34a;">PAWGRESS10</span>'
     + '</div>'
     + '</div>';
 }
 
-function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy) {
-  const promoHtml = isKinderPuppy ? buildPromoSection(furkidName) : '';
+function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy, isCanineAssessment) {
+  const promoHtml = (isKinderPuppy || isCanineAssessment) ? buildPromoSection(furkidName) : '';
+
+  const openingParagraphs = isCanineAssessment
+    ? '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">How was your recent experience with us?</p>'
+    : '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">What a journey it has been! &#128062; We are so proud of <strong>' + furkidName + '</strong> and the incredible progress made throughout the program.</p>'
+      + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Your commitment and dedication have made all the difference \u2014 keep up the amazing work!</p>';
 
   return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">'
     + '<div style="background: linear-gradient(135deg, #ffe990 0%, #fde172 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">'
@@ -50,8 +55,7 @@ function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy
     + '</div>'
     + '<div style="background: white; padding: 32px 24px; border: 1px solid #e2e8f0; border-top: none;">'
     + '<p style="font-size: 16px; color: #1e293b; margin: 0 0 16px 0;">Hello <strong>' + clientName + '</strong> and <strong>' + furkidName + '</strong>,</p>'
-    + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">What a journey it has been! &#128062; We are so proud of <strong>' + furkidName + '</strong> and the incredible progress made throughout the program.</p>'
-    + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Your commitment and dedication have made all the difference \u2014 keep up the amazing work!</p>'
+    + openingParagraphs
     + promoHtml
     + '<div style="background: #fefce8; border: 1px solid #fde68a; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;">'
     + '<p style="font-size: 16px; font-weight: 700; color: #92400e; margin: 0 0 8px 0;">We\'d love your feedback!</p>'
@@ -60,7 +64,6 @@ function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy
     + '<a href="https://g.page/r/CSi2srpL-Sw7EBM/review" target="_blank" style="display: inline-block; background: #f59e0b; color: white; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 28px; border-radius: 8px;">Leave us a Google Review</a>'
     + '</div>'
     + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 16px 0 0 0;">Thank you for trusting us to be part of <strong>' + furkidName + '</strong>\'s journey. We hope to see you again soon! &#128021;</p>'
-    + '<p style="font-size: 15px; color: #1e293b; margin: 20px 0 0 0;">Kind regards,<br/><strong>Jacky, ISCP Canine Dip. Prac.</strong><br/>Hopefordogs Canine Training</p>'
     + '</div>'
     + '<div style="padding: 24px; text-align: center; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; background: #f8fafc;">'
     + '<p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">Hopefordogs Canine Training</p>'
@@ -133,6 +136,7 @@ Deno.serve(async (req) => {
       const furkidName = getFurkidName(booking);
       const serviceName = booking.service_name || 'Training Service';
       const isKinderPuppy = KINDER_PUPPY_SERVICE_TYPES.includes(booking.service_type);
+      const isCanineAssessment = booking.service_type === 'canine_assessment';
 
       for (const email of clientEmails) {
         try {
@@ -140,9 +144,9 @@ Deno.serve(async (req) => {
             from: fromAddress,
             to: [email],
             subject: 'Congratulations on completing ' + serviceName + '! 🎉',
-            html: buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy),
+            html: buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy, isCanineAssessment),
           });
-          console.log('Review request email sent to ' + email + (isKinderPuppy ? ' (with PAWGRESS10 promo)' : ''));
+          console.log('Review request email sent to ' + email + ((isKinderPuppy || isCanineAssessment) ? ' (with PAWGRESS10 promo)' : ''));
           emailsSent++;
         } catch (emailErr) {
           console.error('Failed to send review email to ' + email + ':', emailErr.message);
