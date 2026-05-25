@@ -211,6 +211,10 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
         newErrors[`${prefix}furkidDiet`] = 'Please specify furkid diet';
       }
 
+      if (!furkid.feedingFrequency?.trim()) {
+        newErrors[`${prefix}feedingFrequency`] = 'Please specify feeding frequency';
+      }
+
       if (showFoodAllergy && (furkid.hasFoodAllergy === undefined || furkid.hasFoodAllergy === null)) {
         newErrors[`${prefix}hasFoodAllergy`] = 'Please specify if furkid has food allergies';
       }
@@ -517,6 +521,20 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
                 />
                 {errors[`${prefix}furkidDiet`] && (
                   <p className="text-sm text-red-600">{errors[`${prefix}furkidDiet`]}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor={`${prefix}feedingFrequency`}>How many times a day do you feed the puppy? *</Label>
+                <Input
+                  id={`${prefix}feedingFrequency`}
+                  value={furkid.feedingFrequency || ''}
+                  onChange={(e) => handleInputChange(index, 'feedingFrequency', e.target.value)}
+                  placeholder="e.g., 3 times a day"
+                  className={errors[`${prefix}feedingFrequency`] ? 'border-red-500' : ''}
+                />
+                {errors[`${prefix}feedingFrequency`] && (
+                  <p className="text-sm text-red-600">{errors[`${prefix}feedingFrequency`]}</p>
                 )}
               </div>
 

@@ -255,6 +255,9 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
     if (!currentFurkid.furkidDiet?.trim()) {
       newErrors.furkid_furkidDiet = 'Please specify puppy diet';
     }
+    if (!currentFurkid.feedingFrequency?.trim()) {
+      newErrors.furkid_feedingFrequency = 'Please specify feeding frequency';
+    }
     if (!currentFurkid.furkidSleepArea?.trim()) {
       newErrors.furkid_furkidSleepArea = 'Please specify where puppy sleeps';
     }
@@ -626,6 +629,20 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
             />
             {errors.furkid_furkidDiet && (
               <p className="text-sm text-red-600">{errors.furkid_furkidDiet}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="feedingFrequency">How many times a day do you feed the puppy? *</Label>
+            <Input
+              id="feedingFrequency"
+              value={furkid.feedingFrequency || ''}
+              onChange={(e) => handleFurkidChange('feedingFrequency', e.target.value)}
+              placeholder="e.g., 3 times a day"
+              className={errors.furkid_feedingFrequency ? 'border-red-500' : ''}
+            />
+            {errors.furkid_feedingFrequency && (
+              <p className="text-sm text-red-600">{errors.furkid_feedingFrequency}</p>
             )}
           </div>
 
