@@ -28,7 +28,9 @@
         "pending",
         "confirmed",
         "completed",
-        "cancelled"
+        "cancelled",
+        "paused",
+        "resumed"
       ],
       "default": "pending",
       "description": "Status of the booking"

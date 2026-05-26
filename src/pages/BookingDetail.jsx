@@ -27,7 +27,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-const statusColors = { pending: "bg-yellow-100 text-yellow-800 border-yellow-200", confirmed: "bg-green-100 text-green-800 border-green-200", completed: "bg-blue-100 text-blue-800 border-blue-200", cancelled: "bg-red-100 text-red-800 border-red-200", paused: "bg-purple-100 text-purple-800 border-purple-200" };
+const statusColors = { pending: "bg-yellow-100 text-yellow-800 border-yellow-200", confirmed: "bg-green-100 text-green-800 border-green-200", completed: "bg-blue-100 text-blue-800 border-blue-200", cancelled: "bg-red-100 text-red-800 border-red-200", paused: "bg-purple-100 text-purple-800 border-purple-200", resumed: "bg-green-100 text-green-800 border-green-200" };
 
 const timeSlots = ["10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00"];
 const sundayTimeSlots = ["10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30"];
@@ -370,8 +370,6 @@ export default function BookingDetail() {
     await base44.entities.Booking.update(bookingId, { session_dates: updated });
     await loadBooking();
   };
-
-  // Helper function to safely get client field value
 
   // Helper function to safely get furkid field value, checking common variations
   const getFurkidField = (furkid, field) => {
@@ -956,6 +954,7 @@ export default function BookingDetail() {
                     <SelectItem value="completed">Completed</SelectItem>
                     <SelectItem value="cancelled">Cancelled</SelectItem>
                     <SelectItem value="paused">Paused</SelectItem>
+                    <SelectItem value="resumed">Resumed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1130,6 +1129,7 @@ export default function BookingDetail() {
                       <SelectItem value="completed">Completed</SelectItem>
                       <SelectItem value="cancelled">Cancelled</SelectItem>
                       <SelectItem value="paused">Paused</SelectItem>
+                      <SelectItem value="resumed">Resumed</SelectItem>
                     </SelectContent>
                     </Select>
                     </div>
