@@ -540,8 +540,8 @@ export default function BookingCalendar() {
                                <p className="font-semibold text-slate-800">{booking.service_name}</p>
                                <p>Session {booking.session.session_number} of {booking.session_dates?.length}</p>
                                <p className="font-semibold text-blue-600">
-                                  {booking.session.start_time} - {booking.session.end_time}
-                                </p>
+                                 {booking.session.start_time} - {addBufferToTime(booking.session.end_time, 1)}
+                               </p>
 
                             </div>
 
