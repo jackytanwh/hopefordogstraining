@@ -64,12 +64,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
       }
     }
     
-    if (isBehaviouralModification) {
-      if (!modificationAgreement || !modificationAgreement2 || !modificationAgreement3 || !modificationAgreement4) {
-        setAgreementError('Please acknowledge all agreements to proceed');
-        return;
-      }
-    }
     
     if (isKinderPuppy) {
       if (!curriculumAgreement || !pottyAgreement || !puppyRefundAgreement) {
@@ -479,38 +473,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
-        {isBehaviouralModification && (
-          <div className="border-t border-slate-200 pt-4">
-            <h3 className="font-semibold text-slate-900 mb-3">Terms & Agreements</h3>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <Checkbox id="behavioralModificationAgreement" checked={modificationAgreement} onCheckedChange={(checked) => { setModificationAgreement(checked); if (agreementError) setAgreementError(''); }} />
-                <Label htmlFor="behavioralModificationAgreement" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I confirm that I have read the <a href="https://www.hopefordogs.sg/behavioural-modification/#faq" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">FAQs</a> and understand that behaviour modification is a <strong>gradual process with NO QUICK FIXES</strong>. I understand a dog's behaviour is influenced by multiple factors, including <strong>emotional well-being, diet, health, sterilisation status, environment, genetics, and medical conditions.</strong>
-                </Label>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Checkbox id="behavioralModificationAgreement2" checked={modificationAgreement2} onCheckedChange={(checked) => { setModificationAgreement2(checked); if (agreementError) setAgreementError(''); }} />
-                <Label htmlFor="behavioralModificationAgreement2" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I will provide training updates, along with <strong>video recordings, EVERY 2–3 DAYS</strong> so we can review progress together and make any necessary adjustments. <strong>Consistent communication and feedback</strong> will help us maximise your dog's success throughout the programme.
-                </Label>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Checkbox id="behavioralModificationAgreement3" checked={modificationAgreement3} onCheckedChange={(checked) => { setModificationAgreement3(checked); if (agreementError) setAgreementError(''); }} />
-                <Label htmlFor="behavioralModificationAgreement3" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I acknowledge that behaviour change is a collaborative process. While Hopefordogs Canine Training is committed to providing professional guidance and support, successful outcomes largely depend on my consistent implementation of the training plan, management strategies, and recommendations provided. *
-                </Label>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Checkbox id="behavioralModificationAgreement4" checked={modificationAgreement4} onCheckedChange={(checked) => { setModificationAgreement4(checked); if (agreementError) setAgreementError(''); }} />
-                <Label htmlFor="behavioralModificationAgreement4" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I acknowledge that behaviour modification outcomes vary from dog to dog, as they depend on multiple factors stated above. As such, Hopefordogs Canine Training <strong>does not offer refunds, exchanges, or cancellations once the programme has commenced.</strong> *
-                </Label>
-              </div>
-              {agreementError && <p className="text-sm text-red-600 font-medium">{agreementError}</p>}
-            </div>
-          </div>
-        )}
+
 
         {isKinderPuppy && (
           <div className="border-t border-slate-200 pt-4">

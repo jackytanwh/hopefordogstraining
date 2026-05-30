@@ -16,6 +16,7 @@ import FurkidInformation from "../components/booking/FurkidInformation";
 import ProductSelection from "../components/booking/ProductSelection";
 import BookingSummary from "../components/booking/BookingSummary";
 import BehaviouralModificationForm from "../components/booking/BehaviouralModificationForm";
+import BehaviouralModificationTerms from "../components/booking/BehaviouralModificationTerms";
 import CombinedPawrentPuppyForm from "../components/booking/CombinedPawrentPuppyForm";
 
 const services = {
@@ -230,7 +231,8 @@ export default function BookService() {
       const count = formData.kinderPuppyCount || 1;
       return 2 + count + 2;
     }
-    if (isBehaviouralModification || isCanineAssessment) return 5;
+    if (isBehaviouralModification) return 6;
+    if (isCanineAssessment) return 5;
     return 5;
   };
 
@@ -1023,7 +1025,68 @@ export default function BookService() {
           />
         );
       }
-    } else if (isBehaviouralModification || isCanineAssessment) {
+    } else if (isBehaviouralModification) {
+      if (step === 1) {
+        return (
+          <BehaviouralModificationTerms
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 2) {
+        return (
+          <DateTimeSelection
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 3) {
+        return (
+          <ClientInformation
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+            isFYOG={false}
+          />
+        );
+      } else if (step === 4) {
+        return (
+          <BehaviouralModificationForm
+            service={service}
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 5) {
+        return (
+          <ProductSelection
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 6) {
+        return (
+          <BookingSummary
+            service={service}
+            formData={formData}
+            pricing={calculatePricing()}
+            onBack={handleBack}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            isFYOG={false}
+          />
+        );
+      }
+    } else if (isCanineAssessment) {
       if (step === 1) {
         return (
           <DateTimeSelection
