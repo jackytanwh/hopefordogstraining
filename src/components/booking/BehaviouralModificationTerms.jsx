@@ -55,7 +55,7 @@ export default function BehaviouralModificationTerms({ onNext, onBack }) {
           <div className="flex items-start space-x-3">
             <Checkbox id="bm-term3" checked={agreement3} onCheckedChange={(v) => handleChange(setAgreement3, v)} />
             <Label htmlFor="bm-term3" className="text-sm leading-relaxed cursor-pointer font-normal">
-              I acknowledge that behaviour change is a collaborative process. While Hopefordogs Canine Training is committed to providing professional guidance and support, successful outcomes largely depend on my <strong>consistent implementation of the training plan, management strategies, and recommendations provided.</strong> *
+              I acknowledge that behaviour change is a collaborative process. While Hopefordogs Canine Training is committed to providing professional guidance and support, successful outcomes largely depend on my <strong>consistent implementation of the training plan, management strategies, and recommendations provided.</strong>
             </Label>
           </div>
 
