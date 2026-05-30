@@ -675,20 +675,20 @@ export default function BehaviouralModificationForm({ service, formData, setForm
           </div>
 
           <div className="space-y-2">
-            <Label>How much time are you able to spend training daily? *</Label>
+            <Label>If training sessions are kept to 5–10 minutes each, how many sessions would you be able to do daily? *</Label>
             <RadioGroup value={formData.daily_training_time} onValueChange={(v) => handleInputChange('daily_training_time', v)}>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="5-10mins" id="time1" />
-                  <Label htmlFor="time1" className="cursor-pointer">5-10 mins</Label>
+                  <RadioGroupItem value="1 session per day (5–10 minutes)" id="time1" />
+                  <Label htmlFor="time1" className="cursor-pointer">1 session per day (5–10 minutes)</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="10-20mins" id="time2" />
-                  <Label htmlFor="time2" className="cursor-pointer">10-20 mins</Label>
+                  <RadioGroupItem value="2 sessions per day (5–10 minutes each)" id="time2" />
+                  <Label htmlFor="time2" className="cursor-pointer">2 sessions per day (5–10 minutes each)</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="20-30mins" id="time3" />
-                  <Label htmlFor="time3" className="cursor-pointer">20-30 mins</Label>
+                  <RadioGroupItem value="3 sessions per day (5–10 minutes each)" id="time3" />
+                  <Label htmlFor="time3" className="cursor-pointer">3 sessions per day (5–10 minutes each)</Label>
                 </div>
               </div>
             </RadioGroup>
