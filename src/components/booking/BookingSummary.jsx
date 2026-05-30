@@ -352,6 +352,28 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
           </div>
         )}
 
+        {isBehaviouralModification && (
+          <div className="border-t border-slate-200 pt-6">
+            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <span className="text-base">📋</span>
+              Terms & Agreements Acknowledged
+            </h3>
+            <div className="p-4 bg-green-50 rounded-lg border border-green-200 space-y-3">
+              {[
+                'I confirm that I have read the FAQs and understand that behaviour modification is a gradual process with NO QUICK FIXES, influenced by multiple factors including emotional well-being, diet, health, sterilisation status, environment, genetics, and medical conditions.',
+                'I will provide training updates, along with video recordings, every 2-3 days so we can review progress together and make any necessary adjustments. Consistent communication and feedback will help us maximise your dog\'s success throughout the programme.',
+                'I acknowledge that behaviour change is a collaborative process. While Hopefordogs Canine Training is committed to providing professional guidance and support, successful outcomes largely depend on my consistent implementation of the training plan, management strategies, and recommendations provided.',
+                'I acknowledge that behaviour modification outcomes vary from dog to dog, as they depend on multiple factors stated above. As such, Hopefordogs Canine Training does not offer refunds, exchanges, or cancellations once the programme has commenced.',
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-start gap-2 text-sm text-green-900">
+                  <span className="text-green-600 mt-0.5 flex-shrink-0">✓</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {(isFYOG || isGroupClass) && (
           <div className="border-t border-slate-200 pt-6">
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
