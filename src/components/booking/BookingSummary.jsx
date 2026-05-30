@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { format, parseISO, getDay } from "date-fns";
 import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
-export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount }) {
+export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount, isBehaviouralModificationProp = false }) {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(null);
   const [promoLoading, setPromoLoading] = useState(false);
@@ -27,7 +27,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
 
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
   const isKinderPuppy = service.id === 'kinder_puppy_in_home' || service.id === 'kinder_puppy_fyog';
-  const isBehaviouralModification = service.id === 'behavioural_modification';
+  const isBehaviouralModification = isBehaviouralModificationProp || service.id === 'behavioural_modification';
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
   const isFYOGMulti = isFYOG && formData.clients && formData.clients.length > 0;
   const useSharedLayout = isKinderPuppyMulti || isFYOGMulti;

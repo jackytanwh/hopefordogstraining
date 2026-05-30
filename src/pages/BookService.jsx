@@ -1083,6 +1083,7 @@ export default function BookService() {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             isFYOG={false}
+            isBehaviouralModificationProp={true}
           />
         );
       }
