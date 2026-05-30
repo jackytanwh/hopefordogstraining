@@ -48,14 +48,14 @@ export default function BehaviouralModificationTerms({ onNext, onBack }) {
           <div className="flex items-start space-x-3">
             <Checkbox id="bm-term2" checked={agreement2} onCheckedChange={(v) => handleChange(setAgreement2, v)} />
             <Label htmlFor="bm-term2" className="text-sm leading-relaxed cursor-pointer font-normal">
-              I will provide training updates, along with <strong>video recordings, EVERY 2–3 DAYS</strong> so we can review progress together and make any necessary adjustments. <strong>Consistent communication and feedback</strong> will help us maximise your dog's success throughout the programme.
+              I will provide training updates, along with <strong>video recordings, every 2-3 days</strong> so we can review progress together and make any necessary adjustments. <strong>Consistent communication and feedback</strong> will help us maximise your dog's success throughout the programme.
             </Label>
           </div>
 
           <div className="flex items-start space-x-3">
             <Checkbox id="bm-term3" checked={agreement3} onCheckedChange={(v) => handleChange(setAgreement3, v)} />
             <Label htmlFor="bm-term3" className="text-sm leading-relaxed cursor-pointer font-normal">
-              I acknowledge that behaviour change is a collaborative process. While Hopefordogs Canine Training is committed to providing professional guidance and support, successful outcomes largely depend on my consistent implementation of the training plan, management strategies, and recommendations provided. *
+              I acknowledge that behaviour change is a collaborative process. While Hopefordogs Canine Training is committed to providing professional guidance and support, successful outcomes largely depend on my <strong>consistent implementation of the training plan, management strategies, and recommendations provided.</strong> *
             </Label>
           </div>
 
