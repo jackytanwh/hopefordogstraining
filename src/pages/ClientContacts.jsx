@@ -8,7 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { format, parseISO } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Trash2, Edit2, Search } from "lucide-react";
+import { Users, Trash2, Edit2, Search, ArchiveRestore } from "lucide-react";
 
 export default function ClientContacts() {
   const [leads, setLeads] = useState([]);
@@ -28,12 +28,20 @@ export default function ClientContacts() {
     });
   }, []);
 
-  const filteredLeads = leads
+  const handleRestore = async (lead) => {
+    await base44.entities.LeadInquiry.update(lead.id, { unsubscribed: false });
+    setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, unsubscribed: false } : l));
+  };
+
+  const activeLeads = leads.filter(l => !l.unsubscribed);
+  const archivedLeads = leads.filter(l => l.unsubscribed);
+
+  const filteredLeads = (activeTab === 'archived' ? archivedLeads : activeLeads)
     .filter(l => {
       const matchesTab = activeTab === 'zoho' ? l.source === 'zoho' : activeTab === 'other' ? l.source !== 'zoho' : true;
       const q = search.toLowerCase();
       const matchesSearch = !q || [l.client_name, l.email_address, l.mobile_number, l.furkid_name, l.last_program].some(v => v?.toLowerCase().includes(q));
-      return matchesTab && matchesSearch;
+      return activeTab === 'archived' ? matchesSearch : (matchesTab && matchesSearch);
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -111,11 +119,12 @@ export default function ClientContacts() {
         </Select>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {[
-          { key: 'all', label: `All (${leads.length})` },
-          { key: 'zoho', label: `Zoho Contacts (${leads.filter(l => l.source === 'zoho').length})` },
-          { key: 'other', label: `Booking Leads (${leads.filter(l => l.source !== 'zoho').length})` },
+          { key: 'all', label: `All (${activeLeads.length})` },
+          { key: 'zoho', label: `Zoho Contacts (${activeLeads.filter(l => l.source === 'zoho').length})` },
+          { key: 'other', label: `Booking Leads (${activeLeads.filter(l => l.source !== 'zoho').length})` },
+          { key: 'archived', label: `Archived (${archivedLeads.length})` },
         ].map(tab => (
           <button
             key={tab.key}
@@ -131,7 +140,7 @@ export default function ClientContacts() {
         <CardHeader className="border-b border-slate-100">
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />
-            {activeTab === 'zoho' ? 'Zoho Contacts' : activeTab === 'other' ? 'Booking Leads' : 'All Contacts'} ({filteredLeads.length})
+            {activeTab === 'zoho' ? 'Zoho Contacts' : activeTab === 'other' ? 'Booking Leads' : activeTab === 'archived' ? 'Archived Contacts (Unsubscribed)' : 'All Contacts'} ({filteredLeads.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -171,12 +180,25 @@ export default function ClientContacts() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-1">
-                        <Button size="sm" variant="ghost" className="text-slate-600 hover:text-slate-800 hover:bg-slate-100" onClick={() => handleEditOpen(lead)}>
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDeleteId(lead.id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {activeTab === 'archived' ? (
+                          <>
+                            <Button size="sm" variant="ghost" className="text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => handleRestore(lead)} title="Restore contact">
+                              <ArchiveRestore className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDeleteId(lead.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button size="sm" variant="ghost" className="text-slate-600 hover:text-slate-800 hover:bg-slate-100" onClick={() => handleEditOpen(lead)}>
+                              <Edit2 className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDeleteId(lead.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
