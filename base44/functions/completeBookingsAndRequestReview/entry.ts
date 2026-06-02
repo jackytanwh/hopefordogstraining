@@ -39,13 +39,22 @@ function buildPromoSection(furkidName) {
     + '</div>';
 }
 
-function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy, isCanineAssessment) {
+function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy, isCanineAssessment, isBehaviouralModification) {
   const promoHtml = (isKinderPuppy || isCanineAssessment) ? buildPromoSection(furkidName) : '';
 
-  const openingParagraphs = isCanineAssessment
-    ? '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">How was your recent experience with us?</p>'
-    : '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">What a journey it has been! &#128062; We are so proud of <strong>' + furkidName + '</strong> and the incredible progress made throughout the program.</p>'
+  let openingParagraphs;
+  if (isCanineAssessment) {
+    openingParagraphs = '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">How was your recent experience with us?</p>';
+  } else if (isBehaviouralModification) {
+    openingParagraphs = '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Thank you for trusting Hopefordogs Canine Training to support you and <strong>' + furkidName + '</strong>.</p>'
+      + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">It has been a pleasure working with both of you. Behaviour change is rarely a straight line, and I appreciate the time, patience, and consistency you have invested throughout the programme. Every small step forward contributes to long-term success.</p>'
+      + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Remember that setbacks can happen and are a normal part of the learning process. Progress is often measured over weeks and months rather than days.</p>'
+      + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Should you encounter any challenges or have questions along the way, please don\'t hesitate to get in touch. I\'m always happy to point you in the right direction.</p>'
+      + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Should you require additional training sessions, you may book them here:<br/><a href="https://bookings.hopefordogs.sg/bookservice?service=on_demand_training" style="color: #0369a1;">https://bookings.hopefordogs.sg/bookservice?service=on_demand_training</a></p>';
+  } else {
+    openingParagraphs = '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">What a journey it has been! &#128062; We are so proud of <strong>' + furkidName + '</strong> and the incredible progress made throughout the program.</p>'
       + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 16px 0;">Your commitment and dedication have made all the difference \u2014 keep up the amazing work!</p>';
+  }
 
   return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f1f5f9;">'
     + '<div style="background: linear-gradient(135deg, #ffe990 0%, #fde172 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">'
@@ -63,7 +72,7 @@ function buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy
     + '<p style="font-size: 20px; margin: 0 0 12px 0; letter-spacing: 2px;">&#11088;&#11088;&#11088;&#11088;&#11088;</p>'
     + '<a href="https://g.page/r/CSi2srpL-Sw7EBM/review" target="_blank" style="display: inline-block; background: #f59e0b; color: white; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 28px; border-radius: 8px;">Leave us a Google Review</a>'
     + '</div>'
-    + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 16px 0 0 0;">Thank you for trusting us to be part of <strong>' + furkidName + '</strong>\'s journey. We hope to see you again soon! &#128021;</p>'
+    + '<p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 16px 0 0 0;">' + (isBehaviouralModification ? 'I wish both of you many happy years together.' : 'Thank you for trusting us to be part of <strong>' + furkidName + '</strong>\'s journey. We hope to see you again soon! &#128021;') + '</p>'
     + '</div>'
     + '<div style="padding: 24px; text-align: center; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; background: #f8fafc;">'
     + '<p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #334155;">Hopefordogs Canine Training</p>'
@@ -137,6 +146,7 @@ Deno.serve(async (req) => {
       const serviceName = booking.service_name || 'Training Service';
       const isKinderPuppy = KINDER_PUPPY_SERVICE_TYPES.includes(booking.service_type);
       const isCanineAssessment = booking.service_type === 'canine_assessment';
+      const isBehaviouralModification = booking.service_type === 'behavioural_modification';
 
       for (const email of clientEmails) {
         try {
@@ -144,7 +154,7 @@ Deno.serve(async (req) => {
             from: fromAddress,
             to: [email],
             subject: 'Congratulations on completing ' + serviceName + '! 🎉',
-            html: buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy, isCanineAssessment),
+            html: buildReviewEmailHtml(clientName, furkidName, serviceName, isKinderPuppy, isCanineAssessment, isBehaviouralModification),
           });
           console.log('Review request email sent to ' + email + ((isKinderPuppy || isCanineAssessment) ? ' (with PAWGRESS10 promo)' : ''));
           emailsSent++;
