@@ -20,9 +20,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const [modificationAgreement2, setModificationAgreement2] = useState(false);
   const [modificationAgreement3, setModificationAgreement3] = useState(false);
   const [modificationAgreement4, setModificationAgreement4] = useState(false);
-  const [curriculumAgreement, setCurriculumAgreement] = useState(false);
-  const [pottyAgreement, setPottyAgreement] = useState(false);
-  const [puppyRefundAgreement, setPuppyRefundAgreement] = useState(false);
   const [agreementError, setAgreementError] = useState('');
 
   const isBasicManners = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
@@ -63,23 +60,14 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
         return;
       }
     }
-    
-    
-    if (isKinderPuppy) {
-      if (!curriculumAgreement || !pottyAgreement || !puppyRefundAgreement) {
-        setAgreementError('Please acknowledge all agreements to proceed');
-        return;
-      }
-    }
-    
     const agreements = {
       noRetractableLeash: leashAgreement,
       noRefunds: refundAgreement,
       dogBehavior: behaviorAgreement,
       behavioralModificationUnderstanding: modificationAgreement,
-      kinderPuppyCurriculum: curriculumAgreement,
-      kinderPuppyPottyTraining: pottyAgreement,
-      kinderPuppyRefundPolicy: puppyRefundAgreement
+      kinderPuppyCurriculum: true,
+      kinderPuppyPottyTraining: true,
+      kinderPuppyRefundPolicy: true
     };
     
     onSubmit(agreements, promoApplied, finalTotal);
@@ -497,32 +485,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
 
 
 
-        {isKinderPuppy && (
-          <div className="border-t border-slate-200 pt-4">
-            <h3 className="font-semibold text-slate-900 mb-3">Terms & Agreements</h3>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <Checkbox id="kinderPuppyAgreement1" checked={curriculumAgreement} onCheckedChange={(checked) => { setCurriculumAgreement(checked); if (agreementError) setAgreementError(''); }} />
-                <Label htmlFor="kinderPuppyAgreement1" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I have reviewed the curriculum and understand that puppy training goes beyond teaching basic cues like "sit" or "down," or addressing potty training alone. The curriculum supports my goals and includes a range of essential skills and knowledge vital for my puppy's long-term development and overall well-being.
-                </Label>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Checkbox id="kinderPuppyAgreement2" checked={pottyAgreement} onCheckedChange={(checked) => { setPottyAgreement(checked); if (agreementError) setAgreementError(''); }} />
-                <Label htmlFor="kinderPuppyAgreement2" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I understand that successful potty training requires a consistent routine of feeding, potty breaks, and playtime. I acknowledge that patience and consistency are key, and that there are no quick fixes. I recognise that limited supervision may affect my puppy's potty training progress.
-                </Label>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Checkbox id="kinderPuppyAgreement3" checked={puppyRefundAgreement} onCheckedChange={(checked) => { setPuppyRefundAgreement(checked); if (agreementError) setAgreementError(''); }} />
-                <Label htmlFor="kinderPuppyAgreement3" className="text-sm leading-relaxed cursor-pointer font-normal">
-                  I understand that HopeforDogs Canine Training's refund policy does not allow refunds, exchanges, or cancellations. Any refund provided will be entirely at HopeforDogs Canine Training's discretion and as a gesture of goodwill.
-                </Label>
-              </div>
-              {agreementError && <p className="text-sm text-red-600 font-medium">{agreementError}</p>}
-            </div>
-          </div>
-        )}
+
 
         <div className="flex gap-3 pt-4">
           <Button variant="outline" onClick={onBack} disabled={isSubmitting} className="flex-1">

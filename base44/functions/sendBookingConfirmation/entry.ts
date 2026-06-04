@@ -253,9 +253,9 @@ function buildConfirmationEmailHtml(booking: any, clientName: string, furkidName
     const agreementItems: string[] = [];
 
     if (serviceType.includes('kinder_puppy')) {
-        if (booking.agreement_kinder_puppy_curriculum) agreementItems.push('I have read and understood the Kinder Puppy Program curriculum and training approach.');
-        if (booking.agreement_kinder_puppy_potty_training) agreementItems.push('I understand and commit to the potty training requirements outlined in the program.');
-        if (booking.agreement_kinder_puppy_refund_policy) agreementItems.push('I acknowledge that there are no refunds, exchanges, or cancellations once enrolled.');
+        if (booking.agreement_kinder_puppy_curriculum) agreementItems.push('I have reviewed the curriculum and understand that puppy training extends beyond teaching basic cues or addressing potty training alone. The programme is designed to support my puppy\'s overall development and long-term success.');
+        if (booking.agreement_kinder_puppy_potty_training) agreementItems.push('I understand that successful potty training requires a consistent routine involving feeding, supervision, potty opportunities and patience. Limited supervision or an inconsistent routine may affect my puppy\'s progress.');
+        if (booking.agreement_kinder_puppy_refund_policy) agreementItems.push('I understand and accept that HopeforDogs Canine Training does not offer refunds, exchanges, transfers, or cancellations for purchased training programmes, and they expire 3 months from the date. Any exception made will be solely at the discretion of HopeforDogs Canine Training and provided only as a gesture of goodwill.');
     } else if (serviceType === 'basic_manners_in_home' || serviceType === 'basic_manners_fyog' || serviceType === 'basic_manners_group_class') {
         if (booking.agreement_no_retractable_leash) agreementItems.push('I agree not to use retractable or slip leashes during training sessions.');
         if (booking.agreement_no_refunds) agreementItems.push('I acknowledge that there are no refunds, exchanges, or cancellations once enrolled.');

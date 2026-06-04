@@ -18,6 +18,7 @@ import BookingSummary from "../components/booking/BookingSummary";
 import BehaviouralModificationForm from "../components/booking/BehaviouralModificationForm";
 import BehaviouralModificationTerms from "../components/booking/BehaviouralModificationTerms";
 import CombinedPawrentPuppyForm from "../components/booking/CombinedPawrentPuppyForm";
+import KinderPuppyTerms from "../components/booking/KinderPuppyTerms";
 
 const services = {
   kinder_puppy_in_home: {
@@ -229,7 +230,7 @@ export default function BookService() {
     }
     if (isKinderPuppy) {
       const count = formData.kinderPuppyCount || 1;
-      return 2 + count + 2;
+      return 3 + count + 2;
     }
     if (isBehaviouralModification) return 6;
     if (isCanineAssessment) return 5;
@@ -960,6 +961,13 @@ export default function BookService() {
       
       if (step === 1) {
         return (
+          <KinderPuppyTerms
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        );
+      } else if (step === 2) {
+        return (
           <KinderPuppyCountSelection
             formData={formData}
             setFormData={setFormData}
@@ -967,7 +975,7 @@ export default function BookService() {
             onBack={handleBack}
           />
         );
-      } else if (step === 2) {
+      } else if (step === 3) {
         return (
           <DateTimeSelection
             service={service}
@@ -980,8 +988,8 @@ export default function BookService() {
       }
       
       // Dynamic steps for each Pawrent + Puppy pair (combined in single step)
-      const dynamicStepStart = 3;
-      const dynamicStepEnd = 2 + kinderPuppyCount;
+      const dynamicStepStart = 4;
+      const dynamicStepEnd = 3 + kinderPuppyCount;
       
       if (step >= dynamicStepStart && step <= dynamicStepEnd) {
         const currentIndex = step - dynamicStepStart;
