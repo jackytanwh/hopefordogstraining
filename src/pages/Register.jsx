@@ -66,9 +66,10 @@ export default function Register() {
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", "/");
-  };
+  const handleGoogle = () => base44.auth.loginWithProvider("google", "/");
+  const handleMicrosoft = () => base44.auth.loginWithProvider("microsoft", "/");
+  const handleFacebook = () => base44.auth.loginWithProvider("facebook", "/");
+  const handleApple = () => base44.auth.loginWithProvider("apple", "/");
 
   if (showOtp) {
     return (
@@ -138,14 +139,33 @@ export default function Register() {
         </>
       }
     >
-      <Button
-        variant="outline"
-        className="w-full h-12 text-sm font-medium mb-6"
-        onClick={handleGoogle}
-      >
-        <GoogleIcon className="w-5 h-5 mr-2" />
-        Continue with Google
-      </Button>
+      <div className="space-y-3 mb-6">
+        <Button variant="outline" className="w-full h-12 text-sm font-medium" onClick={handleGoogle}>
+          <GoogleIcon className="w-5 h-5 mr-2" />
+          Continue with Google
+        </Button>
+        <Button variant="outline" className="w-full h-12 text-sm font-medium" onClick={handleMicrosoft}>
+          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.4 2H2v9.4h9.4V2Z" fill="#F25022"/>
+            <path d="M22 2h-9.4v9.4H22V2Z" fill="#7FBA00"/>
+            <path d="M11.4 12.6H2V22h9.4v-9.4Z" fill="#00A4EF"/>
+            <path d="M22 12.6h-9.4V22H22v-9.4Z" fill="#FFB900"/>
+          </svg>
+          Continue with Microsoft
+        </Button>
+        <Button variant="outline" className="w-full h-12 text-sm font-medium" onClick={handleFacebook}>
+          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073Z"/>
+          </svg>
+          Continue with Facebook
+        </Button>
+        <Button variant="outline" className="w-full h-12 text-sm font-medium" onClick={handleApple}>
+          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.43c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.54 3.96ZM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25Z"/>
+          </svg>
+          Continue with Apple
+        </Button>
+      </div>
 
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center">
