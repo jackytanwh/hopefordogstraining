@@ -27,7 +27,7 @@ const commonBreeds = [
   "German Shepherd Dog* (restricted breed)", "Golden Retriever", "Great Dane",
   "Greyhound", "Havanese", "Husky (Siberian Husky)", "Irish Setter",
   "Jack Russell Terrier", "Japanese Spitz", "Keeshond", "Labrador Retriever",
-  "Lhasa Apso", "Maltese", "Maltipoo", "Mame Shiba", "Miniature Pinscher",
+  "Lhasa Apso", "Maltese", "Maltipoo", "Mame Shiba", "Miniature Pinscher", "Mixed Breed",
   "Miniature Schnauzer", "Papillon", "Pekingese", "Pembroke Welsh Corgi",
   "Pointer (German Shorthaired Pointer, English Pointer)", "Pomeranian", "Pomsky",
   "Poodle (Toy)", "Poodle (Mini)", "Poodle (Standard)", "Pug",
