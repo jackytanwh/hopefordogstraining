@@ -1912,7 +1912,6 @@ export default function BookingDetail() {
                           mode="single"
                           selected={session.date ? parseISO(session.date) : null}
                           onSelect={(date) => date && handleSessionDateChange(idx, date)}
-                          disabled={(date) => date < new Date()}
                           initialFocus
                           weekStartsOn={1}
                         />
