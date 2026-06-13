@@ -391,12 +391,18 @@ export default function BookingCalendar() {
 
                 {/* Calendar days */}
                 {calendarDays.map(day => {
-                  const dayBookings = getBookingsForDate(day).sort((a, b) => (a.session?.start_time || '').localeCompare(b.session?.start_time || ''));
-                  const dayBlocks = getBlockedSlotsForDate(day).sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
+                  const dayBookings = getBookingsForDate(day);
+                  const dayBlocks = getBlockedSlotsForDate(day);
                   const isCurrentMonth = isSameMonth(day, currentMonth);
                   const isToday = isSameDay(day, new Date());
                   const isSelected = selectedDate && isSameDay(day, selectedDate);
                   const hasFullDayBlock = dayBlocks.some(b => b.is_full_day);
+
+                  // Merge bookings and blocks into a single time-sorted list
+                  const mergedItems = [
+                    ...dayBookings.map(b => ({ type: 'booking', data: b, time: b.session?.start_time || '' })),
+                    ...dayBlocks.filter(b => !b.is_full_day).map(b => ({ type: 'block', data: b, time: b.start_time || '' }))
+                  ].sort((a, b) => a.time.localeCompare(b.time));
 
                   return (
                     <button
@@ -420,27 +426,24 @@ export default function BookingCalendar() {
                       <div className={`text-sm font-medium mb-1 ${isToday ? 'text-blue-600' : ''}`}>
                         {format(day, 'd')}
                       </div>
-                      {dayBlocks.length > 0 && !hasFullDayBlock && (
-                      <div className="space-y-0.5 mb-1">
-                      {dayBlocks.map((block, idx) => (
-                        <div key={idx} className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded truncate">
-                          <Ban className="w-2.5 h-2.5 inline mr-0.5" />
-                          {block.start_time} - {block.end_time}{block.reason ? ` · ${block.reason}` : ''}
+                      {mergedItems.length > 0 && !hasFullDayBlock && (
+                        <div className="space-y-0.5">
+                          {mergedItems.map((item, idx) => (
+                            item.type === 'block' ? (
+                              <div key={idx} className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded truncate">
+                                <Ban className="w-2.5 h-2.5 inline mr-0.5" />
+                                {item.data.start_time} - {item.data.end_time}{item.data.reason ? ` · ${item.data.reason}` : ''}
+                              </div>
+                            ) : (
+                              <div
+                                key={idx}
+                                className={`text-xs px-1 py-0.5 rounded truncate ${item.data.booking_status === 'paused' ? 'bg-gray-200 text-gray-600' : (programColors[item.data.service_type] || "bg-blue-100 text-blue-800")}`}
+                              >
+                                {item.data.session.start_time} - {getFurkidName(item.data)}
+                              </div>
+                            )
+                          ))}
                         </div>
-                      ))}
-                      </div>
-                      )}
-                      {dayBookings.length > 0 && !hasFullDayBlock && (
-                      <div className="space-y-1">
-                        {dayBookings.map((booking, idx) => (
-                          <div
-                            key={idx}
-                            className={`text-xs px-1 py-0.5 rounded truncate ${booking.booking_status === 'paused' ? 'bg-gray-200 text-gray-600' : (programColors[booking.service_type] || "bg-blue-100 text-blue-800")}`}
-                          >
-                            {booking.session.start_time} - {getFurkidName(booking)}
-                          </div>
-                        ))}
-                       </div>
                       )}
                       {hasFullDayBlock && (
                         <div className="text-xs text-amber-700 font-medium mt-1">
@@ -479,7 +482,7 @@ export default function BookingCalendar() {
                         Blocked Time Slots
                       </h3>
                       <div className="space-y-2">
-                        {selectedDateBlocks.map((block) => (
+                        {[...selectedDateBlocks].sort((a, b) => (a.start_time || '').localeCompare(b.start_time || '')).map((block) => (
                           <div key={block.id} className="border border-amber-200 bg-amber-50 rounded-lg p-3 space-y-2">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
