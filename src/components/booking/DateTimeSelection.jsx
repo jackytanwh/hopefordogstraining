@@ -35,32 +35,24 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     const loadBookings = async () => {
       try {
         setLoadingBookings(true);
-        const allBookings = await base44.entities.Booking.list();
-        const activeBookings = allBookings.filter(b => b.booking_status !== 'cancelled');
-        setBookings(activeBookings);
-        
+        // Use the public getBookedSlots function — exposes only timing data, no personal info
+        const response = await base44.functions.invoke('getBookedSlots', {});
+        const { bookedSlots = [], blockedSlots: blocksData = [] } = response.data;
+
+        // Convert flat bookedSlots array into a format compatible with the existing isTimeSlotBooked logic
+        const syntheticBookings = [{ session_dates: bookedSlots }];
+        setBookings(syntheticBookings);
+
         const counts = {};
-        activeBookings.forEach(booking => {
-          if (booking.session_dates && Array.isArray(booking.session_dates)) {
-            booking.session_dates.forEach(session => {
-              if (session.date) {
-                counts[session.date] = (counts[session.date] || 0) + 1;
-              }
-            });
+        bookedSlots.forEach(slot => {
+          if (slot.date) {
+            counts[slot.date] = (counts[slot.date] || 0) + 1;
           }
         });
         setDailyBookingCounts(counts);
-        
-        // Try to load blocked slots (may fail for non-admin users)
-        try {
-          const blocksData = await base44.entities.BlockedSlot.list();
-          setBlockedSlots(blocksData);
-        } catch (error) {
-          console.log('Unable to load blocked slots (may not have admin access):', error);
-          setBlockedSlots([]);
-        }
+        setBlockedSlots(blocksData);
       } catch (error) {
-        console.error("Error loading bookings:", error);
+        console.error("Error loading booked slots:", error);
       } finally {
         setLoadingBookings(false);
       }
