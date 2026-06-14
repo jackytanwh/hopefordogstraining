@@ -89,6 +89,11 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
+    }
+
     // Calculate today's date in Singapore timezone (SGT = UTC+8)
     const now = new Date();
     const sgOffset = 8 * 60;
