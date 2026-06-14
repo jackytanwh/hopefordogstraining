@@ -34,22 +34,24 @@
         "role": "admin"
       }
     },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.setting_key": "basic_manners_group_schedule"
+        }
+      ]
+    },
     "update": {
       "user_condition": {
         "role": "admin"
       }
     },
     "delete": {
-      "user_condition": {
-        "role": "admin"
-      }
-    },
-    "write": {
-      "user_condition": {
-        "role": "admin"
-      }
-    },
-    "read": {
       "user_condition": {
         "role": "admin"
       }
