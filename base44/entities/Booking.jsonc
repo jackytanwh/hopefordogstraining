@@ -705,16 +705,14 @@
   ],
   "rls": {
     "create": {
-      "$or": [
-        {
-          "created_by": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "isAuthenticated": true
-          }
-        }
-      ]
+      "user_condition": {
+        "isAuthenticated": true
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "update": {
       "user_condition": {
@@ -733,11 +731,6 @@
         },
         {
           "data.clients.client_email": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
         }
       ]
     }
