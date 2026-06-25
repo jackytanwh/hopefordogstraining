@@ -64,6 +64,13 @@ const extendedEndTimeSlots = [
   "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"
 ];
 
+// Full 24-hour slots (00:00–23:30) for blocking time across the entire day
+const full24HourSlots = Array.from({ length: 48 }, (_, i) => {
+  const h = Math.floor(i / 2);
+  const m = i % 2 === 0 ? '00' : '30';
+  return `${String(h).padStart(2, '0')}:${m}`;
+});
+
 export default function BookingCalendar() {
   const [bookings, setBookings] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
@@ -293,6 +300,9 @@ export default function BookingCalendar() {
     const dayOfWeek = dateToCheck.getDay();
     return dayOfWeek === 0 ? sundayTimeSlots : timeSlots;
   };
+
+  // Full 24-hour slot list for the block dialog so any range can be blocked
+  const getFull24HourSlots = () => full24HourSlots;
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -676,8 +686,8 @@ export default function BookingCalendar() {
                     <SelectTrigger id="start-time">
                       <SelectValue placeholder="Select start time" />
                     </SelectTrigger>
-                    <SelectContent>
-                      {getAvailableTimeSlots().map(time => (
+                    <SelectContent className="max-h-72 overflow-y-auto">
+                      {getFull24HourSlots().map(time => (
                         <SelectItem key={time} value={time}>
                           <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4" />
@@ -699,7 +709,7 @@ export default function BookingCalendar() {
                       <SelectValue placeholder="Select end time" />
                     </SelectTrigger>
                     <SelectContent className="max-h-72 overflow-y-auto">
-                      {extendedEndTimeSlots.map(time => (
+                      {getFull24HourSlots().map(time => (
                         <SelectItem key={time} value={time}>
                           <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4" />
@@ -710,6 +720,13 @@ export default function BookingCalendar() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {blockForm.start_time && blockForm.end_time && blockForm.start_time <= blockForm.end_time && (
+                  <div className="text-xs text-slate-500 bg-slate-50 rounded p-2">
+                    Blocks from {blockForm.start_time} to {blockForm.end_time}
+                    {blockForm.start_time === '00:00' && blockForm.end_time === '23:30' ? ' (full 24 hours)' : ''}
+                  </div>
+                )}
               </>
             )}
 
