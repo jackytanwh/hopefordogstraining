@@ -80,6 +80,8 @@ export default function ReportsStats() {
   }, [monthRange]);
 
   const activeBookings = useMemo(() => bookings.filter(b => b.booking_status !== 'cancelled'), [bookings]);
+  // Sales bookings exclude both cancelled and pending (pending is not a completed sale)
+  const salesBookings = useMemo(() => bookings.filter(b => b.booking_status !== 'cancelled' && b.booking_status !== 'pending'), [bookings]);
 
   // Monthly sales data
   const monthlySalesData = useMemo(() => {
@@ -88,7 +90,7 @@ export default function ReportsStats() {
         if (!b.created_date) return false;
         return isWithinInterval(new Date(b.created_date), { start, end });
       });
-      const revenue = inMonth.filter(b => b.booking_status !== 'cancelled').reduce((sum, b) => sum + (b.total_price || 0), 0);
+      const revenue = inMonth.filter(b => b.booking_status !== 'cancelled' && b.booking_status !== 'pending').reduce((sum, b) => sum + (b.total_price || 0), 0);
       const count = inMonth.filter(b => b.booking_status !== 'cancelled').length;
       const cancelled = inMonth.filter(b => b.booking_status === 'cancelled').length;
       return { label, revenue, bookings: count, cancelled };
@@ -115,26 +117,26 @@ export default function ReportsStats() {
   }, [bookings]);
 
   // Summary stats
-  const totalRevenue = useMemo(() => activeBookings.reduce((s, b) => s + (b.total_price || 0), 0), [activeBookings]);
+  const totalRevenue = useMemo(() => salesBookings.reduce((s, b) => s + (b.total_price || 0), 0), [salesBookings]);
   const thisMonth = useMemo(() => {
     const start = startOfMonth(new Date());
     const end = endOfMonth(new Date());
     return bookings.filter(b => b.created_date && isWithinInterval(new Date(b.created_date), { start, end }) && b.booking_status !== 'cancelled');
   }, [bookings]);
-  const thisMonthRevenue = useMemo(() => thisMonth.reduce((s, b) => s + (b.total_price || 0), 0), [thisMonth]);
+  const thisMonthRevenue = useMemo(() => thisMonth.filter(b => b.booking_status !== 'pending').reduce((s, b) => s + (b.total_price || 0), 0), [thisMonth]);
 
-  const avgOrderValue = activeBookings.length ? totalRevenue / activeBookings.length : 0;
+  const avgOrderValue = salesBookings.length ? totalRevenue / salesBookings.length : 0;
   const conversionRate = bookings.length ? ((activeBookings.filter(b => b.booking_status === 'completed' || b.booking_status === 'confirmed').length / bookings.length) * 100).toFixed(1) : 0;
 
   // Top programme by revenue
   const programRevenueData = useMemo(() => {
     const rev = {};
-    activeBookings.forEach(b => {
+    salesBookings.forEach(b => {
       const key = PROGRAM_LABELS[b.service_type] || b.service_type || 'Unknown';
       rev[key] = (rev[key] || 0) + (b.total_price || 0);
     });
     return Object.entries(rev).map(([name, revenue]) => ({ name, revenue })).sort((a, b) => b.revenue - a.revenue);
-  }, [activeBookings]);
+  }, [salesBookings]);
 
   // Adoption discount stats
   const adoptedCount = activeBookings.filter(b => b.is_adopted || (b.furkids && b.furkids.some(f => f.is_adopted || f.isAdopted))).length;
@@ -180,7 +182,7 @@ export default function ReportsStats() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={DollarSign} title="Total Revenue" value={`$${totalRevenue.toLocaleString('en-SG', { minimumFractionDigits: 0 })}`} sub="All time (excl. cancelled)" color="green" />
+        <StatCard icon={DollarSign} title="Total Revenue" value={`$${totalRevenue.toLocaleString('en-SG', { minimumFractionDigits: 0 })}`} sub="All time (excl. cancelled & pending)" color="green" />
         <StatCard icon={TrendingUp} title="This Month" value={`$${thisMonthRevenue.toLocaleString('en-SG', { minimumFractionDigits: 0 })}`} sub={`${thisMonth.length} bookings`} color="blue" />
         <StatCard icon={Users} title="Total Bookings" value={activeBookings.length} sub={`${bookings.filter(b => b.booking_status === 'pending').length} pending`} color="purple" />
         <StatCard icon={Award} title="Avg. Order Value" value={`$${avgOrderValue.toFixed(0)}`} sub={`${conversionRate}% conversion`} color="amber" />
