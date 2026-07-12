@@ -24,7 +24,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_small',
     name: 'Puppy Playtime Starter Kit – S',
-    description: 'The kit includes chew and plush toys, with different textures and sounds. Bundle includes: <strong>GiGwi Suppa Puppa · Elephant with Squeaker (4172), GiGwi Suppa Puppa · Bear (6708), Better Bone · Medium Classic Mini, Plant-Based No Nylon (B0201Mi).</strong>',
+    description: 'The kit includes chew and plush toys, with different textures and sounds. Bundle includes: <strong>GiGwi Suppa Puppa · Elephant with Squeaker (4172), GiGwi Suppa Puppa · Bear (6708), Better Bone · Medium Classic Mini, Plant-Based No Nylon (B0201Mi).</strong> Suitable for small-sized breeds such as: <strong>Pomeranian, Chihuahua, Shih Tzu, Toy Poodle & Maltese.</strong>',
     originalPrice: 41.29,
     discountedPrice: 37.16,
     discountPercent: 10,
@@ -38,7 +38,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_medium',
     name: 'Puppy Playtime Starter Kit – M',
-    description: 'The kit includes a chew and plush toy for different textures and sounds. Bundle includes: <strong>GiGwi Plush Friendz Pineapple Dog (6971), Better Bone · Medium Classic Small Plant-Based No Nylon (B0201S) & GiGwi Signature Ball · Purple/Blue, S (6295).</strong>',
+    description: 'The kit includes a chew and plush toy for different textures and sounds. Bundle includes: <strong>GiGwi Plush Friendz Pineapple Dog (6971), Better Bone · Medium Classic Small Plant-Based No Nylon (B0201S) & GiGwi Signature Ball · Purple/Blue, S (6295).</strong> Suitable for medium-sized breeds such as: <strong>Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.</strong>',
     originalPrice: 48.39,
     discountedPrice: 43.55,
     discountPercent: 10,
@@ -52,7 +52,7 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_large',
     name: 'Puppy Playtime Starter Kit – L',
-    description: 'The kit includes chew and plush toys for different textures and sounds. Bundle includes: <strong>Crunchy \'Plush Friendz\' Duck w/bone & squeaker (6625), Better Bone · Medium Classic Small, Plant-Based Material. No Nylon (B0201S) & GiGwi Signature Ball · Purple/Blue, M (6297).</strong>',
+    description: 'The kit includes chew and plush toys for different textures and sounds. Bundle includes: <strong>Crunchy \'Plush Friendz\' Duck w/bone & squeaker (6625), Better Bone · Medium Classic Small, Plant-Based Material. No Nylon (B0201S) & GiGwi Signature Ball · Purple/Blue, M (6297).</strong> Suitable for large-sized breeds such as: <strong>Golden Retrievers, Labrador Retrievers & Standard Poodles & Huskies.</strong>',
     originalPrice: 52.58,
     discountedPrice: 47.32,
     discountPercent: 10,
