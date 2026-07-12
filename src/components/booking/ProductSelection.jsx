@@ -52,17 +52,15 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_large',
     name: 'Puppy Playtime Starter Kit – L',
-    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Crunchy Plush Friendz Duck w/bone & squeaker, Shaking Fun Lion, Wooden Chew (M), GiGwi Ball w/Squeaker (L), and Toothbrush Rubber Dental Chew w/cracking sound.</strong> Suitable for large breeds like <strong>Golden Retrievers, German Shepherds, Rottweilers, Siberian Huskies & Bernese Mountain Dog.</strong>',
-    originalPrice: 76.25,
-    discountedPrice: 68.60,
+    description: 'The kit includes chew and plush toys for different textures and sounds. Bundle includes: <strong>Crunchy \'Plush Friendz\' Duck w/bone & squeaker (6625), Better Bone · Medium Classic Small, Plant-Based Material. No Nylon (B0201S) & GiGwi Signature Ball · Purple/Blue, M (6297).</strong>',
+    originalPrice: 52.58,
+    discountedPrice: 47.32,
     discountPercent: 10,
     showEcoLabel: false,
     imageUrls: [
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/7651f870c_Screenshot2026-04-29180919.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/ab048b023_Screenshot2026-04-29180943.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/119fb2ad0_Screenshot2026-04-29181011.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/048eb04e6_Screenshot2026-04-29181043.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/f7f0dba6d_Screenshot2026-04-29181113.png'
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/e6b252f72_IMG_8932.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/7b0d53fb9_MEDIUMCLASSICSMALL.jpg',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/afa9f7fd7_629562971.png'
     ]
   }
 ];
