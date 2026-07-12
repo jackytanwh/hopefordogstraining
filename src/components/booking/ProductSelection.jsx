@@ -38,17 +38,15 @@ const PRODUCTS = [
   {
     id: 'puppy_kit_medium',
     name: 'Puppy Playtime Starter Kit – M',
-    description: 'Includes chew toys, plush toys, and interactive toys for different textures and sounds. Perfect for new puppy guardians! Bundle includes: <strong>Plush Friendz Elephant w/Squeaker, Crinkle & TPR Stick, Plush Friendz Monkey w/Squeaker/Crinkle Paper, Wooden Chew (S), GiGwi Ball w/Squeaker (M), and GiGwi Bulb Rubber Treats Dispenser (M).</strong> Suitable for medium-sized breeds like <strong>Shiba Inu, Corgi, Beagle, Border Collie & Australian Shepherd.</strong>',
-    originalPrice: 61.95,
-    discountedPrice: 55.80,
+    description: 'The kit includes a chew and plush toy for different textures and sounds. Bundle includes: <strong>GiGwi Plush Friendz Pineapple Dog (6971), Better Bone · Medium Classic Small Plant-Based No Nylon (B0201S) & GiGwi Signature Ball · Purple/Blue, S (6295).</strong>',
+    originalPrice: 48.39,
+    discountedPrice: 43.55,
     discountPercent: 10,
     showEcoLabel: false,
     imageUrls: [
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/32a599b40_Screenshot2026-04-29175939.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/0cd973dd5_Screenshot2026-04-29175845.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/ad0b95c5d_Screenshot2026-04-29175818.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/aae0842f4_Screenshot2026-04-29180006.png',
-      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/97d3b3183_Screenshot2026-04-29180652.png'
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/612aa0eb3_MEDIUMCLASSICSMALL.jpg',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/9a4e92a33_69711.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/92e26fbbf_629562971.png'
     ]
   },
   {
