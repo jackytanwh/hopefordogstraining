@@ -12,8 +12,8 @@ import { Loader2, AlertCircle, Clock } from "lucide-react";
 import { differenceInYears, differenceInMonths } from "date-fns";
 
 const commonBreeds = [
-  "Affenpinscher", "Akita Inu", "Alaskan Malamute", "American Bulldog",
-  "American Cocker Spaniel", "American Eskimo Dog",
+  "Alaskan Malamute",
+  "American Cocker Spaniel",
   "American Pit Bull Terrier* (restricted breed in Singapore)",
   "American Staffordshire Terrier* (restricted breed)",
   "Australian Cattle Dog", "Australian Shepherd", "Basset Hound", "Beagle",
@@ -25,7 +25,7 @@ const commonBreeds = [
   "English Setter", "English Springer Spaniel", "French Bulldog",
   "German Shepherd Dog* (restricted breed)", "Golden Retriever", "Great Dane",
   "Greyhound", "Havanese", "Husky (Siberian Husky)", "Irish Setter",
-  "Jack Russell Terrier", "Japanese Spitz", "Keeshond", "Labrador Retriever",
+  "Jack Russell Terrier", "Japanese Spitz", "Jindo", "Jindo Crossed", "Keeshond", "Labrador Retriever",
   "Lhasa Apso", "Maltese", "Maltipoo", "Mame Shiba", "Miniature Pinscher",
   "Miniature Schnauzer", "Papillon", "Pekingese", "Pembroke Welsh Corgi",
   "Pointer (German Shorthaired Pointer, English Pointer)", "Pomeranian", "Pomsky",
