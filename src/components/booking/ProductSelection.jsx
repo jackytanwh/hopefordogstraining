@@ -30,11 +30,9 @@ const PRODUCTS = [
     discountPercent: 10,
     showEcoLabel: false,
     imageUrls: [
-      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/585e2cd8b_Screenshot2025-11-13001718.png',
-      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/6376be453_Screenshot2025-11-13001731.png',
-      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/18f2f2e44_Screenshot2025-11-13001751.png',
-      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/73ec49b2d_Screenshot2025-11-13001807.png',
-      'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690f36a014bb3e1119479c64/2cec983d0_8508-3.png'
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/d2db8c209_lion.png',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/8c08da395_MEDIUMCLASSSICMINI.jpg',
+      'https://media.base44.com/images/public/690f36a014bb3e1119479c64/decddc6f9_67083.png'
     ]
   },
   {
