@@ -697,6 +697,25 @@
       "type": "boolean",
       "description": "Whether a session reminder email has been sent for tomorrow's session",
       "default": false
+    },
+    "behavioural_modification_documents": {
+      "type": "array",
+      "description": "Uploaded PDF documents for the Behavioural Modification program (e.g. assessment reports, vet records)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_name": {
+            "type": "string"
+          },
+          "file_url": {
+            "type": "string"
+          },
+          "uploaded_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
     }
   },
   "required": [
