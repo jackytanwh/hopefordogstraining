@@ -1197,10 +1197,10 @@ export default function BookingDetail() {
                                     {val && (
                                       <>
                                         <button onClick={() => navigator.clipboard.writeText(val)} title="Copy number" className="text-slate-400 hover:text-slate-600">
-                                          <Copy className="w-3.5 h-3.5" />
+                                          <Copy className="w-5 h-5" />
                                         </button>
                                         <a href={`https://wa.me/${val.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
-                                          <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
+                                          <MessageCircle className="w-5 h-5 text-green-600 hover:text-green-700" />
                                         </a>
                                       </>
                                     )}
@@ -1234,10 +1234,10 @@ export default function BookingDetail() {
                               {value && (
                                 <>
                                   <button onClick={() => navigator.clipboard.writeText(value)} title="Copy number" className="text-slate-400 hover:text-slate-600">
-                                    <Copy className="w-3.5 h-3.5" />
+                                    <Copy className="w-5 h-5" />
                                   </button>
                                   <a href={`https://wa.me/${value.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" title="Open WhatsApp">
-                                    <MessageCircle className="w-4 h-4 text-green-600 hover:text-green-700" />
+                                    <MessageCircle className="w-5 h-5 text-green-600 hover:text-green-700" />
                                   </a>
                                 </>
                               )}
