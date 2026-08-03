@@ -104,20 +104,6 @@ const services = {
   }
 };
 
-const loadRazorpayScript = () => {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-};
-
 export default function BookService() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -621,7 +607,7 @@ export default function BookService() {
       sessionStorage.setItem('serviceType', formData.serviceType);
       sessionStorage.setItem('whatsappConsent', String(formData.whatsappConsent));
       
-      console.log('=== INITIATING RAZORPAY PAYMENT ===');
+      console.log('=== INITIATING HITPAY PAYMENT ===');
 
       const paymentAmount = finalTotal !== null ? finalTotal : pricing.total;
 
@@ -636,98 +622,28 @@ export default function BookService() {
         }
       }
 
-      const orderResponse = await base44.functions.invoke('createRazorpayOrder', {
-        bookingId: booking.id,
-        amount: paymentAmount,
-      });
-
-      const orderData = orderResponse?.data;
-      console.log('📥 Razorpay order response:', orderData);
-
-      if (!orderData?.order_id || !orderData?.razorpay_key_id) {
-        throw new Error('Failed to create Razorpay order');
-      }
-
       const useClientsArray = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
       const primaryClient = useClientsArray ? getPrimaryClientContact(formData.clients || []) : null;
       const prefillName = firstNonEmptyValue(primaryClient?.name, formData.clientName);
       const prefillEmail = firstNonEmptyValue(primaryClient?.email, formData.clientEmail);
-      const prefillMobile = firstNonEmptyValue(primaryClient?.mobile, formData.clientMobile);
 
-      const scriptLoaded = await loadRazorpayScript();
-      if (!scriptLoaded || !window.Razorpay) {
-        throw new Error('Could not load Razorpay checkout. Please check your internet connection and try again.');
+      const paymentResponse = await base44.functions.invoke('createHitpayPaymentRequest', {
+        bookingId: booking.id,
+        amount: paymentAmount,
+        clientEmail: prefillEmail,
+        clientName: prefillName,
+      });
+
+      const paymentData = paymentResponse?.data;
+      console.log('📥 HitPay payment request response:', paymentData);
+
+      if (!paymentData?.url) {
+        throw new Error('Failed to create HitPay payment request');
       }
 
-      await new Promise((resolve, reject) => {
-        const options = {
-          key: orderData.razorpay_key_id,
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: "Hope For Dogs Training",
-          description: service.name,
-          order_id: orderData.order_id,
-          prefill: {
-            name: prefillName || undefined,
-            email: prefillEmail || undefined,
-            contact: prefillMobile || undefined,
-          },
-          handler: async function (response) {
-            try {
-              console.log('✅ Razorpay payment success:', response);
-              const verifyResponse = await base44.functions.invoke('verifyRazorpayPayment', {
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                bookingId: booking.id,
-              });
-              console.log('✅ Verification result:', verifyResponse?.data);
-              window.location.href = `/PaymentSuccess?booking_id=${booking.id}`;
-              resolve();
-            } catch (verifyError) {
-              console.error('❌ Payment verification failed:', verifyError);
-              reject(verifyError);
-            }
-          },
-          modal: {
-            ondismiss: function () {
-              console.log('ℹ️ Razorpay checkout closed by user');
-              setIsSubmitting(false);
-              toast({
-                title: "Payment cancelled",
-                description: "You closed the payment window. Your booking is saved — you can retry payment.",
-              });
-              resolve();
-            },
-          },
-          theme: {
-            color: "#2563eb",
-          },
-        };
-
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', function (response) {
-          console.error('❌ Razorpay payment failed:', response.error);
-          // Notify admin of failed payment
-          const useClientsArr = isFYOG || isGroupClass || (isKinderPuppy && (formData.kinderPuppyCount || 1) > 1);
-          const failedPrimaryClient = useClientsArr ? getPrimaryClientContact(formData.clients || []) : null;
-          base44.functions.invoke('sendFailedBookingAlert', {
-            bookingId: booking.id,
-            clientName: failedPrimaryClient?.name || formData.clientName || '',
-            clientEmail: failedPrimaryClient?.email || formData.clientEmail || '',
-            clientMobile: failedPrimaryClient?.mobile || formData.clientMobile || '',
-            serviceName: service.name,
-            errorReason: response.error?.description || response.error?.reason || 'Payment failed',
-          }).catch(e => console.warn('Alert send failed:', e));
-          toast({
-            title: "Payment failed",
-            description: response.error?.description || "Payment could not be completed. Please try again.",
-            variant: "destructive",
-          });
-          reject(new Error(response.error?.description || 'Payment failed'));
-        });
-        rzp.open();
-      });
+      // Redirect the user to the HitPay hosted checkout page.
+      // Confirmation is handled asynchronously by the hitpayWebhook backend function.
+      window.location.href = paymentData.url;
       
     } catch (error) {
       console.error('❌❌❌ ERROR CREATING BOOKING ❌❌❌');
