@@ -28,9 +28,12 @@ export default async function(req: Request): Promise<Response> {
       return Response.json({ error: 'Invalid amount' }, { status: 400 });
     }
 
-    const appDomain = (APP_DOMAIN || '').replace(/\/$/, '');
+    let appDomain = (APP_DOMAIN || '').trim().replace(/\/$/, '');
     if (!appDomain) {
       return Response.json({ error: 'APP_DOMAIN not configured' }, { status: 500 });
+    }
+    if (!/^https?:\/\//i.test(appDomain)) {
+      appDomain = `https://${appDomain}`;
     }
 
     const redirectUrl = `${appDomain}/PaymentSuccess?booking_id=${bookingId}`;
