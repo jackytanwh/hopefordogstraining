@@ -43,9 +43,15 @@ export default function PaymentSuccess() {
           return;
         }
 
-        // Webhook may still be processing — poll until the booking is confirmed/failed.
+        // Verify directly with HitPay (server-side) on each poll and re-fetch
+        // until the booking is confirmed/failed — independent of webhook delivery.
         for (let attempt = 1; attempt < MAX_ATTEMPTS; attempt++) {
-          await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+          if (cancelled) return;
+          try {
+            await base44.functions.invoke('verifyHitpayPayment', { bookingId });
+          } catch (e) {
+            console.error("verifyHitpayPayment error:", e);
+          }
           if (cancelled) return;
           const latest = await fetchBooking();
           if (cancelled) return;
@@ -53,6 +59,7 @@ export default function PaymentSuccess() {
           if (latest && isTerminal(latest.booking_status)) {
             return;
           }
+          await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
         }
       } catch (error) {
         console.error("Error loading booking:", error);

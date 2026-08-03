@@ -44,8 +44,7 @@ export default async function(req: Request): Promise<Response> {
 
     const bookingId = reference;
 
-    const allBookings = await base44.asServiceRole.entities.Booking.list();
-    const booking = allBookings.find((b) => b.id === bookingId);
+    const booking = await base44.asServiceRole.entities.Booking.get(bookingId).catch(() => null);
 
     if (!booking) {
       console.warn(`⚠️ Booking ${bookingId} not found`);
@@ -66,8 +65,7 @@ export default async function(req: Request): Promise<Response> {
 
       // Send notifications (WhatsApp + Email)
       try {
-        const refreshed = await base44.asServiceRole.entities.Booking.list();
-        const updated = refreshed.find((b) => b.id === bookingId) || booking;
+        const updated = await base44.asServiceRole.entities.Booking.get(bookingId);
         await base44.asServiceRole.functions.invoke('sendBookingConfirmation', { booking: updated });
       } catch (notifError) {
         console.error("⚠️ Notification dispatch failed:", notifError);

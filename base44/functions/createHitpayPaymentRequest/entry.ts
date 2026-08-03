@@ -37,12 +37,16 @@ export default async function(req: Request): Promise<Response> {
     }
 
     const redirectUrl = `${appDomain}/PaymentSuccess?booking_id=${bookingId}`;
+    // Per-payment webhook URL so HitPay delivers the payment result to our
+    // hitpayWebhook function without relying solely on dashboard registration.
+    const webhookUrl = `${appDomain}/functions/hitpayWebhook`;
 
     const body = new URLSearchParams();
     body.append('amount', numericAmount.toFixed(2));
     body.append('currency', 'SGD');
     body.append('reference_number', bookingId);
     body.append('redirect_url', redirectUrl);
+    body.append('webhook', webhookUrl);
     if (clientEmail) body.append('email', clientEmail);
     if (clientName) body.append('name', clientName);
 
