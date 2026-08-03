@@ -642,8 +642,10 @@ export default function BookService() {
       }
 
       // Redirect the user to the HitPay hosted checkout page.
+      // Use top-level navigation so HitPay's checkout (which blocks iframe embedding)
+      // loads correctly even when the app runs inside the builder preview iframe.
       // Confirmation is handled asynchronously by the hitpayWebhook backend function.
-      window.location.href = paymentData.url;
+      window.top.location.href = paymentData.url;
       
     } catch (error) {
       console.error('❌❌❌ ERROR CREATING BOOKING ❌❌❌');
