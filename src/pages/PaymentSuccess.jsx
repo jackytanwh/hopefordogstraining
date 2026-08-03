@@ -15,6 +15,18 @@ export default function PaymentSuccess() {
   const bookingId = urlParams.get('booking_id');
 
   useEffect(() => {
+    let cancelled = false;
+    const MAX_ATTEMPTS = 15;
+    const POLL_INTERVAL = 4000;
+
+    const fetchBooking = async () => {
+      const bookings = await base44.entities.Booking.list();
+      return bookings.find(b => b.id === bookingId);
+    };
+
+    const isTerminal = (status) =>
+      status === 'confirmed' || status === 'failed' || status === 'cancelled';
+
     const loadBooking = async () => {
       if (!bookingId) {
         setLoading(false);
@@ -22,17 +34,37 @@ export default function PaymentSuccess() {
       }
 
       try {
-        const bookings = await base44.entities.Booking.list();
-        const foundBooking = bookings.find(b => b.id === bookingId);
-        setBooking(foundBooking);
+        const first = await fetchBooking();
+        if (cancelled) return;
+        setBooking(first);
+        setLoading(false);
+
+        if (first && isTerminal(first.booking_status)) {
+          return;
+        }
+
+        // Webhook may still be processing — poll until the booking is confirmed/failed.
+        for (let attempt = 1; attempt < MAX_ATTEMPTS; attempt++) {
+          await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+          if (cancelled) return;
+          const latest = await fetchBooking();
+          if (cancelled) return;
+          if (latest) setBooking(latest);
+          if (latest && isTerminal(latest.booking_status)) {
+            return;
+          }
+        }
       } catch (error) {
         console.error("Error loading booking:", error);
-      } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     loadBooking();
+
+    return () => { cancelled = true; };
   }, [bookingId]);
 
   if (loading) {
@@ -102,8 +134,9 @@ export default function PaymentSuccess() {
                     </p>
                   )}
                   {!isConfirmed && !isFailed && (
-                    <p className="text-slate-600 mt-1">
-                      Payment verification is still in progress. Please refresh this page in a moment.
+                    <p className="text-slate-600 mt-1 flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Payment verification is still in progress — this page will update automatically.
                     </p>
                   )}
                 </div>
@@ -156,7 +189,7 @@ export default function PaymentSuccess() {
                       </>
                     ) : (
                       <>
-                        <li>Refresh this page after 30-60 seconds</li>
+                        <li>This page will update automatically once payment is confirmed</li>
                         <li>Please check your email for more details.</li>
                       </>
                     )}
