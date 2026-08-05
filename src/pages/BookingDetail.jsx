@@ -966,6 +966,13 @@ export default function BookingDetail() {
                   </p>
                 </div>
               )}
+              <div className="pt-3 border-t border-slate-200">
+                <p className="text-base text-slate-600">Address</p>
+                <p className="font-medium text-slate-900 text-base">
+                  {booking.client_address || booking.clients?.[0]?.client_address || 'N/A'}
+                  {(booking.client_postal_code || booking.clients?.[0]?.client_postal_code) ? ` ${booking.client_postal_code || booking.clients?.[0]?.client_postal_code}` : ''}
+                </p>
+              </div>
               <div className="pt-4 border-t border-slate-200">
                 <div className="flex items-center gap-2 mb-3">
                   <DollarSign className="w-5 h-5" />
