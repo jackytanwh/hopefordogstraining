@@ -471,24 +471,37 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             <Info className="w-4 h-4 text-blue-600" />
             Booking Information
           </p>
-          <ul className="text-sm text-slate-700 space-y-1.5">
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>Minimum 2 days advance booking required</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>10% discount for adopted puppies/dogs (proof required)</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>5% weekend surcharge applies to Saturday and Sunday bookings (except Group Class)</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600 mt-0.5">•</span>
-              <span>Available <span className="font-semibold">Monday-Saturday:</span> 10am-7pm, <span className="font-semibold">Sunday</span>: 10am-3:30pm</span>
-            </li>
-          </ul>
+          {isAutoRecurring ? (
+            <ul className="text-sm text-slate-700 space-y-1.5">
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 mt-0.5">•</span>
+                <span>Minimum 7 days advance booking required</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 mt-0.5">•</span>
+                <span>Available <span className="font-semibold">Monday-Friday:</span> 10am-7pm</span>
+              </li>
+            </ul>
+          ) : (
+            <ul className="text-sm text-slate-700 space-y-1.5">
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 mt-0.5">•</span>
+                <span>Minimum 2 days advance booking required</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 mt-0.5">•</span>
+                <span>10% discount for adopted puppies/dogs (proof required)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 mt-0.5">•</span>
+                <span>5% weekend surcharge applies to Saturday and Sunday bookings (except Group Class)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 mt-0.5">•</span>
+                <span>Available <span className="font-semibold">Monday-Saturday:</span> 10am-7pm, <span className="font-semibold">Sunday</span>: 10am-3:30pm</span>
+              </li>
+            </ul>
+          )}
         </div>
 
         {isWeekdaysOnly && (
