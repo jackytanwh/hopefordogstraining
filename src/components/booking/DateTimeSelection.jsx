@@ -61,7 +61,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     loadBookings();
   }, []);
 
-  const minAdvanceDays = service.id === 'behavioural_modification' ? 7 : 2;
+  const minAdvanceDays = (service.id === 'behavioural_modification' || service.id === 'canine_assessment') ? 7 : 2;
   const minDate = addDays(new Date(), minAdvanceDays);
 
   const isRecurringApplicable = service.id !== 'canine_assessment' && 
@@ -471,7 +471,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             <Info className="w-4 h-4 text-blue-600" />
             Booking Information
           </p>
-          {isAutoRecurring ? (
+          {isWeekdaysOnly ? (
             <ul className="text-sm text-slate-700 space-y-1.5">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
@@ -507,15 +507,6 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             </ul>
           )}
         </div>
-
-        {isWeekdaysOnly && !isAutoRecurring && (
-          <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
-            <p className="font-semibold">📅 Weekdays Only</p>
-            <p className="text-sm mt-1">
-              This service is only available Monday to Friday.
-            </p>
-          </div>
-        )}
 
         {isAutoRecurring && (
           <div className="bg-purple-50 border border-purple-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
