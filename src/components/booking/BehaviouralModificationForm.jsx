@@ -20,7 +20,7 @@ const commonBreeds = [
   "Belgian Malinois", "Bernese Mountain Dog", "Bichon Frisé", "Border Collie",
   "Boston Terrier", "Boxer", "Bulldog (English Bulldog)", "Bullmastiff",
   "Cairn Terrier", "Cavalier King Charles Spaniel", "Cavapoo", "Chihuahua",
-  "Chow Chow", "Chowsky", "Cocker Spaniel (English)", "Collie (Rough / Smooth)",
+  "Chow Chow", "Chowsky", "Cocker Spaniel (English)", "Cockapoo", "Collie (Rough / Smooth)",
   "Coton de Tulear", "Dachshund", "Dalmatian", "Doberman Pinscher* (restricted breed)",
   "English Setter", "English Springer Spaniel", "French Bulldog",
   "German Shepherd Dog* (restricted breed)", "Golden Retriever", "Great Dane",
