@@ -486,7 +486,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             </li>
             <li className="flex items-start gap-2">
               <span className="text-blue-600 mt-0.5">•</span>
-              <span>Available Monday-Saturday: 10am-7pm, Sunday: 10am-3:30pm</span>
+              <span>Available <span className="font-semibold">Monday-Saturday:</span> 10am-7pm, <span className="font-semibold">Sunday</span>: 10am-3:30pm</span>
             </li>
           </ul>
         </div>
