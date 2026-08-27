@@ -61,7 +61,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
     loadBookings();
   }, []);
 
-  const minAdvanceDays = (service.id === 'behavioural_modification' || service.id === 'canine_assessment') ? 7 : 2;
+  const minAdvanceDays = service.id === 'behavioural_modification' ? 7 : 2;
   const minDate = addDays(new Date(), minAdvanceDays);
 
   const isRecurringApplicable = service.id !== 'canine_assessment' && 
@@ -475,7 +475,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             <ul className="text-sm text-slate-700 space-y-1.5">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
-                <span>Minimum 7 days advance booking required</span>
+                <span>Minimum {minAdvanceDays} days advance booking required</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
