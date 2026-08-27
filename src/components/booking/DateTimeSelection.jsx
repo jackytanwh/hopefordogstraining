@@ -479,6 +479,10 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
+                <span>10% discount for adopted puppies/dogs (proof required)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-600 mt-0.5">•</span>
                 <span>Available <span className="font-semibold">Monday-Friday:</span> 10am-7pm</span>
               </li>
             </ul>
