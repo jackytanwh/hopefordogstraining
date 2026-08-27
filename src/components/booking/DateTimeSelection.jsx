@@ -508,12 +508,11 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           )}
         </div>
 
-        {isWeekdaysOnly && (
+        {isWeekdaysOnly && !isAutoRecurring && (
           <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
             <p className="font-semibold">📅 Weekdays Only</p>
             <p className="text-sm mt-1">
               This service is only available Monday to Friday.
-              {isAutoRecurring && ' Minimum 7 days advance booking required.'}
             </p>
           </div>
         )}
