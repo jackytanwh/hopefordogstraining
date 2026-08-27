@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar as CalendarIcon, Clock, Loader2, AlertCircle, X, Check, AlertTriangle } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Loader2, AlertCircle, X, Check, AlertTriangle, Info } from "lucide-react";
 import { format, addDays, addWeeks } from "date-fns";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -465,6 +465,31 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
             {errors.general}
           </div>
         )}
+
+        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+          <p className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+            <Info className="w-4 h-4 text-blue-600" />
+            Booking Information
+          </p>
+          <ul className="text-sm text-slate-700 space-y-1.5">
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 mt-0.5">•</span>
+              <span>Minimum 2 days advance booking required (7 days for Behavioural Modification)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 mt-0.5">•</span>
+              <span>10% discount for adopted puppies/dogs (proof required)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 mt-0.5">•</span>
+              <span>5% weekend surcharge applies to Saturday and Sunday bookings (except Group Class)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-600 mt-0.5">•</span>
+              <span>Available Monday-Saturday: 10am-7pm, Sunday: 10am-3:30pm</span>
+            </li>
+          </ul>
+        </div>
 
         {isWeekdaysOnly && (
           <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm md:text-base text-slate-700">
