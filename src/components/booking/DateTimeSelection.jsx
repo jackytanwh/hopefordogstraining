@@ -474,7 +474,7 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
           <ul className="text-sm text-slate-700 space-y-1.5">
             <li className="flex items-start gap-2">
               <span className="text-blue-600 mt-0.5">•</span>
-              <span>Minimum 2 days advance booking required (7 days for Behavioural Modification)</span>
+              <span>Minimum 2 days advance booking required</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-blue-600 mt-0.5">•</span>
