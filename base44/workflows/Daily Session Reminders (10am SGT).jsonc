@@ -1,0 +1,44 @@
+{
+  "name": "Daily Session Reminders (10am SGT)",
+  "description": "a scheduled automation that runs every day at 10am. It should check all bookings where the session is scheduled for tomorrow, and send a reminder email to each customer \u2014 but only if a reminder hasn't been sent to them already. Add a reminder_sent boolean field to the bookings entity to track this, and set it to true after the reminder is sent.\"",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 2 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_session_reminders_10am_sgt",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "sendSessionReminders",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "sendSessionReminders"
+  }
+}
