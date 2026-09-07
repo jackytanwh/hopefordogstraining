@@ -80,15 +80,6 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
                                    service.id === 'basic_manners_fyog' || 
                                    service.id === 'basic_manners_group_class';
 
-  // Weekend surcharge applies to Kinder Puppy, Basic Manners (non-group), and ADORE/HDB Approval
-  const isWeekendSurchargeApplicable = isKinderPuppy || 
-    service.id === 'basic_manners_in_home' || 
-    service.id === 'basic_manners_fyog' ||
-    service.id === 'adore_hdb_approval';
-
-  const hasWeekendSession = isWeekendSurchargeApplicable && 
-    selectedDates.some(s => s.date && [0, 6].includes(new Date(s.date).getDay()));
-
   // Check if this is an on-demand training with multiple sessions
   const isOnDemandMultiSession = service.id === 'on_demand_training' && service.sessions > 1;
   
@@ -498,10 +489,6 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
-                <span>5% weekend surcharge applies to Saturday and Sunday bookings (except Group Class)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">•</span>
                 <span>Available <span className="font-semibold">Monday-Saturday:</span> 10am-7pm, <span className="font-semibold">Sunday</span>: 10am-3:30pm</span>
               </li>
             </ul>
@@ -874,13 +861,6 @@ export default function DateTimeSelection({ service, formData, setFormData, onNe
               );
             })}
           </>
-        )}
-
-        {hasWeekendSession && (
-          <div className="bg-amber-50 border border-amber-300 p-3 rounded-lg text-sm text-amber-800 flex items-start gap-2">
-            <span className="text-base">⚠️</span>
-            <span><span className="font-semibold">Weekend Surcharge applies.</span> A 5% surcharge will be added for sessions scheduled on Saturday or Sunday.</span>
-          </div>
         )}
 
         {hasManualSelections && (

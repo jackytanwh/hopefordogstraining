@@ -192,10 +192,6 @@ export default function BookingSystem() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-bold">•</span>
-                <span>5% weekend surcharge applies to Saturday and Sunday bookings (except Group Class)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold">•</span>
                 <span>Available Monday-Saturday: 10am-7pm, Sunday: 10am-3:30pm</span>
               </li>
             </ul>

@@ -273,42 +273,18 @@ export default function BookService() {
       adoptionDiscount = formData.isAdopted ? basePrice * 0.1 : 0;
     }
     
-    let weekendSurcharge = 0;
-    let weekendSessions = 0;
-    
-    if (!isGroupClass && formData.sessionDates && Array.isArray(formData.sessionDates)) {
-      weekendSessions = formData.sessionDates.filter(session => {
-        if (!session || !session.date) return false;
-        const date = new Date(session.date);
-        const day = date.getDay();
-        return day === 0 || day === 6;
-      }).length;
-      
-      const pricePerSession = isGroupClass
-        ? service.price * (formData.numberOfFurkids || 1)
-        : isFYOG && formData.basicMannersFYOGPrice
-        ? formData.basicMannersFYOGPrice
-        : isKinderPuppy && formData.kinderPuppyPrice
-        ? formData.kinderPuppyPrice
-        : service.price;
-      const pricePerSessionCalculated = pricePerSession / service.sessions;
-      
-      weekendSurcharge = weekendSessions > 0 ? (pricePerSessionCalculated * weekendSessions * 0.05) : 0;
-    }
-    
     const sentosaSurcharge = formData.isSentosa ? (10 * service.sessions) : 0;
     const productsTotal = formData.productsTotal || 0;
     
-    const total = basePrice - adoptionDiscount + weekendSurcharge + sentosaSurcharge + productsTotal;
+    const total = basePrice - adoptionDiscount + sentosaSurcharge + productsTotal;
     
     return {
       basePrice,
       discount: adoptionDiscount,
-      surcharge: weekendSurcharge,
+      surcharge: 0,
       sentosaSurcharge,
       productsTotal,
-      total,
-      weekendSessionCount: weekendSessions
+      total
     };
   };
 

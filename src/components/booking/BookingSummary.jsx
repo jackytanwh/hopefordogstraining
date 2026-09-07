@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { format, parseISO, getDay } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Calendar, User, PawPrint, DollarSign, Loader2, Users, ShoppingCart } from "lucide-react";
 
 export default function BookingSummary({ service, formData, pricing, onBack, onSubmit, isSubmitting, isFYOG, isGroupClass = false, kinderPuppyCount, isBehaviouralModificationProp = false }) {
@@ -123,7 +123,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             <div className="space-y-2">
               {formData.sessionDates.map((session, idx) => {
                 const date = parseISO(session.date);
-                const isWeekend = getDay(date) === 0 || getDay(date) === 6;
                 return (
                   <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                     <div>
@@ -132,11 +131,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                         {format(date, 'EEEE, MMM d, yyyy')} • {session.start_time} - {session.end_time}
                       </p>
                     </div>
-                    {isWeekend && (
-                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                        Weekend
-                      </Badge>
-                    )}
                   </div>
                 );
               })}
@@ -392,12 +386,6 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
               <div className="flex justify-between text-green-600">
                 <span>Adoption Discount (10%):</span>
                 <span className="font-medium">-${pricing.discount.toFixed(2)}</span>
-              </div>
-            )}
-            {pricing.surcharge > 0 && (
-              <div className="flex justify-between text-orange-600">
-                <span>Weekend Surcharge (5% for {pricing.weekendSessionCount} session{pricing.weekendSessionCount > 1 ? 's' : ''}):</span>
-                <span className="font-medium">+${pricing.surcharge.toFixed(2)}</span>
               </div>
             )}
             {pricing.sentosaSurcharge > 0 && (
