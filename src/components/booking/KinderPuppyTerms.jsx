@@ -23,10 +23,6 @@ const TERMS = [
     html: 'I understand that a puppy\'s emotional well-being plays a significant role in their behaviour and development. Factors such as <strong>prolonged isolation, unmet emotional needs, inadequate enrichment, or long working hours</strong> that limit the quality time I have with my puppy may affect their learning, confidence, and behaviour.',
   },
   {
-    id: 'consistency',
-    html: 'I understand that training success largely depends on consistency outside of lessons. I agree to <strong>practise the recommended exercises and management strategies</strong> provided by HopeforDogs Canine Training and acknowledge that progress may be limited if recommendations are not followed consistently.',
-  },
-  {
     id: 'individual',
     html: 'I understand that every puppy is an individual, and that progress is influenced by <strong>factors such as genetics, health, diet, environment, emotional well-being, and owner participation.</strong> Therefore, specific training outcomes or timelines cannot be guaranteed.',
   },
