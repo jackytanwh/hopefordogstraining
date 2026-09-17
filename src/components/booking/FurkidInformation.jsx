@@ -16,7 +16,7 @@ const commonBreeds = [
   "American Pit Bull Terrier* (restricted breed in Singapore)",
   "American Staffordshire Terrier* (restricted breed)",
   "Australian Cattle Dog", "Australian Shepherd", "Basset Hound", "Beagle",
-  "Belgian Malinois", "Bernese Mountain Dog", "Bichon Frisé", "Border Collie",
+  "Belgian Malinois", "Bernedoodle", "Bernedoodle (mini)", "Bernese Mountain Dog", "Bichon Frisé", "Border Collie",
   "Boston Terrier", "Boxer", "Bulldog (English Bulldog)", "Bull Mastiff (restricted breed)",
   "Cane Corso (restricted breed)",
   "Cairn Terrier", "Cavalier King Charles Spaniel", "Cavapoo", "Chihuahua",
