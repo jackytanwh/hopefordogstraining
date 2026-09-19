@@ -26,7 +26,7 @@ const commonBreeds = [
   "Greyhound", "Havanese", "Irish Setter",
   "Jack Russell Terrier", "Japanese Spitz", "Jindo", "Jindo Crossed", "Keeshond", "Labradoodle", "Labrador Retriever",
   "Lagotto", "Lhasa Apso", "Maltese", "Maltipoo", "Mame Shiba", "Miniature Pinscher",
-  "Miniature Schnauzer", "Papillon", "Pekingese", "Pembroke Welsh Corgi",
+  "Miniature Schnauzer", "Morkie", "Papillon", "Pekingese", "Pembroke Welsh Corgi",
   "Pointer (German Shorthaired Pointer, English Pointer)", "Pomeranian", "Pomsky",
   "Poodle (Toy)", "Poodle (Mini)", "Poodle (Standard)",
   "Rottweiler* (restricted breed)", "Samoyed", "Schnauzer (Mini)", "Schnauzer (Standard, Giant)",
