@@ -30,7 +30,7 @@ const commonBreeds = [
   "Pointer (German Shorthaired Pointer, English Pointer)", "Pomeranian", "Pomsky",
   "Poodle (Toy)", "Poodle (Mini)", "Poodle (Standard)",
   "Rottweiler* (restricted breed)", "Samoyed", "Schnauzer (Mini)", "Schnauzer (Standard, Giant)",
-  "Scottish Terrier", "Shetland Sheepdog (Sheltie)", "Shiba Inu", "Shih Tzu",
+  "Scottish Terrier", "Sheepadoodle", "Shetland Sheepdog (Sheltie)", "Shiba Inu", "Shih Tzu",
   "Siberian Husky", "Silky Terrier", "Singapore Special",
   "Staffordshire Bull Terrier* (restricted breed)",
   "West Highland White Terrier (Westie)", "Whippet", "Yorkshire Terrier",
