@@ -1,0 +1,45 @@
+{
+  "name": "Pending Bookings Alert (Every 4 Hours)",
+  "description": "Every 4 hours, checks for bookings pending for more than 1 hour and emails jacky@hopefordogs.sg",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "pending_bookings_alert",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check_pending": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "checkPendingBookingsAlert",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Check pending bookings",
+            "description": "Emails Jacky about bookings pending over 1 hour"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "interval",
+      "cron_expression": null,
+      "one_time_date": null,
+      "timezone": "Asia/Singapore",
+      "interval_value": 4,
+      "interval_unit": "hours",
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
