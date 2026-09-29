@@ -698,6 +698,11 @@
       "description": "Whether a session reminder email has been sent for tomorrow's session",
       "default": false
     },
+    "pending_alert_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the pending-over-1-hour alert email was sent for this booking"
+    },
     "behavioural_modification_documents": {
       "type": "array",
       "description": "Uploaded PDF documents for the Behavioural Modification program (e.g. assessment reports, vet records)",
