@@ -460,6 +460,11 @@ export default function BookingCalendar() {
                           Fully Blocked
                         </div>
                       )}
+                      {hasFullDayBlock && dayBlocks.find(b => b.is_full_day)?.reason && (
+                        <div className="text-xs text-amber-700 truncate" title={dayBlocks.find(b => b.is_full_day).reason}>
+                          {dayBlocks.find(b => b.is_full_day).reason}
+                        </div>
+                      )}
                     </button>
                   );
                 })}
