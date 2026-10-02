@@ -36,6 +36,7 @@ export default function Login() {
   return (
     <AuthLayout
       icon={LogIn}
+      logo="https://media.base44.com/images/public/690f36a014bb3e1119479c64/48f54971a_DogLogonew.png"
       title="Welcome back"
       subtitle="Log in to your account"
       footer={
