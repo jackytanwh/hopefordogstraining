@@ -6,7 +6,7 @@ export default function AuthLayout({ icon: Icon, logo, title, subtitle, footer, 
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           {logo ? (
-            <img src={logo} alt={title} className="h-20 w-auto object-contain mx-auto mb-4" />
+            <img src={logo} alt={title} className="h-16 w-auto object-contain mx-auto mb-4" />
           ) : (
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
               <Icon className="w-7 h-7 text-primary-foreground" aria-hidden="true" />
