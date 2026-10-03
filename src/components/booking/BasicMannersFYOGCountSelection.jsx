@@ -10,31 +10,31 @@ const EXTRA_PRICE = 360; // half price
 const dogOptions = [
   {
     count: 1,
-    label: '1 Dog',
+    label: '1 Furkid',
     price: BASE_PRICE,
     breakdown: `$${BASE_PRICE}`,
     description: 'Full program price'
   },
   {
     count: 2,
-    label: '2 Dogs',
+    label: '2 Furkids',
     price: BASE_PRICE + EXTRA_PRICE,
     breakdown: `$${BASE_PRICE} + $${EXTRA_PRICE}`,
-    description: '2nd dog at half price'
+    description: '2nd furkid at half price'
   },
   {
     count: 3,
-    label: '3 Dogs',
+    label: '3 Furkids',
     price: BASE_PRICE + EXTRA_PRICE * 2,
     breakdown: `$${BASE_PRICE} + $${EXTRA_PRICE} × 2`,
-    description: '2nd & 3rd dog at half price'
+    description: '2nd & 3rd furkid at half price'
   },
   {
     count: 4,
-    label: '4 Dogs',
+    label: '4 Furkids',
     price: BASE_PRICE + EXTRA_PRICE * 3,
     breakdown: `$${BASE_PRICE} + $${EXTRA_PRICE} × 3`,
-    description: '2nd, 3rd & 4th dog at half price'
+    description: '2nd, 3rd & 4th furkid at half price'
   }
 ];
 
@@ -46,7 +46,7 @@ export default function BasicMannersFYOGCountSelection({ formData, setFormData, 
 
   const handleContinue = () => {
     if (!selected) {
-      setError('Please select the number of dogs');
+      setError('Please select the number of furkids');
       return;
     }
     const option = dogOptions.find(o => o.count === Number(selected));
@@ -63,11 +63,11 @@ export default function BasicMannersFYOGCountSelection({ formData, setFormData, 
   return (
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
-        <CardTitle>Number of Dogs</CardTitle>
+        <CardTitle>Number of Furkids</CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
         <p className="text-slate-600 text-sm">
-          How many dogs will be joining the Basic Manners Program? The 2nd, 3rd and 4th dog each join at half price.
+          How many furkids will be joining the Basic Manners Program? The 2nd, 3rd and 4th furkid each join at half price.
         </p>
 
         <RadioGroup value={selected} onValueChange={setSelected} className="space-y-3">
@@ -100,8 +100,8 @@ export default function BasicMannersFYOGCountSelection({ formData, setFormData, 
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
         <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-sm text-amber-800">
-          <p className="font-semibold mb-1">🐾 Multi-Dog Pricing</p>
-          <p>Each additional dog (2nd, 3rd and 4th) joins at 50% off — $360 per dog.</p>
+          <p className="font-semibold mb-1">🐾 Multi-Furkid Pricing</p>
+          <p>Each additional furkid (2nd, 3rd and 4th) joins at 50% off — $360 per furkid.</p>
         </div>
 
         <div className="flex gap-3">

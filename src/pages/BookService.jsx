@@ -820,7 +820,7 @@ export default function BookService() {
             onBack={handleBack}
             kinderPuppyCount={fyogCount}
             currentIndex={currentIndex}
-            dogLabel="Dog"
+            dogLabel="Furkid"
           />
         );
       }

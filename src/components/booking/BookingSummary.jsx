@@ -28,7 +28,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
   const isKinderPuppyMulti = isKinderPuppy && kinderPuppyCount >= 1;
   const isFYOGMulti = isFYOG && formData.clients && formData.clients.length > 0;
   const useSharedLayout = isKinderPuppyMulti || isFYOGMulti;
-  const dogLabel = isKinderPuppy ? 'Puppy' : 'Dog';
+  const dogLabel = isKinderPuppy ? 'Puppy' : 'Furkid';
 
   const trainingTotal = pricing.total - (pricing.productsTotal || 0);
   const promoDiscount = promoApplied
@@ -103,7 +103,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
             )}
             {(isFYOG || isGroupClass) && formData.numberOfFurkids && (
               <div className="flex gap-2 mt-2">
-                <Badge variant="secondary">{formData.numberOfFurkids} {isKinderPuppy ? (formData.numberOfFurkids > 1 ? 'Puppies' : 'Puppy') : (formData.numberOfFurkids > 1 ? 'Dogs' : 'Dog')}</Badge>
+                <Badge variant="secondary">{formData.numberOfFurkids} {isKinderPuppy ? (formData.numberOfFurkids > 1 ? 'Puppies' : 'Puppy') : (formData.numberOfFurkids > 1 ? 'Furkids' : 'Furkid')}</Badge>
                 <Badge variant="secondary">{formData.numberOfClients} Client{formData.numberOfClients > 1 ? 's' : ''}</Badge>
               </div>
             )}
@@ -301,7 +301,7 @@ export default function BookingSummary({ service, formData, pricing, onBack, onS
                 {formData.furkids.map((furkid, idx) => (
                   <div key={idx} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                     <p className="font-semibold text-sm text-slate-900 mb-2">
-                      {isKinderPuppy ? 'Puppy' : 'Dog'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
+                      {isKinderPuppy ? 'Puppy' : 'Furkid'} {idx + 1}: {getFurkidField(furkid, 'furkidName')}
                     </p>
                     <div className="space-y-1.5 text-sm">
                       <div className="flex"><span className="font-medium text-slate-600 w-28">Age:</span><span className="text-slate-900">{getFurkidField(furkid, 'furkidAge')}</span></div>

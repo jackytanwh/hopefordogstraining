@@ -241,25 +241,25 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
       newErrors.furkid_furkidGender = 'Gender is required';
     }
     if (currentFurkid.furkidSterilised === undefined || currentFurkid.furkidSterilised === null || currentFurkid.furkidSterilised === '') {
-      newErrors.furkid_furkidSterilised = 'Please select if puppy is sterilised';
+      newErrors.furkid_furkidSterilised = `Please select if ${dogLabel.toLowerCase()} is sterilised`;
     }
     if (!currentFurkid.furkidAcquiredFrom?.trim()) {
-      newErrors.furkid_furkidAcquiredFrom = 'Please specify where you acquired your puppy';
+      newErrors.furkid_furkidAcquiredFrom = `Please specify where you acquired your ${dogLabel.toLowerCase()}`;
     }
     if (!currentFurkid.joinedMonth || !currentFurkid.joinedYear) {
-      newErrors.furkid_furkidJoinedFamily = 'Please specify when puppy joined the family';
+      newErrors.furkid_furkidJoinedFamily = `Please specify when ${dogLabel.toLowerCase()} joined the family`;
     }
     if (currentFurkid.firstTimeOwner === undefined || currentFurkid.firstTimeOwner === null || currentFurkid.firstTimeOwner === '') {
       newErrors.furkid_firstTimeOwner = 'Please specify if this is your first time having a furkid';
     }
     if (!currentFurkid.furkidDiet?.trim()) {
-      newErrors.furkid_furkidDiet = 'Please specify puppy diet';
+      newErrors.furkid_furkidDiet = `Please specify ${dogLabel.toLowerCase()} diet`;
     }
     if (!currentFurkid.feedingFrequency?.trim()) {
       newErrors.furkid_feedingFrequency = 'Please specify feeding frequency';
     }
     if (!currentFurkid.furkidSleepArea?.trim()) {
-      newErrors.furkid_furkidSleepArea = 'Please specify where puppy sleeps';
+      newErrors.furkid_furkidSleepArea = `Please specify where ${dogLabel.toLowerCase()} sleeps`;
     }
     if (!currentFurkid.walkingFrequency?.trim()) {
       newErrors.furkid_walkingFrequency = 'Please specify walking frequency';
@@ -542,7 +542,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="furkidAcquiredFrom">Where did you acquire your puppy? *</Label>
+            <Label htmlFor="furkidAcquiredFrom">Where did you acquire your {dogLabel.toLowerCase()}? *</Label>
             <Input
               id="furkidAcquiredFrom"
               value={furkid.furkidAcquiredFrom || ''}
@@ -556,7 +556,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
-            <Label>When did your puppy join the family? (Month/Year) *</Label>
+            <Label>When did your {dogLabel.toLowerCase()} join the family? (Month/Year) *</Label>
             <div className="grid grid-cols-2 gap-2">
               <Select 
                 value={furkid.joinedMonth} 
@@ -662,7 +662,7 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="feedingFrequency">How many times a day do you feed the puppy? *</Label>
+            <Label htmlFor="feedingFrequency">How many times a day do you feed the {dogLabel.toLowerCase()}? *</Label>
             <Input
               id="feedingFrequency"
               value={furkid.feedingFrequency || ''}
