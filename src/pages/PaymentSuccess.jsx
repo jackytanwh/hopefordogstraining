@@ -16,8 +16,8 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     let cancelled = false;
-    const MAX_ATTEMPTS = 15;
-    const POLL_INTERVAL = 4000;
+    const MAX_ATTEMPTS = 60;
+    const POLL_INTERVAL = 10000;
 
     const fetchBooking = async () => {
       const bookings = await base44.entities.Booking.list();

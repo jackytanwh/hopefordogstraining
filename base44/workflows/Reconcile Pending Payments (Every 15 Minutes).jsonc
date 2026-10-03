@@ -1,0 +1,45 @@
+{
+  "name": "Reconcile Pending Payments (Every 15 Minutes)",
+  "description": "Every 15 minutes, checks bookings still pending against HitPay and confirms any whose payment completed (safety net for missed/delayed webhooks)",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "reconcile_pending_payments",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "reconcile": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "reconcilePendingPayments",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Reconcile pending payments",
+            "description": "Confirms paid bookings still stuck as pending"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "cron_expression": "*/15 * * * *",
+      "timezone": "Asia/Singapore",
+      "schedule_mode": "recurring",
+      "events": [],
+      "one_time_date": null,
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
