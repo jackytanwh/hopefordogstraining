@@ -633,6 +633,35 @@ export default function CombinedPawrentPuppyForm({ service, formData, setFormDat
           </div>
 
           <div className="space-y-2">
+            <Label>Any food allergy?</Label>
+            <RadioGroup
+              value={furkid.hasFoodAllergy === true ? 'true' : furkid.hasFoodAllergy === false ? 'false' : ''}
+              onValueChange={(value) => handleFurkidChange('hasFoodAllergy', value === 'true')}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="true" id={`foodallergy-yes-${currentIndex}`} />
+                <Label htmlFor={`foodallergy-yes-${currentIndex}`} className="font-normal cursor-pointer">Yup</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="false" id={`foodallergy-no-${currentIndex}`} />
+                <Label htmlFor={`foodallergy-no-${currentIndex}`} className="font-normal cursor-pointer">Nope</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {furkid.hasFoodAllergy && (
+            <div className="space-y-2">
+              <Label htmlFor="foodAllergyDetails">What ingredient is he/she allergic to?</Label>
+              <Input
+                id="foodAllergyDetails"
+                value={furkid.foodAllergyDetails || ''}
+                onChange={(e) => handleFurkidChange('foodAllergyDetails', e.target.value)}
+                placeholder="e.g., Chicken, Beef"
+              />
+            </div>
+          )}
+
+          <div className="space-y-2">
             <Label htmlFor="feedingFrequency">How many times a day do you feed the puppy? *</Label>
             <Input
               id="feedingFrequency"
