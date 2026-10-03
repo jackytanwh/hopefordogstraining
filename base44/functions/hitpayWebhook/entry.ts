@@ -32,10 +32,13 @@ export default async function(req: Request): Promise<Response> {
     console.log("✅ HitPay webhook signature verified");
 
     const payload = JSON.parse(rawBody);
-    const status = payload.status;
-    const reference = payload.reference_number;
+    // HitPay payloads can be flat (payment request fields at top level) or
+    // event-style (data nested under payment_request). Handle both shapes.
+    const pr = payload.payment_request || payload.data || payload;
+    const status = pr.status || payload.status;
+    const reference = pr.reference_number || payload.reference_number;
 
-    console.log(`📋 HitPay webhook status: ${status}, reference: ${reference}`);
+    console.log(`📋 HitPay webhook status: ${status}, reference: ${reference}, keys: ${Object.keys(payload).join(',')}`);
 
     if (!reference) {
       console.warn("⚠️ No reference_number in payload");
