@@ -17,6 +17,7 @@ import ReportsStats from './pages/ReportsStats';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AdminRoute from '@/components/AdminRoute';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -25,6 +26,9 @@ import ResetPassword from '@/pages/ResetPassword';
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
+
+// Admin-only pages: non-admin users are redirected to the Client Booking Portal
+const ADMIN_PAGES = ["AdminBookings", "BookingCalendar", "GroupClassScheduleSettings", "Clients", "ClientDetail", "AddClient", "EditClient", "BookingDetail", "Home"];
 
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -50,15 +54,23 @@ const AuthenticatedApp = () => {
             key={path}
             path={`/${path}`}
             element={
-              <LayoutWrapper currentPageName={path}>
-                <Page />
-              </LayoutWrapper>
+              ADMIN_PAGES.includes(path) ? (
+                <AdminRoute>
+                  <LayoutWrapper currentPageName={path}>
+                    <Page />
+                  </LayoutWrapper>
+                </AdminRoute>
+              ) : (
+                <LayoutWrapper currentPageName={path}>
+                  <Page />
+                </LayoutWrapper>
+              )
             }
           />
         ))}
-        <Route path="/PromoCodes" element={<LayoutWrapper currentPageName="PromoCodes"><PromoCodes /></LayoutWrapper>} />
-        <Route path="/ClientContacts" element={<LayoutWrapper currentPageName="ClientContacts"><ClientContacts /></LayoutWrapper>} />
-        <Route path="/ReportsStats" element={<LayoutWrapper currentPageName="ReportsStats"><ReportsStats /></LayoutWrapper>} />
+        <Route path="/PromoCodes" element={<AdminRoute><LayoutWrapper currentPageName="PromoCodes"><PromoCodes /></LayoutWrapper></AdminRoute>} />
+        <Route path="/ClientContacts" element={<AdminRoute><LayoutWrapper currentPageName="ClientContacts"><ClientContacts /></LayoutWrapper></AdminRoute>} />
+        <Route path="/ReportsStats" element={<AdminRoute><LayoutWrapper currentPageName="ReportsStats"><ReportsStats /></LayoutWrapper></AdminRoute>} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
