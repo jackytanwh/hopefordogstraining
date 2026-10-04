@@ -989,6 +989,12 @@ export default function BookingDetail() {
                       <span className="font-medium">-${booking.adoption_discount?.toFixed(2)}</span>
                     </div>
                   )}
+                  {booking.promo_code && booking.promo_discount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Promo Code ({booking.promo_code}):</span>
+                      <span className="font-medium">-${booking.promo_discount?.toFixed(2)}</span>
+                    </div>
+                  )}
                   {booking.weekend_surcharge > 0 && (
                     <div className="flex justify-between text-orange-600">
                       <span>Weekend Surcharge:</span>
@@ -1811,6 +1817,12 @@ export default function BookingDetail() {
                     <div className="flex justify-between text-green-600">
                       <span>Adoption Discount:</span>
                       <span className="font-medium">-${booking.adoption_discount?.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {booking.promo_code && booking.promo_discount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Promo Code ({booking.promo_code}):</span>
+                      <span className="font-medium">-${booking.promo_discount?.toFixed(2)}</span>
                     </div>
                   )}
                   {booking.weekend_surcharge > 0 && (

@@ -396,6 +396,8 @@ export default function BookService() {
         base_price: pricing.basePrice || 0,
         adoption_discount: pricing.discount || 0,
         weekend_surcharge: pricing.surcharge || 0,
+        promo_code: promoApplied?.code || null,
+        promo_discount: finalTotal !== null ? Math.max(0, (pricing.total || 0) - finalTotal) : 0,
         is_sentosa_booking: Boolean(formData.isSentosa),
         sentosa_surcharge_per_session: formData.isSentosa ? 10 : 0,
         total_sentosa_surcharge: pricing.sentosaSurcharge || 0,

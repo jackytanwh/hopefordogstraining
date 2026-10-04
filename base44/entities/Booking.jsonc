@@ -669,6 +669,15 @@
       "description": "Surcharge for weekend bookings (5%)",
       "default": 0
     },
+    "promo_code": {
+      "type": "string",
+      "description": "Promo code applied to this booking"
+    },
+    "promo_discount": {
+      "type": "number",
+      "description": "Discount amount applied by the promo code",
+      "default": 0
+    },
     "total_price": {
       "type": "number",
       "description": "Final total price after all adjustments"
