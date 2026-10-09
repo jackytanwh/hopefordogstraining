@@ -123,7 +123,7 @@ export default function BehaviouralModificationDetails({ booking }) {
           Behaviour Consultation History
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6 space-y-4">
+      <CardContent className="p-3 space-y-4">
 
         <Section title="Basic information" color="bg-blue-50">
           <YesNo label="Singapore Special / Adopted" value={b.is_adopted} />
