@@ -1096,7 +1096,7 @@ export default function BookingDetail() {
         {/* Mobile-only: Admin Notes */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm lg:hidden">
           <CardHeader className="border-b border-slate-100">
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-2xl">
               <FileText className="w-5 h-5" />
               Admin Notes
             </CardTitle>
@@ -1123,7 +1123,7 @@ export default function BookingDetail() {
             {/* Status */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hidden lg:block">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className="flex items-center justify-between text-2xl">
                   <span>Booking Status</span>
                   <Badge variant="secondary" className={`${statusColors[booking.booking_status]} border`}>
                     {booking.booking_status}
@@ -1161,7 +1161,7 @@ export default function BookingDetail() {
             {/* Client Information */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className="flex items-center justify-between text-2xl">
                   <div className="flex items-center gap-2">
                     <User className="w-5 h-5" />
                     Client Information
@@ -1269,7 +1269,7 @@ export default function BookingDetail() {
             {/* Furkid Information */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className="flex items-center justify-between text-2xl">
                   <div className="flex items-center gap-2">
                     <PawPrint className="w-5 h-5" />
                     Furkid's Information
@@ -1446,7 +1446,7 @@ export default function BookingDetail() {
             {(hasKinderPuppyItems || hasBasicMannersItems || hasBasicMannersFYOGItems) && (
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-slate-100">
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-2xl">
                     <Package className="w-5 h-5" />
                     Items Given to Client
                   </CardTitle>
@@ -1541,7 +1541,7 @@ export default function BookingDetail() {
             {(hasKinderPuppyCurriculum || hasBasicMannersCurriculum || hasBasicMannersFYOGCurriculum || hasBasicMannersGroupClassCurriculum || hasAdoreHDBCurriculum) && (
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-slate-100">
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-2xl">
                     <GraduationCap className="w-5 h-5" />
                     Training Curriculum
                   </CardTitle>
@@ -1738,7 +1738,7 @@ export default function BookingDetail() {
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hidden lg:block">
               <CardHeader className="border-b border-slate-100">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-2xl">
                     <Calendar className="w-5 h-5" />
                     Session Schedule
                   </CardTitle>
@@ -1802,7 +1802,7 @@ export default function BookingDetail() {
             {/* Pricing */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hidden lg:block">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-2xl">
                   <DollarSign className="w-5 h-5" />
                   Pricing
                 </CardTitle>
@@ -1876,7 +1876,7 @@ export default function BookingDetail() {
             {/* Admin Notes - hidden on mobile, shown on desktop */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hidden lg:block">
               <CardHeader className="border-b border-slate-100">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-2xl">
                   <FileText className="w-5 h-5" />
                   Admin Notes
                 </CardTitle>

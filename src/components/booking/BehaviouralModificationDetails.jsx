@@ -118,7 +118,7 @@ export default function BehaviouralModificationDetails({ booking }) {
   return (
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-2xl">
           <Brain className="w-5 h-5" />
           Behaviour Consultation History
         </CardTitle>
