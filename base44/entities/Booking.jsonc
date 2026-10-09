@@ -730,6 +730,25 @@
           }
         }
       }
+    },
+    "canine_assessment_documents": {
+      "type": "array",
+      "description": "Uploaded PDF assessment letters for the Canine Assessment program",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_name": {
+            "type": "string"
+          },
+          "file_url": {
+            "type": "string"
+          },
+          "uploaded_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
     }
   },
   "required": [

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClipboardList } from "lucide-react";
+import AssessmentLetterUpload from "./AssessmentLetterUpload";
 
 const Field = ({ label, value }) => {
   if (value === undefined || value === null || value === '') return null;
@@ -26,7 +27,7 @@ export default function CanineAssessmentDetails({ booking: b }) {
   return (
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="border-b border-slate-100">
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-2xl">
           <ClipboardList className="w-5 h-5" />
           Canine Assessment History Form
         </CardTitle>
@@ -163,6 +164,9 @@ export default function CanineAssessmentDetails({ booking: b }) {
         <Section title="Assessment" color="bg-slate-50">
           <Field label="Requires Assessment Report" value={b.requires_assessment_report} />
         </Section>
+
+        {/* Assessment Letter Upload */}
+        <AssessmentLetterUpload booking={b} />
 
       </CardContent>
     </Card>
