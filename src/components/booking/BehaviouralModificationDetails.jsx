@@ -10,8 +10,8 @@ const Field = ({ label, value }) => {
   if (value === null || value === undefined || value === '') return null;
   return (
     <div>
-      <p className="text-slate-600 text-sm font-medium capitalize tracking-wide">{label}</p>
-      <p className="font-medium text-slate-900 mt-0.5 text-base">{String(value)}</p>
+      <p className="text-slate-600 text-base font-medium capitalize tracking-wide">{label}</p>
+      <p className="font-medium text-slate-900 mt-0.5 text-lg">{String(value)}</p>
     </div>
   );
 };
@@ -20,17 +20,17 @@ const YesNo = ({ label, value, details, detailsLabel }) => {
   if (value === null || value === undefined) return null;
   return (
     <div>
-      <p className="text-slate-600 text-sm font-medium capitalize tracking-wide">{label}</p>
-      <p className="font-medium text-slate-900 mt-0.5 text-base">{value ? 'Yes' : 'No'}</p>
-      {value && details && <p className="text-base text-slate-600 mt-1 italic">{detailsLabel ? `${detailsLabel}: ` : ''}{details}</p>}
+      <p className="text-slate-600 text-base font-medium capitalize tracking-wide">{label}</p>
+      <p className="font-medium text-slate-900 mt-0.5 text-lg">{value ? 'Yes' : 'No'}</p>
+      {value && details && <p className="text-lg text-slate-600 mt-1 italic">{detailsLabel ? `${detailsLabel}: ` : ''}{details}</p>}
     </div>
   );
 };
 
 const Section = ({ title, color, children }) => (
   <div className={`space-y-3 p-4 ${color} rounded-lg`}>
-    <h4 className="font-semibold text-slate-900 text-base">{title}</h4>
-    <div className="grid md:grid-cols-2 gap-3 text-base">
+    <h4 className="font-semibold text-slate-900 text-lg">{title}</h4>
+    <div className="grid md:grid-cols-2 gap-3 text-lg">
       {children}
     </div>
   </div>
@@ -40,8 +40,8 @@ const FullField = ({ label, value }) => {
   if (!value) return null;
   return (
     <div className="md:col-span-2">
-      <p className="text-slate-600 text-sm font-medium capitalize tracking-wide">{label}</p>
-      <p className="font-medium text-slate-900 mt-0.5 whitespace-pre-wrap text-base">{String(value)}</p>
+      <p className="text-slate-600 text-base font-medium capitalize tracking-wide">{label}</p>
+      <p className="font-medium text-slate-900 mt-0.5 whitespace-pre-wrap text-lg">{String(value)}</p>
     </div>
   );
 };
@@ -129,8 +129,8 @@ export default function BehaviouralModificationDetails({ booking }) {
           <YesNo label="Singapore Special / Adopted" value={b.is_adopted} />
           {b.adoption_proof_url && (
             <div>
-              <p className="text-slate-600 text-xs font-medium uppercase tracking-wide">Adoption proof</p>
-              <a href={b.adoption_proof_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline">View document</a>
+              <p className="text-slate-600 text-sm font-medium uppercase tracking-wide">Adoption proof</p>
+              <a href={b.adoption_proof_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-base hover:underline">View document</a>
             </div>
           )}
           <Field label="Furkid name" value={b.furkid_name} />
@@ -191,7 +191,7 @@ export default function BehaviouralModificationDetails({ booking }) {
           <Field label="Potty training" value={b.potty_training} />
           {b.walking_equipment && b.walking_equipment.length > 0 && (
             <div className="md:col-span-2">
-              <p className="text-slate-600 text-xs font-medium uppercase tracking-wide">Walking equipment</p>
+              <p className="text-slate-600 text-sm font-medium uppercase tracking-wide">Walking equipment</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {(Array.isArray(b.walking_equipment) ? b.walking_equipment : [b.walking_equipment]).map((e, i) => (
                   <Badge key={i} variant="secondary" className="text-xs">{e}</Badge>
@@ -217,7 +217,7 @@ export default function BehaviouralModificationDetails({ booking }) {
           <Field label="Diet" value={b.diet_type} />
           {b.feeding_method && b.feeding_method.length > 0 && (
             <div className="md:col-span-2">
-              <p className="text-slate-600 text-xs font-medium uppercase tracking-wide">Feeding method</p>
+              <p className="text-slate-600 text-sm font-medium uppercase tracking-wide">Feeding method</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {(Array.isArray(b.feeding_method) ? b.feeding_method : [b.feeding_method]).map((m, i) => (
                   <Badge key={i} variant="secondary" className="text-xs">{m}</Badge>
