@@ -608,7 +608,7 @@ export default function BookingDetail() {
         { key: 'sit_cue_part2', label: 'Sit Cue Part 2' },
         { key: 'recall_exercise', label: 'Recall Exercise' },
         { key: 'down_cue_part1', label: 'Down Cue Part 1' },
-        { key: 'chin_rest_part1', label: 'Chin Rest Part 1' },
+        { key: 'bucket_game_part1', label: 'Bucket Game Part 1' },
         { key: 'handling_grooming', label: 'Handling & Grooming' }
       ]
     },
@@ -616,7 +616,7 @@ export default function BookingDetail() {
       title: 'Session 3',
       items: [
         { key: 'down_cue_part2', label: 'Down Cue Part 2' },
-        { key: 'chin_rest_part2', label: 'Chin Rest Part 2' },
+        { key: 'bucket_game_part2', label: 'Bucket Game Part 2' },
         { key: 'grooming_tools', label: 'Grooming Tools' },
         { key: 'dental_cleaning_part1', label: 'Dental Cleaning Part 1' },
         { key: 'cone_muzzle_part1', label: 'Cone/Muzzle Part 1' },
