@@ -266,6 +266,17 @@ export default function BookingSystem() {
           })}
         </div>
 
+        <div className="text-center pt-2">
+          <a
+            href="https://www.hopefordogs.sg/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-slate-600 hover:text-blue-700 underline"
+          >
+            Privacy Policy
+          </a>
+        </div>
+
       </div>
     </div>
   );
