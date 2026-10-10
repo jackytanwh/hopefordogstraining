@@ -71,6 +71,11 @@ export default function RecentBookings({ bookings }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                  {booking.total_price != null && (
+                    <span className="text-sm font-semibold text-blue-600">
+                      ${booking.total_price.toFixed(2)}
+                    </span>
+                  )}
                   <Badge className={`${statusColors[booking.booking_status]} border text-xs`}>
                     {booking.booking_status}
                   </Badge>
