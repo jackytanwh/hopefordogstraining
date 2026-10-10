@@ -597,7 +597,8 @@ export default function BookingDetail() {
         { key: 'name_recognition', label: 'Name Recognition' },
         { key: 'leash_collar', label: 'Leash & Collar' },
         { key: 'intro_walks', label: 'Intro to Walks' },
-        { key: 'sit_cue_part1', label: 'Sit Cue Part 1' }
+        { key: 'sit_cue_part1', label: 'Sit Cue Part 1' },
+        { key: 'lets_go_cue', label: "Let's Go Cue" }
       ]
     },
     week2: {
