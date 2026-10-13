@@ -184,7 +184,7 @@ export default function BookingSystem() {
             <ul className="space-y-2 text-base md:text-lg text-slate-700">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-bold">•</span>
-                <span>Minimum 2 days advance booking required (7 days for Behavioural Modification)</span>
+                <span>Minimum 1 day advance booking required (7 days for Behavioural Modification)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-bold">•</span>

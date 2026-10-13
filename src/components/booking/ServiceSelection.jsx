@@ -49,7 +49,7 @@ export default function ServiceSelection({ service, onNext }) {
           <ul className="space-y-1 text-slate-700">
             <li>• 10% discount for adopted dogs (proof required)</li>
             <li>• 5% weekend surcharge applies</li>
-            <li>• Minimum 2 days advance booking</li>
+            <li>• Minimum 1 day advance booking</li>
           </ul>
         </div>
 
