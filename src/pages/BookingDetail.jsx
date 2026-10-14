@@ -1456,7 +1456,7 @@ export default function BookingDetail() {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {hasKinderPuppyItems && [
                       { key: 'treat_pouch', label: 'Treat Pouch' },
-                      { key: 'mat', label: 'Mat' },
+                      { key: 'mat', label: 'Snuffle Mat' },
                       { key: 'lick_mat', label: 'Lick Mat' },
                       { key: 'cup', label: 'Cup' },
                       { key: 'dropper', label: 'Dropper' }
