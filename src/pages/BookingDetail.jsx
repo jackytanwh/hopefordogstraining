@@ -580,6 +580,7 @@ export default function BookingDetail() {
   const hasKinderPuppyItems = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
   const hasBasicMannersItems = booking.service_type === 'basic_manners_in_home';
   const hasBasicMannersFYOGItems = booking.service_type === 'basic_manners_fyog' || booking.service_type === 'group_class_basic_manners'; // Also for group class basic manners
+  const hasAdoreHDBItems = booking.service_type === 'adore_hdb_approval';
   
   // Check if this service has curriculum
   const hasKinderPuppyCurriculum = booking.service_type === 'kinder_puppy_in_home' || booking.service_type === 'kinder_puppy_fyog';
@@ -1444,7 +1445,7 @@ export default function BookingDetail() {
             </Card>
 
               {/* Items Given to Client */}
-            {(hasKinderPuppyItems || hasBasicMannersItems || hasBasicMannersFYOGItems) && (
+            {(hasKinderPuppyItems || hasBasicMannersItems || hasBasicMannersFYOGItems || hasAdoreHDBItems) && (
               <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-slate-100">
                   <CardTitle className="flex items-center gap-2 text-2xl">
@@ -1517,6 +1518,28 @@ export default function BookingDetail() {
                         />
                         <label 
                           htmlFor={`fyog-item-${item.key}`}
+                          className="text-sm text-slate-700 cursor-pointer"
+                        >
+                          {item.label}
+                        </label>
+                      </div>
+                    ))}
+
+                    {hasAdoreHDBItems && [
+                      { key: 'treat_pouch', label: 'Treat Pouch + Whistle' },
+                      { key: 'mat', label: 'Mat' },
+                      { key: 'leash', label: 'Leash' }
+                    ].map((item) => (
+                      <div key={item.key} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`adore-item-${item.key}`}
+                          checked={booking.basic_manners_items_given?.[item.key] || false}
+                          onChange={(e) => handleBasicMannersItemsUpdate(item.key, e.target.checked)}
+                          className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        />
+                        <label 
+                          htmlFor={`adore-item-${item.key}`}
                           className="text-sm text-slate-700 cursor-pointer"
                         >
                           {item.label}
