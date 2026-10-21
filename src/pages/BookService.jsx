@@ -509,6 +509,7 @@ export default function BookService() {
         bookingData.furkid_joined_family = formData.furkidJoinedFamily || '';
         bookingData.first_time_owner = Boolean(formData.firstTimeOwner);
         bookingData.furkid_diet = formData.furkidDiet || '';
+        bookingData.furkid_feeding_method = formData.furkidFeedingMethod || '';
         bookingData.furkid_sleep_area = formData.furkidSleepArea || '';
         bookingData.walking_frequency = formData.walkingFrequency || '';
         bookingData.furkid_photo_url = formData.furkidPhotoUrl || '';

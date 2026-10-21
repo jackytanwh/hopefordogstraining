@@ -537,6 +537,16 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
                 )}
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor={`${prefix}furkidFeedingMethod`}>How do you feed the furkid (e.g. food bowl, food puzzles, slow feeder?)</Label>
+                <Input
+                  id={`${prefix}furkidFeedingMethod`}
+                  value={furkid.furkidFeedingMethod || ''}
+                  onChange={(e) => handleInputChange(index, 'furkidFeedingMethod', e.target.value)}
+                  placeholder="e.g., Food bowl"
+                />
+              </div>
+
               {showFoodAllergy && (
                 <>
                   <div className="space-y-2">

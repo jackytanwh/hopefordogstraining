@@ -179,6 +179,14 @@
           "furkid_diet": {
             "type": "string"
           },
+          "furkid_feeding_method": {
+            "type": "string",
+            "description": "How the furkid is fed (e.g. food bowl, food puzzles, slow feeder)"
+          },
+          "feeding_frequency": {
+            "type": "string",
+            "description": "How many times a day the furkid is fed"
+          },
           "has_food_allergy": {
             "type": "boolean",
             "description": "Does the furkid have any food allergies?"
@@ -572,6 +580,10 @@
     "furkid_diet": {
       "type": "string",
       "description": "Diet of the dog/puppy (for single furkid bookings)"
+    },
+    "furkid_feeding_method": {
+      "type": "string",
+      "description": "How the dog/puppy is fed (e.g. food bowl, food puzzles, slow feeder) (for single furkid bookings)"
     },
     "has_food_allergy": {
       "type": "boolean",
