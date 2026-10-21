@@ -524,7 +524,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={`${prefix}feedingFrequency`}>How many times a day do you feed the puppy? *</Label>
+                <Label htmlFor={`${prefix}feedingFrequency`}>How many times a day do you feed the furkid? *</Label>
                 <Input
                   id={`${prefix}feedingFrequency`}
                   value={furkid.feedingFrequency || ''}
