@@ -204,6 +204,7 @@ export default function BookService() {
   const isKinderPuppy = serviceId === 'kinder_puppy_in_home';
   const isGroupClass = serviceId === 'basic_manners_group_class';
   const isBasicManners = serviceId === 'basic_manners_in_home' || serviceId === 'basic_manners_fyog' || serviceId === 'basic_manners_group_class';
+  const isAdore = serviceId === 'adore_hdb_approval';
   const isBehaviouralModification = serviceId === 'behavioural_modification';
   const isCanineAssessment = serviceId === 'canine_assessment';
 
@@ -516,7 +517,7 @@ export default function BookService() {
         bookingData.furkid_instagram = formData.furkidInstagram || '';
         bookingData.enrolment_reason = formData.enrolmentReason || '';
         
-        if (isBasicManners) {
+        if (isBasicManners || isAdore) {
           bookingData.has_food_allergy = Boolean(formData.hasFoodAllergy);
           bookingData.food_allergy_details = formData.hasFoodAllergy ? (formData.foodAllergyDetails || '') : '';
         }

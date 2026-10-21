@@ -47,7 +47,7 @@ export default function FurkidInformation({ service, formData, setFormData, onNe
 
   const numberOfFurkids = isMultiEntryForm ? 1 : (isFYOG ? (kinderPuppyCount || formData.numberOfFurkids || formData.basicMannersFYOGCount || 1) : 1);
 
-  const showFoodAllergy = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class';
+  const showFoodAllergy = service.id === 'basic_manners_in_home' || service.id === 'basic_manners_fyog' || service.id === 'basic_manners_group_class' || service.id === 'adore_hdb_approval';
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
