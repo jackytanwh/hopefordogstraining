@@ -1346,6 +1346,12 @@ export default function BookingDetail() {
                             <div><p className="text-slate-600">Joined Family</p><p className="font-medium">{origFurkid.furkid_joined_family || origFurkid.furkidJoinedFamily || 'N/A'}</p></div>
                             <div><p className="text-slate-600">First Time Owner</p><p className="font-medium">{(origFurkid.first_time_owner === true || origFurkid.firstTimeOwner === true) ? 'Yes' : (origFurkid.first_time_owner === false || origFurkid.firstTimeOwner === false) ? 'No' : 'N/A'}</p></div>
                             <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{origFurkid.walking_frequency || origFurkid.walkingFrequency || 'N/A'}</p></div>
+                            <div><p className="text-slate-600">Feeding Frequency</p><p className="font-medium">{origFurkid.feeding_frequency || origFurkid.feedingFrequency || 'N/A'}</p></div>
+                            <div><p className="text-slate-600">How Furkid Is Fed</p><p className="font-medium">{origFurkid.furkid_feeding_method || origFurkid.furkidFeedingMethod || 'N/A'}</p></div>
+                            <div><p className="text-slate-600">Any Food Allergy</p><p className="font-medium">{origFurkid.has_food_allergy === true ? 'Yes' : origFurkid.has_food_allergy === false ? 'No' : 'N/A'}</p></div>
+                            {(origFurkid.has_food_allergy === true || origFurkid.hasFoodAllergy === true) && (
+                              <div><p className="text-slate-600">Food Allergy Details</p><p className="font-medium">{origFurkid.food_allergy_details || origFurkid.foodAllergyDetails || 'N/A'}</p></div>
+                            )}
                             {[
                               { field: 'furkid_diet', label: 'Diet', span: true },
                               { field: 'furkid_sleep_area', label: 'Sleep Area', span: true },
@@ -1425,6 +1431,12 @@ export default function BookingDetail() {
                       </div>
                     ))}
                     <div><p className="text-slate-600">Walk Frequency</p><p className="font-medium">{booking.walking_frequency || booking.walkingFrequency || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Feeding Frequency</p><p className="font-medium">{booking.feeding_frequency || booking.feedingFrequency || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">How Furkid Is Fed</p><p className="font-medium">{booking.furkid_feeding_method || booking.furkidFeedingMethod || 'N/A'}</p></div>
+                    <div><p className="text-slate-600">Any Food Allergy</p><p className="font-medium">{booking.has_food_allergy === true ? 'Yes' : booking.has_food_allergy === false ? 'No' : 'N/A'}</p></div>
+                    {(booking.has_food_allergy === true || booking.hasFoodAllergy === true) && (
+                      <div><p className="text-slate-600">Food Allergy Details</p><p className="font-medium">{booking.food_allergy_details || booking.foodAllergyDetails || 'N/A'}</p></div>
+                    )}
                     <div className="md:col-span-2">
                       <p className="text-slate-600 mb-1">Reason for Enrolment</p>
                       {editingFurkid ? (
