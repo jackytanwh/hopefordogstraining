@@ -7,6 +7,9 @@ import { Sparkles, ShoppingCart, Plus, Minus, Maximize2, ChevronLeft, ChevronRig
 
 const COMPLIMENTARY_IDS = ['flea_tick'];
 
+// Temporarily hidden — set back to true to show the Complimentary Gift section again
+const SHOW_COMPLIMENTARY_GIFT = false;
+
 const PRODUCTS = [
   {
     id: 'flea_tick',
@@ -121,7 +124,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
         discounted_price: product.discountedPrice
       })).filter(item => item.quantity > 0);
 
-    if (isKinderPuppy && selectedComplimentary) {
+    if (isKinderPuppy && SHOW_COMPLIMENTARY_GIFT && selectedComplimentary) {
       const complimentaryProduct = PRODUCTS.find(p => p.id === selectedComplimentary);
       if (complimentaryProduct) {
         selectedProducts.unshift({
@@ -199,7 +202,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
         <CardContent className="p-4 md:p-6 space-y-4">
 
           {/* Complimentary Section (Kinder Puppy only) */}
-          {isKinderPuppy && (
+          {isKinderPuppy && SHOW_COMPLIMENTARY_GIFT && (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Gift className="w-5 h-5 text-emerald-600" />
@@ -451,7 +454,7 @@ export default function ProductSelection({ formData, setFormData, onNext, onBack
               onClick={handleContinue}
               className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-sm md:text-base"
             >
-              {getSelectedCount() > 0 || (isKinderPuppy && selectedComplimentary) ? 'Continue' : 'Continue without Products'}
+              {getSelectedCount() > 0 || (isKinderPuppy && SHOW_COMPLIMENTARY_GIFT && selectedComplimentary) ? 'Continue' : 'Continue without Products'}
             </Button>
           </div>
         </CardContent>
