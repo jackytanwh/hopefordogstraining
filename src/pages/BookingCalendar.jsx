@@ -25,7 +25,7 @@ const programColors = {
   kinder_puppy_in_home:    "bg-violet-200 text-violet-900",
   basic_manners_fyog:      "bg-emerald-200 text-emerald-900",
   basic_manners_group_class:"bg-orange-200 text-orange-900",
-  adore_hdb_approval:      "bg-purple-200 text-purple-900",
+  adore_hdb_approval:      "bg-[#b5e2bf] text-[#14401f]",
   canine_assessment:       "bg-[#fccc93] text-[#4a2c10]",
   behavioural_modification:"bg-red-200 text-red-900",
   on_demand_1_session:     "bg-cyan-200 text-cyan-900",
