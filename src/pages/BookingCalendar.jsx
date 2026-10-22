@@ -26,7 +26,7 @@ const programColors = {
   basic_manners_fyog:      "bg-emerald-200 text-emerald-900",
   basic_manners_group_class:"bg-orange-200 text-orange-900",
   adore_hdb_approval:      "bg-purple-200 text-purple-900",
-  canine_assessment:       "bg-[#fc9e70] text-[#3d1c0b]",
+  canine_assessment:       "bg-[#fccc93] text-[#4a2c10]",
   behavioural_modification:"bg-red-200 text-red-900",
   on_demand_1_session:     "bg-cyan-200 text-cyan-900",
   on_demand_2_sessions:    "bg-cyan-200 text-cyan-900",
