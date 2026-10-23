@@ -8,19 +8,19 @@ import { Check, Calendar, DollarSign } from "lucide-react";
 const SESSION_PACKAGES = [
   {
     sessions: 1,
-    price: 120,
+    price: 130,
     description: "Perfect for a quick tune-up or addressing a specific behavior"
   },
   {
     sessions: 2,
-    price: 230,
-    savings: 10,
+    price: 240,
+    savings: 20,
     description: "Great for building on basic skills or tackling multiple issues"
   },
   {
     sessions: 3,
     price: 330,
-    savings: 30,
+    savings: 60,
     description: "Best value! Comprehensive training with consistent follow-up"
   }
 ];

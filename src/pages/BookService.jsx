@@ -95,7 +95,7 @@ const services = {
   on_demand_training: {
     id: "on_demand_training",
     name: "On-Demand Training",
-    price: 120,
+    price: 130,
     duration: 1,
     sessions: 1,
     minParticipants: 1,
