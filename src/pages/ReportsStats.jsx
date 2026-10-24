@@ -141,6 +141,30 @@ export default function ReportsStats() {
   // Adoption discount stats
   const adoptedCount = activeBookings.filter(b => b.is_adopted || (b.furkids && b.furkids.some(f => f.is_adopted || f.isAdopted))).length;
 
+  // Breed statistics (this year, by furkid)
+  const breedData = useMemo(() => {
+    const year = new Date().getFullYear();
+    const counts = {};
+    activeBookings.forEach(b => {
+      const inYear = b.created_date && new Date(b.created_date).getFullYear() === year;
+      if (!inYear) return;
+      const breeds = [];
+      if (b.furkids && b.furkids.length) {
+        b.furkids.forEach(f => { if (f.furkid_breed) breeds.push(f.furkid_breed); });
+      } else if (b.furkid_breed) {
+        breeds.push(b.furkid_breed);
+      }
+      breeds.forEach(br => {
+        const key = br.trim();
+        if (key) counts[key] = (counts[key] || 0) + 1;
+      });
+    });
+    return Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+  }, [activeBookings]);
+
   // Booking source (how did you know)
   const howKnewData = useMemo(() => {
     const counts = {};
@@ -254,6 +278,33 @@ export default function ReportsStats() {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Breed Statistics */}
+        <Card className="border-0 shadow-md">
+          <CardHeader className="border-b border-slate-100">
+            <CardTitle className="flex items-center gap-2 text-slate-800">
+              <PawPrint className="w-5 h-5" />
+              Popular Breeds ({new Date().getFullYear()})
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-6">
+            {breedData.length === 0 ? (
+              <p className="text-sm text-slate-400 text-center py-12">No enrolments this year yet</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={Math.max(180, breedData.length * 32)}>
+                <BarChart data={breedData} layout="vertical" margin={{ top: 0, right: 20, left: 8, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+                  <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                  <YAxis type="category" dataKey="name" width={160} tick={{ fontSize: 11, fill: '#475569' }} />
+                  <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0' }} />
+                  <Bar dataKey="count" radius={[0, 4, 4, 0]} name="Furkids enrolled">
+                    {breedData.map((_, i) => <Cell key={i} fill={PROGRAM_COLORS[i % PROGRAM_COLORS.length]} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
 
