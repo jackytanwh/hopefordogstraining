@@ -145,6 +145,8 @@ export default function ReportsStats() {
   const breedData = useMemo(() => {
     const year = new Date().getFullYear();
     const counts = {};
+    // Merge breed name variants (e.g. "Golden Doodle" and "Goldendoodle")
+    const BREED_MERGES = { 'golden doodle': 'Goldendoodle' };
     activeBookings.forEach(b => {
       const inYear = b.created_date && new Date(b.created_date).getFullYear() === year;
       if (!inYear) return;
@@ -156,7 +158,9 @@ export default function ReportsStats() {
       }
       breeds.forEach(br => {
         const key = br.trim();
-        if (key) counts[key] = (counts[key] || 0) + 1;
+        if (!key) return;
+        const canonical = BREED_MERGES[key.toLowerCase()] || key;
+        counts[canonical] = (counts[canonical] || 0) + 1;
       });
     });
     return Object.entries(counts)
