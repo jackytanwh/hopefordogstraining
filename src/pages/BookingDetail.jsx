@@ -1540,7 +1540,8 @@ export default function BookingDetail() {
                     ))}
 
                     {hasAdoreHDBItems && [
-                      { key: 'treat_pouch', label: 'Treat Pouch + Whistle' },
+                      { key: 'treat_pouch', label: 'Treat Pouch' },
+                      { key: 'whistle', label: 'Whistle' },
                       { key: 'mat', label: 'Mat' },
                       { key: 'leash', label: 'Leash' }
                     ].map((item) => (
