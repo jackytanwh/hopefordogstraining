@@ -1472,7 +1472,9 @@ export default function BookingDetail() {
                       { key: 'mat', label: 'Snuffle Mat' },
                       { key: 'lick_mat', label: 'Lick Mat' },
                       { key: 'cup', label: 'Cup' },
-                      { key: 'dropper', label: 'Dropper' }
+                      { key: 'dropper', label: 'Dropper' },
+                      { key: 'yak_chew', label: 'Yak Chew' },
+                      { key: 'leash', label: 'Leash' }
                     ].map((item) => (
                       <div key={item.key} className="flex items-center gap-2">
                         <input
